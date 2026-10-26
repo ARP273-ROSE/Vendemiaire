@@ -1,0 +1,8 @@
+# Les règles du dossier « Le vin » sont vérifiées par empreinte SHA-256 (MANIFESTE.json) :
+# aucune conversion de fin de ligne à l'extraction, sous Windows comme ailleurs.
+vendemiaire/regles/donnees/** -text
+# Sources LaTeX et scripts : toujours LF
+*.tex text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+branding/logo.svg -text

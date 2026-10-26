@@ -2,117 +2,123 @@
 
 # Vendémiaire
 
-**A complete, offline wine cellar manager**: every bottle, its place in the cellar, the cellar book of
-ins and outs, when to open, how to serve and keep each wine, and food pairings, from sourced rules. French / English,
-Windows, macOS and Linux. No data ever leaves the computer.
+**A complete, offline wine cellar manager**: every bottle and its place in the cellar, the cellar book of
+everything in and out, when to open it, serving, storage and food pairing from sourced rules, a
+"great restaurant" wine list, an insurance report, statistics. English / French; Windows, macOS and Linux.
+No data ever leaves the computer.
 
 *Version française : [README.md](README.md).*
 
-> **Status: phases 1 (foundations and cellar), 2 (world databases and labels) and 3 (drinking windows, serving, pairings), not released yet.** See [PROGRESSION.md](PROGRESSION.md) (in French).
+**Version 1.0.0** — full manual: [English (PDF)](docs/manuel-en.pdf) · [French (PDF)](docs/manuel-fr.pdf) ·
+changelog: [JOURNAL.md](JOURNAL.md) (in French).
 
 ![Dashboard](docs/captures/en-tableau-de-bord.png)
 
-## What phase 1 does
+## Install
 
-- **Cellar**: wines (producer, cuvée, appellation, region, country, colour, type, grapes with
-  percentages, vintage, ABV, LWIN, barcode) and **individual bottles** — sizes from piccolo to
-  Melchizedek, status (in cellar, awaiting delivery, en primeur, drunk, given away, sold, broken,
-  corked), purchase price and place, dates, fill level (auction scale or in cm), label, capsule and
-  cork condition, original wooden case, provenance.
-- **Rack plan**: cellars › units › racks in rows and columns, several cellars; drag and drop a
-  bottle (swap when the slot is taken), select several bottles and **move them as a batch**; every
-  move is kept in the history.
-- **Cellar book**: every in and out with occasion, guests, dish, score (out of 20, 100 or stars)
-  and comment.
-- **Wine sheet**: "cover" (label photo, or a drawn label), drinking windows (mine, critics'; the
-  computed one comes in phase 3), critics' scores with their scale, dated and sourced value.
-- **Dashboard**: bottles, litres, value paid and estimated, breakdowns, futures to be delivered,
-  restock thresholds.
-- **No locked-in data**: CSV export (one row per bottle) that re-imports losslessly, full JSON
-  export, **CellarTracker** export import ([details, in French](docs/import_cellartracker.md)).
-  An import never overwrites manually entered data.
-- **Automatic backups** (at start-up, every 30 minutes when the database changed, on exit, before
-  every import) with rotation; restore from the File menu.
+On the repository's **Releases** page:
+
+| System | File |
+|---|---|
+| Windows | `Vendemiaire-Setup.exe` (installs into your profile, no administrator password) |
+| macOS Apple Silicon | `Vendemiaire-macos-arm64.dmg` |
+| macOS Intel | `Vendemiaire-macos-x86_64.dmg` |
+| Linux x86_64 / ARM64 | `Vendemiaire-linux-x86_64.tar.gz` / `Vendemiaire-linux-arm64.tar.gz`, then `./installer.sh` (no sudo) |
+
+The package is self-contained (Python, Qt) and bundles **Tesseract** (label reading, French and English
+models) and **Tectonic** (LaTeX PDFs) with a cache of LaTeX packages: everything works offline. The
+application **updates itself** (it offers to at start-up); your data are never touched. Installers are
+unsigned: Windows and macOS ask for confirmation the first time (see the manual).
+
+## What Vendémiaire does
+
+**The cellar**
+- Wines (producer, cuvée, appellation, region, country, colour, type, grapes and percentages, vintage,
+  alcohol, LWIN, barcode) and **individual bottles**: 20 formats from piccolo to melchizedek, status (in
+  cellar, awaiting delivery, en primeur, drunk, given away, sold, broken, corked), purchase price and place,
+  ullage (auction-house scale, illustrated), label/capsule/cork condition, original case, provenance, invoice.
+- **Rack plan**: cellars › furniture › racks, drag and drop, swap, batch moves, history; keyboard too.
+- **Cellar book**: occasion, guests, dish, score, comment, **moment photos**.
+- **Label wall**: each label photo as a record sleeve; automatic cropping and straightening, **text reading
+  (OCR)** to identify a bottle from its photo.
+
+**Rules from the "Le vin" study** — 194 rules, 69 sources, audited; every answer gives its *why*, its sources
+and its confidence ([details, in French](docs/regles_du_dossier.md)).
+- **When to open**: window computed from the style, the vintage and the cellar's measured temperature (plus
+  yours and the critics'); drink now / declining / too young alerts; drinking-window curve.
+- **Serving** (temperature, when to take it out, decanting, glass, "tonight" sheet), **storage** (cellar
+  conditions, corks, opened bottles), **ullage** by age, **pairings** both ways and "what to drink tonight?",
+  **tasting** (aroma wheel; vertical, horizontal, blind sessions), **fault diagnosis**.
+
+**World databases** ([details](docs/bases_mondiales.md)): **LWIN** identifier (local copy, offline search),
+**Wikidata**, **Open Food Facts** (barcode), **INAO** and **eAmbrosia** registers; explained score, nothing
+written without confirmation, hand-typed data never replaced.
+
+**Documents** ([details](docs/documents.md), [examples](docs/exemples/)): "great restaurant" **wine list**
+(three designs, A4, A5 or single sheet, English or French, tonight's menu, small regional maps, one-click
+update), **insurance report**, read-only **sharing**, **QR rack labels** and scanner, **shopping list**
+(restock thresholds, wishes), **statistics**.
+
+**Wishes and prices**: wish list, **price alerts** without scraping (prices seen, typed or imported).
+
+**No data held hostage**: CSV, full JSON, **CellarTracker** ([details](docs/import_cellartracker.md)),
+**Vivino** and Excel imports; automatic **backups**; database possibly in a **shared folder on a NAS** (single
+writer, read-only readers, [stable export](docs/export_dossier.md)).
 
 ![Cellar](docs/captures/en-cave.png)
-
-## What phase 2 adds
-
-- **World identifier**: local copy of **LWIN** (Liv-ex, CC BY 4.0) searched offline, **Wikidata**
-  (producers, appellations, grapes), **Open Food Facts** (barcode); ranked candidates with an
-  **explained score**, nothing written without confirmation, manual entries never replaced, log of
-  what was filled in and from where.
-- **Official appellation registers** (INAO, eAmbrosia) built in: completion and official spelling.
-- **Label photos as covers**: automatic cropping and perspective correction, unwrapping, original
-  kept, **label wall**, back label, capsule, case; **local OCR** (Tesseract) to identify a bottle
-  from its photo.
-- **Wish list**, **critics' scores** with a sourced conversion (Decanter table), **dated, sourced
-  values**, **cellar conditions** (entry, CSV or Home Assistant import, curve), **stock-take**.
-
-![Label wall](docs/captures/en-mur.png)
-![Identify a wine](docs/captures/en-identifier.png)
-
-## What phase 3 adds
-
-Every rule comes from the "Le vin" study (194 audited rules, 66 sources), copied unchanged with its
-checksum; every result shows its **why**, its **sources** and its **confidence**
-([details, in French](docs/regles_du_dossier.md)).
-
-- **When to open**: drinking window, peak and summit, adjusted for the vintage and for the measured
-  cellar temperature; three sources (mine, critic, computed); "drink this year", "declining", "too
-  young" alerts; **cellar peak curve**: how many bottles to drink each year.
-- **Serving**: temperature, when to take it out of the cellar, decanting, glass; printable
-  **"tonight" sheet** (HTML or PDF).
-- **Keeping**: cellar ranges, corks to check, **opened bottle** (how many days).
-- **Fill levels**: illustrated scale and meaning for the wine's age.
-- **Pairings** both ways and **"What to drink tonight?"** (dish, budget, colour, occasion).
-- **Tasting notes** with the aroma wheel, **fault diagnosis** (corked, oxidised...).
-
-![Rules in the wine sheet](docs/captures/en-fiche-regles.png)
+![Rack plan](docs/captures/en-plan.png)
+![Cellar book and moment photos](docs/captures/en-livre.png)
+![Rules in the record](docs/captures/en-fiche-regles.png)
 ![What to drink tonight?](docs/captures/en-ce-soir.png)
-
-## What phase 4 adds
-
-Documents and statistics ([details, in French](docs/documents.md), [PDF examples](docs/exemples/)).
-
-- **Fine-dining wine list** as a LaTeX PDF: classic order (sparkling → white → rosé → red → sweet →
-  fortified; country, region, appellation, producer, vintage — never by price), BIN numbers, grouped
-  verticals, by the glass, half bottles and large formats apart, favourites, tonight's menu with a wine
-  suggested per dish, small region maps, index of producers; three templates (classic, modern, bistro),
-  A4, A5 or single sheet, French or English; a saved list updates in one click. Without LaTeX, the same
-  content is written by Qt.
-- **Insurance / inventory report**: photo, fill level and its meaning, condition, case, provenance,
-  dated and sourced value.
-- **Statistics**: breakdowns (country, region, colour, grape, vintage, price...), value over time, bottles
-  in versus out, drinking-window curve by colour.
-- **QR codes and barcodes**: printable rack labels, reading from the webcam or a photo, taking a bottle
-  out by scanning it.
-- **Imports** from Excel and Vivino (column mapping), read-only **sharing** (HTML, PDF).
-- **Tasting sessions**: vertical, horizontal, blind (rate before revealing).
-
 ![Wine list](docs/captures/en-carte-apercu.png)
+![Wish list and price alert](docs/captures/en-envies.png)
 ![Statistics](docs/captures/en-statistiques.png)
-![Tasting sessions](docs/captures/en-seances.png)
 
 ## Run from source
 
-```bash
+"`bash
 python -m pip install -r requirements.txt
 python run.py            # your cellar
-python run.py --demo     # a demo cellar (made-up data)
-python run.py --lang fr  # French interface
+python run.py --demo     # a demo cellar (invented data) — also: Help menu
+python run.py --lang en  # English interface
 ```
+
+From source, Tesseract and a LaTeX engine (Tectonic, XeLaTeX...) are looked for on the system; without a
+LaTeX engine, documents are written by Qt (same content, simpler typography).
+
+Data live outside the application folder: `%LOCALAPPDATA%\Vendemiaire` (Windows),
+`~/Library/Application Support/Vendemiaire` (macOS), `~/.local/share/Vendemiaire` (Linux), or the folder
+chosen with **File › Data folder...**.
 
 ## Tests
 
 ```bash
 xvfb-run -a python -m pytest -q tests/
+python outils/grosse_cave.py 20000   # interface timings on a 20,000-bottle cellar
+python outils/manuel.py              # PDF manuals (Tectonic or XeLaTeX)
 ```
 
-## Licence
+Model, migrations, imports/exports, interface (under Xvfb), bilingualism (no hard-coded text), rules,
+documents, shared kit, privacy. Package builds really try the bundled tools (a QR code written then read,
+a label read by Tesseract, a document compiled by Tectonic with no network).
 
-MIT — see [LICENSE](LICENSE). Embedded fonts under the SIL Open Font License.
+## Licence and data sources
 
-Reference data: LWIN © Liv-ex Ltd (CC BY 4.0, not redistributed: imported by the user); INAO
-(Licence Ouverte 2.0) and eAmbrosia (© European Union, reuse authorised) registers built in;
-Wikidata (CC0); Open Food Facts (ODbL, photos CC BY-SA).
+Vendémiaire: **MIT** ([LICENSE](LICENSE)). Bundled fonts (Source Sans 3, Cormorant Garamond): SIL Open Font
+License.
+
+| Source | Licence | Use |
+|---|---|---|
+| "Le vin" study | rules citing their sources (`vendemiaire/regles/donnees/sources.json`) | ageing, serving, storage, ullage, pairings |
+| LWIN © Liv-ex Ltd | CC BY 4.0 — **not redistributed**: the user downloads it (Liv-ex form) and imports it | world identifier |
+| Wikidata | CC0 | estates, appellations, grapes |
+| Wikimedia Commons | each image's licence (stored with it) | estate images |
+| Open Food Facts | ODbL (database), DbCL (contents), CC BY-SA (photos) | barcodes |
+| INAO (data.gouv.fr) | Licence Ouverte 2.0 | appellation register (bundled) |
+| eAmbrosia | © European Union, reuse authorised (Decision 2011/833/EU) | appellation register (bundled) |
+| Natural Earth | public domain | small regional maps |
+| Tesseract + tessdata_fast | Apache 2.0 | OCR (bundled) |
+| Tectonic | MIT; LaTeX packages in its cache under their own licences (LPPL, OFL...) | PDFs (bundled) |
+| Qt / PyQt6, segno, zxing-cpp | LGPL v3 / GPL v3, BSD, Apache 2.0 | interface, QR codes and barcodes |
+
+The demo's photos and labels are drawn by the application; its producers are invented.

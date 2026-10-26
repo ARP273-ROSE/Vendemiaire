@@ -3,24 +3,27 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
-## État courant (26/10/2026, nuit — fin de phase 4)
+## État courant (27/10/2026 — fin de phase 5, version 1.0.0 en BROUILLON)
 
-- **Phases 1 à 4 livrées** dans le code, version `0.4.0`, **non publiées** (aucun tag ni release :
-  décision de l'utilisateur).
-- 221 essais (`tests/`), tous verts sous Xvfb (Python 3.11 local, avec et sans moteur LaTeX) ; la CI
-  (`tests.yml`, Python 3.12) installe Tesseract et poppler ; sans LaTeX en CI, l'essai de compilation se
-  saute et le repli Qt est essayé. Les essais qui relisent le dossier « Le vin » se sautent en CI.
-- `run.py --check` : « interface OK » (194 règles, empreintes).
-- Captures réelles FR/EN : `docs/captures/{fr,en}-*.png` (38 par langue ; phase 4 : statistiques,
-  statistiques-cepages, seances, seance-aveugle, carte-reglages, carte-vins, carte-apercu, assurance,
-  partage, etiquettes, scanner, import-vivino).
-- Exemples PDF sur la démonstration : `docs/exemples/` (cartes classique A4 FR, moderne A4 EN, bistrot
-  A5 FR ; rapport d'assurance ; planche QR) — `python outils/exemples.py`, regardés page par page.
-- Règles du dossier corrigées À LA SOURCE (`_docs/Vin/scripts/regles.py`, voir son `audit/faits_regles.md`,
-  corrections 3 à 5) puis resynchronisées : champagne sans millésime → `eff_sans_annee`, banyuls rimage
-  et VDN grenat → `mute_fruite`, rattachement des millésimes dans `rattachement_millesimes.json` du
-  dossier (plus de table dans l'appli). 194 règles inchangées, 66 sources.
-- Prochaine étape : **phase 5** — manuel, kit (binaires embarqués), polissage, publication.
+- **Version `1.0.0`** : les cinq phases sont faites. La Release **v1.0.0 est construite et déposée en
+  brouillon** (Windows, macOS arm64/x86_64, Linux x86_64/arm64) : **non publiée**, l'utilisateur décide
+  (`gh release edit v1.0.0 --draft=false --latest`). Détail des paquets et de l'essai de MAJ : section
+  « Publication 1.0.0 » plus bas.
+- Essais (`tests/`) tous verts sous Xvfb (local : Python 3.11, avec TeX Live ; CI `tests.yml` : Python 3.12,
+  Tesseract et poppler, sans LaTeX). `run.py --check` : « interface OK » sur les trois systèmes.
+- **Outils embarqués** par le kit commun (clé `outils` de `kit.json`, `outils_kit.py`) : Tesseract 5.5
+  (conda-forge, fermeture des dépendances seulement, modèles fra/eng) et Tectonic 0.17.0 avec un cache de
+  paquets LaTeX pré-rempli (≈ 55 Mo) et contrôlé hors ligne (`--only-cached`) à la construction ; essai
+  réel dans chaque paquet (`outils_embarques.essai` : QR écrit/relu, OCR, compilation sans réseau).
+- **Manuels** FR (41 p.) et EN (40 p.) au format maison, 40 captures réelles par langue, régénérés par chaque
+  construction de paquet (Tectonic embarqué) ; `python outils/manuel.py` en local (XeLaTeX).
+- Captures réelles FR/EN : `docs/captures/{fr,en}-*.png` (40 par langue ; phase 5 : prix, achats ; livre et
+  envies refaits — le livre montre les photos du moment).
+- **Règles** : porto ruby/LBV, tawny/colheita et muscat de Rivesaltes corrigés DANS le dossier « Le vin »
+  (correction 6 de son `audit/faits_regles.md`), chaîne du dossier relancée, resynchronisés : 194 règles,
+  **69 sources**.
+- **Grande cave** (`python outils/grosse_cave.py 20000`) : ouverture 1,9 s, onglets et recherche ≤ 0,6 s
+  (livre de cave de 20 000 lignes : 0,6 s), « tout rafraîchir » après une saisie 0,35 s.
 
 ## Les phases
 
@@ -30,7 +33,7 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | **2 — bases mondiales et étiquettes** | copie locale LWIN et recherche hors ligne, Wikidata, Open Food Facts (EAN), registres INAO + eAmbrosia, appariement (score expliqué, confirmation, journal), photos (recadrage, perspective, déroulage, original gardé, vignettes, mur, webcam), OCR local (Tesseract), envies, critiques + conversion, valeurs, conditions de cave, inventaire | ✅ 26/10/2026 (import Vivino/Excel et lecture de code-barres À L'IMAGE : reportés, voir plus bas) |
 | **3 — d'après le dossier « Le vin »** | moteur de règles (194 règles copiées avec empreintes), style, fenêtre calculée (plateau/cloche, millésime, température de cave, pourquoi, sources, confiance), alertes, courbe d'apogée, service (température, sortie de cave, carafe, verre, fiche « ce soir » HTML/PDF), conservation (plages, bouchons, bouteille entamée), niveaux selon l'âge (illustrés), accords dans les deux sens, « que boire ce soir ? », dégustation (roue des arômes), diagnostic des défauts, libellés anglais | ✅ 26/10/2026 |
 | **4 — documents et statistiques** | carte des vins LaTeX « de grand restaurant » (modèles classique/moderne/bistrot, livret A4/A5, carte simple, aperçu, FR/EN, mise à jour d'un clic, repli Qt), rapport d'assurance/inventaire PDF (format maison), statistiques complètes, étiquettes de casier QR, lecture du code À L'IMAGE (zxing-cpp), imports Excel/Vivino, partage en lecture seule (HTML/PDF), séances de dégustation | ✅ 26/10/2026 |
-| **5 — publication** | manuel PDF LaTeX FR+EN (format maison, captures réelles), polissage, README, première version publiée (dépôt de distribution public, MAJ auto testée en réel) | ⏳ |
+| **5 — publication** | Tesseract et Tectonic (cache hors ligne) embarqués sur les 3 systèmes par le kit, manuel PDF LaTeX FR+EN (format maison, captures réelles, régénéré par la CI), photos du livre de cave, liste d'achats, alertes de prix, accès clavier, grande cave sans gel, README, 1.0.0 construite en brouillon, MAJ réelle Linux 0.4.0 → 1.0.0 | ✅ 27/10/2026 (brouillon non publié : décision de l'utilisateur) |
 
 ## Chaque fonction du cahier des charges : où elle est faite
 
@@ -43,9 +46,9 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | Suivi des primeurs (livraison prévue, relance) | 1 | ✅ date prévue + alerte du tableau de bord (relance : l'alerte reste tant que la bouteille n'est pas reçue) |
 | Plusieurs caves, emplacements cave › meuble › casier › rangée › colonne | 1 | ✅ `emplacement` + `bouteille.rangee/colonne` |
 | Plan visuel, glisser-déposer, déplacement en lot, historique des déplacements | 1 | ✅ `ui/plan.py`, `deplacement` (lot) |
-| Vue 3D simple de la cave | 5 | ⏳ si faisable (pas faite en phase 4 : le plan 2D suffit ; à décider) |
+| Vue 3D simple de la cave | 5 | ❌ non faite (« si faisable » au cahier) : le plan 2D au clavier et à la souris couvre l'usage ; piste ouverte |
 | Livre de cave : entrées/sorties, occasion, convives, plat, note, commentaire | 1 | ✅ `mouvement`, `ui/livre.py`, `DialogueSortie` |
-| Photos dans le livre de cave | 2 / 5 | 🧱 `image.mouvement_id` + `ajouter_image(mouvement_id=)` ; écran : polissage phase 5 |
+| Photos dans le livre de cave | 2 / 5 | ✅ panneau « Photos du moment » du livre (`ui/livre.py`), `Cave.ajouter_photo_mouvement` (type `moment`, jamais pochette), colonne Photos |
 | Grille de dégustation robe/nez/bouche/finale, roue des arômes, /20 ou /100 | 3 | ✅ `ui/degustation.py` (`aromes.json`), liste dans la fiche |
 | Dégustations verticales, horizontales, à l'aveugle | 4 | ✅ onglet « Dégustations » (`seances.py`, `ui/seances.py`) : propositions, ordre tiré au hasard, notes figées après la révélation |
 | Fenêtres de dégustation à 3 sources (mienne, critiques, calculée) + pourquoi | 1 / 3 | ✅ `regles/garde.py`, `Cave.enregistrer_fenetres_calculees`, « pourquoi ? » dans la fiche |
@@ -58,8 +61,8 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | Valeur : prix d'achat, valeur datée et sourcée, total, plus/moins-value | 1 / 2 / 4 | ✅ saisie (source obligatoire) ; évolution et écart dans Statistiques |
 | Statistiques par région, couleur, millésime, cépage, prix ; graphiques | 4 | ✅ onglet « Statistiques » (`statistiques.py`) |
 | Rythme de consommation vs achats, « combien à boire par an pendant 20 ans » | 3 / 4 | ✅ courbe d'apogée (et par couleur), entrées/sorties par an, rythme comparé |
-| Liste d'envies, cave idéale, alertes de prix | 2 / 5 | ✅ onglet « Liste d'envies » ; alertes de prix : ⏳ (aucune source de prix en ligne autorisée ; prix max de l'envie comparé aux valeurs saisies : phase 5) |
-| Seuil de réassort et liste d'achats générée | 1 / 5 | ✅ seuil + alerte ; liste d'achats imprimable : ⏳ phase 5 |
+| Liste d'envies, cave idéale, alertes de prix | 2 / 5 | ✅ onglet « Liste d'envies » ; alertes de prix sans aspirateur : prix vus saisis (source obligatoire) ou importés en CSV (`achats.py`, table `prix_observe`), valeur saisie du vin lié ; relevé valable 90 jours ; ligne dorée + tableau de bord |
+| Seuil de réassort et liste d'achats générée | 1 / 5 | ✅ Documents › Liste d'achats (Ctrl+Maj+L) : réassort puis envies, PDF (Qt) et CSV (`achats.py`, `ui/achats.py`) |
 | Inventaire de contrôle (compter un casier, écarts) | 2 | ✅ Cave › Inventaire de contrôle (`ui/inventaire.py`) : codes lus, écarts, sortie « écart d'inventaire » sur décision |
 | Bouteille ouverte (reste, jours de garde selon le mode) | 3 | ✅ `Cave.entamer` (« à finir avant »), alerte au tableau de bord |
 | Niveau (ullage) bordelais et bourguignon, illustré, signification selon l'âge | 1 / 3 | ✅ `regles/niveaux.py`, `IllustrationNiveaux` (saisie de la bouteille, règles) |
@@ -83,9 +86,12 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | Lien avec le dossier « Le vin » (encadrés sur les bouteilles de la cave) | 1 | ✅ vues `v_dossier_vin`, `v_dossier_livre` + `python -m vendemiaire.export_dossier` ([contrat](docs/export_dossier.md)) |
 | Base accessible depuis un NAS, un seul écrivain | 1 | ✅ menu « Dossier des données… », verrou dans le dossier des données, lecteurs en `mode=ro` |
 | Standard : kit, MAJ auto, rapports (poste = machine), bilingue testé, style figé, vrai explorateur, icône/logo | 1 | ✅ |
-| Manuel PDF LaTeX FR+EN | 5 | ⏳ (le menu Aide l'ouvrira : `docs/manuel-{fr,en}.pdf`) |
+| Manuel PDF LaTeX FR+EN | 5 | ✅ `docs/manuel-{fr,en}.tex` + `manuel-preambule.tex` (format maison), 41 et 40 pages, 40 captures réelles par langue ; Aide › Manuel (F1) ; régénéré par chaque construction des paquets (Tectonic embarqué) |
+| Accessibilité clavier | 5 | ✅ Ctrl+1…0 (onglets), raccourcis des actions, plan au clavier, focus visible (feuille de style) |
+| Robustesse : base vide, 20 000 bouteilles | 5 | ✅ `outils/grosse_cave.py` (mesures), essais `test_phase5.py` |
+| OCR et PDF hors ligne dans les paquets | 5 | ✅ `outils_embarques.py` + clé `outils` du kit (Tesseract, Tectonic et son cache) |
 
-✅ fait · 🧱 structure de données prête, écran ou calcul à venir · ⏳ à faire
+✅ fait · 🧱 structure de données prête, écran ou calcul à venir · ⏳ à faire · ❌ non fait (décidé)
 
 ## Architecture
 
@@ -126,27 +132,36 @@ vendemiaire/
   imports_tableur.py       Excel/CSV/Vivino avec correspondance des colonnes
   seances.py               séances de dégustation (verticale, horizontale, aveugle)
   donnees/cartes_simplifiees.json   contours Natural Earth simplifiés + positions des régions (outils/cartes_simplifiees.py)
+  achats.py                PHASE 5 : liste d'achats (réassort, envies), prix relevés, alertes de prix, import CSV
+  outils_embarques.py      Tesseract et Tectonic du paquet (outils/<nom>/ à côté de app/), copie du cache Tectonic
+                           dans le profil, essai réel (kit.json « essai_embarquees »)
   ui/                      fenetre, liste, fiche, saisie, plan, livre, tableau, pochette, mur, photos,
                            identifier, references, envies, critiques, conditions, inventaire, travail,
                            regles_ui (pourquoi, sources, échelle des niveaux), ce_soir, degustation,
                            phase 4 : carte_vins, documents (assurance, partage, étiquettes), statistiques,
-                           graphiques, seances, scanner, import_tableur
+                           graphiques, seances, scanner, import_tableur ; phase 5 : achats (liste d'achats)
 branding/logo.svg          SEULE source du logo ; docs/logo_* en dérivent
-outils/                    rendre_logo.js (PNG via resvg), captures.py (captures réelles)
+outils/                    rendre_logo.js (PNG via resvg), captures.py (captures réelles), exemples.py (PDF +
+                           docs/prechauffage/), manuel.py (manuels PDF), grosse_cave.py (mesures sur 20 000
+                           bouteilles), essai_maj.py (MAJ réelle contre un brouillon)
+outils_kit.py              kit commun : outils tiers embarqués (Tesseract, Tectonic) — gabarit, jamais retouché
+docs/manuel-*.tex          manuels (préambule commun manuel-preambule.tex) ; docs/prechauffage/ : sources LaTeX qui
+                           remplissent le cache de Tectonic à la construction
 ```
 
-### Base de données (schéma v6)
+### Base de données (schéma v7)
 
 Tables : `producteur`, `vin`, `vin_cepage`, `identifiant_externe`, `emplacement`, `bouteille`,
 `deplacement`, `seance`, `degustation`, `mouvement`, `note_critique`, `fenetre_degustation`, `valeur`,
 `envie`, `bouteille_ouverte`, `condition_cave`, `inventaire`, `image`, `origine_champ`,
-`journal_enrichissement`, `meta`, `carte`, `carte_vin`, `seance_vin`. Vues : `v_dossier_vin`, `v_dossier_livre`.
+`journal_enrichissement`, `meta`, `carte`, `carte_vin`, `seance_vin`, `prix_observe`. Vues : `v_dossier_vin`, `v_dossier_livre`.
 
 - v1 = schéma complet ; v2 = formes normalisées des noms (`nom_normalise`, `cuvee_normalisee`) ;
   v3 = vues du dossier « Le vin » ; v4 = `image.fichier_original/retouche/texte_ocr`, table
   `fiche_externe`, formes normalisées recalculées (abréviations) ; v5 = `vin.style`, `vin.niveau_garde`
   (choix de l'utilisateur, NULL = automatique) ; v6 = `carte`, `carte_vin` (cartes des vins enregistrées),
-  `seance_vin`, `seance.revelee_le`. **Une migration publiée ne se modifie jamais** (empreintes dans
+  `seance_vin`, `seance.revelee_le` ; v7 = `prix_observe` (prix relevés des envies), index `image_mouvement`.
+  **Une migration publiée ne se modifie jamais** (empreintes dans
   `tests/test_migrations.py`) : en ajouter une à `MIGRATIONS`.
 - Chaque migration dans sa propre transaction ; une base plus récente que l'application est refusée ;
   sauvegarde « avant-migration » au démarrage.

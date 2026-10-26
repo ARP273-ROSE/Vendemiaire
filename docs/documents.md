@@ -14,7 +14,7 @@ cet ordre (`vendemiaire/documents/latex.py`) :
 
 1. celui choisi dans la carte des vins (**Moteur LaTeX…**, réglage `documents/moteur`) ou la variable
    `VENDEMIAIRE_LATEX` ;
-2. **Tectonic** posé à côté de l'application (`tectonic/tectonic[.exe]`) ou présent dans le `PATH` ;
+2. **Tectonic** livré avec le paquet (`outils/tectonic/`, voir plus bas), puis celui du `PATH` ;
 3. une distribution installée : XeLaTeX, LuaLaTeX puis pdfLaTeX (`PATH`, puis les dossiers usuels de
    MiKTeX, TeX Live et MacTeX).
 
@@ -22,13 +22,15 @@ Sans moteur, ou si la compilation échoue, **le même contenu** est écrit par Q
 `QPdfWriter`) : toujours disponible, hors ligne, typographie plus simple (pas de points de conduite,
 polices du système). L'interface dit quel moteur a servi.
 
-**Choix pour le paquet (phase 5) : embarquer Tectonic.** Un seul exécutable par système (licence MIT,
-quelques dizaines de Mo), fondé sur XeTeX, qui n'a besoin que des paquets réellement utilisés — contre 100 Mo à plusieurs
-Go pour MiKTeX ou TeX Live, à installer à part. Limite : au premier usage Tectonic télécharge ces paquets
-(une fois, puis cache) ; pour rester hors ligne, le paquet devra fournir ce cache pré-rempli (les
-documents n'utilisent que des paquets courants : fontspec, babel, ebgaramond, sourcesanspro,
-librebaskerville, josefin, tikz, tcolorbox, fontawesome5, xltabular, titlesec, fancyhdr). À valider en
-phase 5 sur les trois systèmes. Les modèles compilent aussi sous pdfLaTeX (sans fontspec).
+**Tectonic embarqué (1.0.0).** Le kit commun (clé `outils` de `kit.json`) pose Tectonic 0.17.0 (licence MIT,
+archives officielles, empreintes SHA-256 vérifiées) dans `outils/tectonic/` des paquets Windows, macOS
+(arm64, x86_64) et Linux (x86_64, arm64), avec un **cache pré-rempli** : à la construction, les documents
+de `docs/prechauffage/` (cartes classique, moderne, bistrot ; rapports d'assurance FR et EN — régénérés par
+`outils/exemples.py`) et les deux manuels sont compilés, puis recompilés avec `--only-cached` : la
+construction échoue si le cache ne suffit pas hors ligne (≈ 55 Mo). À l'usage, ce cache est recopié une fois
+dans le profil (`<profil>/cache/tectonic`, jamais dans le dossier d'installation), puis Tectonic compile
+**sans réseau** (`--only-cached`) ; si un paquet LaTeX manque (document modifié), une seconde tentative le
+télécharge. Les modèles compilent aussi sous pdfLaTeX (sans fontspec).
 
 La compilation se fait dans un dossier temporaire supprimé ensuite (seul le PDF est rendu), dans un fil :
 l'interface ne gèle pas.

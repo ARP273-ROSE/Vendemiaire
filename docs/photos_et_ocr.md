@@ -26,8 +26,11 @@ bouteille, autre.
 | **Tesseract 5** (Apache 2.0), programme externe | bibliothèque ≈ 2,3 Mo + Leptonica ≈ 1,8 Mo + modèles fra+eng ≈ 5 Mo (« fast ») à 9 Mo | oui (Windows : installeur UB Mannheim ; macOS : Homebrew ; Linux : paquet) | **oui** |
 | RapidOCR (PaddleOCR en ONNX) | ≈ 120 Mo de roues (onnxruntime 24 Mo, OpenCV 61 Mo, numpy 17 Mo, modèles 16 Mo) ; Python < 3.13 ; tire une OpenCV « avec interface » en conflit avec le Qt de PyQt6 | oui | non |
 
-Tesseract est cherché dans : le réglage de l'utilisateur, `TESSERACT_CMD`, un dossier `ocr/` du
-paquet (s'il l'embarque un jour), le `PATH`, puis les emplacements usuels. Absent, l'interface dit
+Tesseract est cherché dans : le réglage de l'utilisateur, `TESSERACT_CMD`, **le Tesseract du paquet**
+(`outils/tesseract/`, depuis la 1.0.0 : conda-forge 5.5, seules les bibliothèques dont il dépend, modèles
+`fra` et `eng` de tessdata_fast dans `outils/tesseract/tessdata`, passé par `--tessdata-dir` ; la sortie TSV
+est demandée par `-c tessedit_create_tsv=1`, ce tessdata n'ayant pas de `configs/`), le `PATH`, puis les
+emplacements usuels. Absent, l'interface dit
 comment l'installer et la recherche par texte tapé reste possible. Lecture ≈ 0,3 s par étiquette
 redressée, hors ligne. Sur la photo brute (de travers), Tesseract ne lit presque rien : le
 redressement d'abord est ce qui rend l'OCR utile.
