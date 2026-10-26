@@ -7,7 +7,14 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 
 - **Phase 1 livrée** dans le code, version `0.1.0`, **non publiée** (aucun tag : publier est une décision
   de l'utilisateur, voir « Décisions » plus bas).
-- 63 essais (`tests/`), tous verts sous Xvfb ; CI `tests.yml` à chaque poussée sur `main`.
+- 64 essais (`tests/`), tous verts sous Xvfb (Python 3.11 local, et Python 3.12 dans un conteneur neuf
+  qui rejoue la CI sur un clone propre).
+- CI `tests.yml` à chaque poussée sur `main` : **bloquée par GitHub** tant que le dépôt est privé
+  (« recent account payments have failed or your spending limit needs to be increased » : pas de
+  minutes Actions pour les dépôts privés). Elle tournera dès que le dépôt sera public.
+- Paquet Linux du kit construit en local (`build_unix.py --version 0.1.0`) : élagage Qt, vérification
+  d'import, **vérification de la mise à jour : ok**, `--check` du paquet : « interface OK »
+  (archive de MAJ 1,3 Mo, paquet 73 Mo).
 - Captures réelles de l'interface : `docs/captures/{fr,en}-*.png` (`outils/captures.py`).
 - Prochaine étape : **phase 2** (bases mondiales LWIN / Wikidata / Open Food Facts, photos d'étiquette,
   OCR). Les phases 3 et 4 attendent le dossier « Le vin » (règles sourcées).
@@ -193,6 +200,9 @@ python run.py --demo                                                    # essaye
    ajouter les manuels à `copies` de `kit.json` et au `--check`.
 
 ## Décisions pour l'utilisateur
+
+- **CI** : rien ne tourne sur GitHub tant que le dépôt est privé (pas de minutes Actions). Rendre le dépôt
+  public, ou régler la facturation Actions, ou garder les essais locaux.
 
 - **Publier ?** Le dépôt est privé : la mise à jour automatique ne peut rien trouver tant que
   `depot_distribution` (kit.json) n'est pas public. Choix : rendre ce dépôt public (le garde-fou de

@@ -190,3 +190,23 @@ def test_regles_d_oenologie_pas_inventees():
     from vendemiaire import regles
     assert not regles.disponibles()
     assert regles.demander("fenetre_degustation", {}) is None
+
+
+def test_verrou_d_instance_unique(tmp_path):
+    """Un seul écrivain : une seconde copie ne prend pas le verrou ; celui d'un
+    processus mort sur le même poste est repris (QLockFile)."""
+    import subprocess
+    from PyQt6 import QtCore
+    chemin = str(tmp_path / "vendemiaire.verrou")
+    a = QtCore.QLockFile(chemin)
+    a.setStaleLockTime(0)
+    assert a.tryLock(100)
+    code = "import sys;from PyQt6 import QtCore;v=QtCore.QLockFile(sys.argv[1]);v.setStaleLockTime(0);" \
+           "sys.exit(0 if v.tryLock(200) else 3)"
+    assert subprocess.run([sys.executable, "-c", code, chemin]).returncode == 3
+    a.unlock()
+    # verrou laissé par un processus tué
+    tue = subprocess.run([sys.executable, "-c", "import os,sys;from PyQt6 import QtCore;"
+                          "v=QtCore.QLockFile(sys.argv[1]);v.tryLock(100);os._exit(0)", chemin])
+    assert tue.returncode == 0 and os.path.exists(chemin)
+    assert subprocess.run([sys.executable, "-c", code, chemin]).returncode == 0
