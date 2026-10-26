@@ -343,3 +343,25 @@ def test_grosse_cave_sans_gel(app, tmp_path):
     for cle, duree in mesures["durees"].items():
         assert duree < 15, (cle, duree)
     cave.base.fermer()
+
+
+def test_manuels_a_la_version_et_au_format_maison():
+    racine = Path(__file__).resolve().parent.parent
+    version = (racine / "VERSION").read_text(encoding="utf-8").strip()
+    for lg in ("fr", "en"):
+        tex = (racine / "docs" / f"manuel-{lg}.tex").read_text(encoding="utf-8")
+        assert "\\newcommand{\\VersionManuel}{" + version + "}" in tex
+        assert "\\input{manuel-preambule.tex}" in tex
+        for capture in __import__("re").findall(r"\\capture(?:\[[^]]*\])?\{([^}]+)\}", tex):
+            assert (racine / "docs" / "captures" / capture).is_file(), capture
+            assert capture.startswith(lg + "-"), capture
+    pre = (racine / "docs" / "manuel-preambule.tex").read_text(encoding="utf-8")
+    for motif in ("fontawesome5", "tcolorbox", "titlesec", "needspace", "fancyhdr", "1C6DB4", "B5382B"):
+        assert motif in pre
+
+
+def test_cave_de_demonstration_dans_une_autre_fenetre(fenetre5):
+    exe, args = fenetre5.commande_demonstration()
+    assert args[1:3] == ["--demo", "--lang"] and args[0].endswith("run.py")
+    assert any(a.text() == i18n.tr("menu.demonstration") for m in fenetre5.findChildren(QtWidgets.QMenu)
+               for a in m.actions())

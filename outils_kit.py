@@ -35,7 +35,10 @@ mise a jour automatique, qui ne remplace que `app/`, n'y touche jamais.
   ci-dessous, empreinte verifiee) dans un prefixe temporaire ; on en garde
   les executables et leurs bibliotheques : `bin/` + `lib/` sous macOS et
   Linux (chemins relatifs @loader_path/$ORIGIN des binaires conda-forge),
-  tout dans `bin/` sous Windows (les DLL a cote de l'executable).
+  tout dans `bin/` sous Windows (les DLL a cote de l'executable). Puis
+  (`elaguer`, vrai par defaut) seule la fermeture des dependances des
+  executables reste (lue dans les binaires ELF, Mach-O, PE), symboles
+  inutiles retires sous Linux.
 - `fichiers` : fichiers de donnees (modeles, polices...), empreinte
   obligatoire.
 - `essai` : l'outil est lance une fois pose (« {dossier} » = son dossier) ; la
@@ -269,6 +272,181 @@ def copier_prefixe_conda(prefixe: Path, dossier: Path, executables, systeme: str
     return n
 
 
+# ---------------------------------------------------------------- dependances des binaires
+# Lecture des bibliotheques DEMANDEES par un binaire, en Python pur (aucun outil
+# du systeme : ni readelf, ni otool, ni dumpbin) : ELF (Linux), Mach-O (macOS),
+# PE (Windows). Sert a ne garder d'un prefixe conda que la fermeture des
+# dependances des executables (le prefixe de Tesseract pesait 110 Mo sous Linux).
+def _cstr(data: bytes, debut: int) -> str:
+    fin = data.find(b'\0', debut)
+    return data[debut:fin if fin >= 0 else len(data)].decode('utf-8', 'replace')
+
+
+def _elf_needed(data: bytes) -> list:
+    import struct
+    if data[:4] != b'\x7fELF':
+        return []
+    bits64 = data[4] == 2
+    e = '<' if data[5] == 1 else '>'
+    if bits64:
+        shoff, = struct.unpack_from(e + 'Q', data, 0x28)
+        shentsize, shnum = struct.unpack_from(e + 'HH', data, 0x3A)
+    else:
+        shoff, = struct.unpack_from(e + 'I', data, 0x20)
+        shentsize, shnum = struct.unpack_from(e + 'HH', data, 0x2E)
+    sections = []
+    for i in range(shnum):
+        o = shoff + i * shentsize
+        if bits64:
+            _nom, typ, _fl, _addr, off, taille, lien, _info, _al, entsize = struct.unpack_from(
+                e + 'IIQQQQIIQQ', data, o)
+        else:
+            _nom, typ, _fl, _addr, off, taille, lien, _info, _al, entsize = struct.unpack_from(
+                e + 'IIIIIIIIII', data, o)
+        sections.append((typ, off, taille, lien, entsize))
+    sortie = []
+    for typ, off, taille, lien, entsize in sections:
+        if typ != 6 or lien >= len(sections):           # SHT_DYNAMIC
+            continue
+        strtab = sections[lien][1]
+        pas = entsize or (16 if bits64 else 8)
+        for o in range(off, off + taille, pas):
+            tag, val = struct.unpack_from(e + ('qQ' if bits64 else 'iI'), data, o)
+            if tag == 0:
+                break
+            if tag == 1:                                 # DT_NEEDED
+                sortie.append(_cstr(data, strtab + val))
+    return sortie
+
+
+def _macho_needed(data: bytes) -> list:
+    import struct
+    magie = data[:4]
+    if magie in (b'\xcf\xfa\xed\xfe', b'\xce\xfa\xed\xfe'):
+        e = '<'
+    elif magie in (b'\xfe\xed\xfa\xcf', b'\xfe\xed\xfa\xce'):
+        e = '>'
+    else:
+        return []
+    bits64 = magie in (b'\xcf\xfa\xed\xfe', b'\xfe\xed\xfa\xcf')
+    ncmds, = struct.unpack_from(e + 'I', data, 16)
+    o = 32 if bits64 else 28
+    sortie = []
+    for _ in range(ncmds):
+        cmd, taille = struct.unpack_from(e + 'II', data, o)
+        if cmd in (0xC, 0x80000018, 0x8000001F, 0x20, 0x80000023):   # LOAD, WEAK, REEXPORT, LAZY, UPWARD
+            nom_off, = struct.unpack_from(e + 'I', data, o + 8)
+            sortie.append(_cstr(data, o + nom_off).rsplit('/', 1)[-1])
+        o += taille
+    return sortie
+
+
+def _pe_needed(data: bytes) -> list:
+    import struct
+    if data[:2] != b'MZ':
+        return []
+    pe, = struct.unpack_from('<I', data, 0x3C)
+    if data[pe:pe + 4] != b'PE\0\0':
+        return []
+    coff = pe + 4
+    nsec, = struct.unpack_from('<H', data, coff + 2)
+    taille_opt, = struct.unpack_from('<H', data, coff + 16)
+    opt = coff + 20
+    magie, = struct.unpack_from('<H', data, opt)
+    dirs = opt + (112 if magie == 0x20B else 96)
+    secs = []
+    for i in range(nsec):
+        o = opt + taille_opt + i * 40
+        vtaille, vaddr, rtaille, rptr = struct.unpack_from('<IIII', data, o + 8)
+        secs.append((vaddr, max(vtaille, rtaille), rptr))
+
+    def hors(rva):
+        for vaddr, taille, rptr in secs:
+            if vaddr <= rva < vaddr + taille:
+                return rva - vaddr + rptr
+        return None
+    sortie = []
+    for index, pas, champ in ((1, 20, 12), (13, 32, 4)):            # imports, imports differes
+        rva, taille = struct.unpack_from('<II', data, dirs + index * 8)
+        o = hors(rva) if rva else None
+        while o is not None and o + pas <= len(data):
+            bloc = data[o:o + pas]
+            if not any(bloc):
+                break
+            nom_rva, = struct.unpack_from('<I', data, o + champ)
+            no = hors(nom_rva)
+            if no is not None:
+                sortie.append(_cstr(data, no))
+            o += pas
+    return sortie
+
+
+def dependances(chemin: Path) -> list:
+    """Noms (sans chemin) des bibliotheques demandees par un binaire ELF,
+    Mach-O ou PE ; [] pour tout autre fichier."""
+    try:
+        data = Path(chemin).read_bytes()
+    except OSError:
+        return []
+    return _elf_needed(data) or _macho_needed(data) or _pe_needed(data)
+
+
+def fermeture(executables, dossiers, systeme: str) -> set:
+    """Fichiers (chemins reels) de `dossiers` dont dependent les executables,
+    de proche en proche ; les bibliotheques du systeme (absentes) sont ignorees."""
+    def cle(nom):
+        return nom.lower() if systeme == 'windows' else nom
+    index = {}
+    for d in dossiers:
+        if d.is_dir():
+            for f in d.iterdir():
+                index.setdefault(cle(f.name), f)
+    gardes, a_voir = set(), [Path(x) for x in executables]
+    while a_voir:
+        f = a_voir.pop()
+        if f in gardes:
+            continue
+        gardes.add(f)
+        cible = f.resolve() if f.is_symlink() else f
+        for nom in dependances(cible):
+            g = index.get(cle(nom))
+            if g is not None and g not in gardes:
+                a_voir.append(g)
+    return gardes
+
+
+def elaguer_dependances(dossier: Path, executables, systeme: str, log=_log) -> int:
+    """Ne garde dans bin/ et lib/ de l'outil que les executables et la fermeture
+    de leurs dependances (plus les fichiers que vise un lien garde) ; sous
+    Linux, retire aussi les symboles inutiles (strip --strip-unneeded : la
+    libstdc++ de conda-forge pesait 24 Mo). Rend le nombre d'octets liberes."""
+    bin_d, lib_d = dossier / 'bin', dossier / 'lib'
+    exes = [executable(dossier, e, systeme) for e in executables]
+    gardes = fermeture(exes, [bin_d, lib_d], systeme)
+    for g in list(gardes):
+        x = g
+        while x.is_symlink():                       # libfoo.so.5 -> libfoo.so.5.0.5 : la cible aussi
+            x = x.parent / os.readlink(x)
+            gardes.add(x)
+    libere = 0
+    for d in (bin_d, lib_d):
+        if not d.is_dir():
+            continue
+        for f in list(d.iterdir()):
+            if f in gardes or f.is_dir():
+                continue
+            libere += f.lstat().st_size
+            f.unlink()
+    if systeme == 'linux' and shutil.which('strip'):
+        for f in gardes:
+            if f.is_file() and not f.is_symlink():
+                avant = f.stat().st_size
+                if subprocess.run(['strip', '--strip-unneeded', str(f)], capture_output=True).returncode == 0:
+                    libere += avant - f.stat().st_size
+    log(f'dependances : {len(gardes)} fichier(s) gardes, {libere / 1e6:.1f} Mo liberes')
+    return libere
+
+
 def micromamba(cache: Path, systeme: str, arch: str, log=_log) -> Path:
     choix = MICROMAMBA.get(f'{systeme}-{arch}')
     if not choix:
@@ -295,6 +473,8 @@ def poser_conda(entree: dict, dossier: Path, cache: Path, systeme: str, arch: st
             raise ErreurOutil('micromamba a echoue :\n' + (r.stdout + r.stderr)[-3000:])
         n = copier_prefixe_conda(prefixe, dossier, entree.get('executables') or [], systeme, log)
         log(f"{entree['nom']} : {n} fichier(s) gardes du prefixe conda")
+        if entree.get('elaguer', True):
+            elaguer_dependances(dossier, entree.get('executables') or [], systeme, log)
     finally:
         shutil.rmtree(travail, ignore_errors=True)
 

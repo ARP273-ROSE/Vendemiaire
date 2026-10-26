@@ -2,10 +2,601 @@
 \usepackage[british]{babel}
 \newcommand{\VersionManuel}{1.0.0}
 \input{manuel-preambule.tex}
+\hypersetup{pdftitle={Vendémiaire — user manual},pdfauthor={ARP273-ROSE},pdfsubject={Wine cellar manager}}
+
 \begin{document}
-\PageDeGarde{User manual}{Version \VersionManuel}{ARP273-ROSE}
+\PageDeGarde{User manual}{Version \VersionManuel}{Free wine cellar manager — Windows, macOS, Linux\\[1mm]ARP273-ROSE}
+
 \tableofcontents
-\section{Vendémiaire}
-\capture{en-tableau-de-bord.png}{Tableau}
-\begin{astuce}[Astuce]Texte.\end{astuce}
+\clearpage
+
+% =====================================================================
+\section{Vendémiaire on one page}
+
+Vendémiaire (named after the grape-harvest month of the French Republican calendar) keeps your cellar:
+every bottle, where it is, its history and its value; the cellar book of everything in and out; when to
+open it, how to serve it and with what; a wine list worthy of a great restaurant; statistics, an insurance
+report, QR rack labels.
+
+\begin{itemize}
+  \item \textbf{Offline and at home.} The database lives on your computer (or in a shared folder on your
+        network). No account, no subscription. Online look-ups (Wikidata, Open Food Facts) are optional and
+        ask for your consent.
+  \item \textbf{Sourced rules.} Drinking windows, serving, storage, ullage and pairings come from a
+        documented study (``Le vin''): 194 rules, each with its sources and a confidence level. Vendémiaire
+        makes nothing up and always says why.
+  \item \textbf{No data held hostage.} Everything exports (CSV, full JSON); CellarTracker, Vivino and
+        spreadsheets import.
+  \item \textbf{Three systems, two languages.} Windows, macOS (Apple Silicon and Intel), Linux (x86\_64 and
+        ARM64), in English and French; automatic updates.
+\end{itemize}
+
+\capture{en-tableau-de-bord.png}{The dashboard of the demo cellar: key figures, breakdowns, alerts (drink
+now, declining, en primeur, restock, price reached) and the drinking-window curve.}
+
+\begin{astuce}[Try it risk-free]
+\menu{Help › Open the demo cellar} opens, in a separate window, an invented cellar (fictitious producers,
+drawn labels) where every feature is filled in. Your own cellar is never touched: the demo has its own data
+folder.
+\end{astuce}
+
+% =====================================================================
+\section{Install and update}
+
+\subsection{Install}
+Download the files from the project's release page (public repository
+\texttt{ARP273-ROSE/\allowbreak Vendemiaire}, \emph{Releases}).
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[Windows] \texttt{Vendemiaire-Setup.exe}. It installs into your user profile, with no administrator
+    password. The installer is unsigned, so Windows may show ``Windows protected your PC'': click \emph{More
+    info}, then \emph{Run anyway} (only once).
+  \item[macOS] the disk image matching your Mac (\texttt{macos-arm64} for Apple Silicon,
+    \texttt{macos-x86\_64} for Intel); drag the application into Applications. The first time, right-click it,
+    choose \emph{Open}, and confirm.
+  \item[Linux] unpack the \texttt{.tar.gz} archive matching your processor (x86\_64 or ARM64), then run
+    \texttt{./installer.sh}: it installs into \texttt{\textasciitilde/.local/share}, adds the menu entry and a
+    \texttt{vendemiaire} terminal command, without \texttt{sudo}.
+\end{description}
+
+\subsection{What the package contains}
+The package is self-contained: its own Python, Qt, and two free tools.
+\begin{itemize}
+  \item \textbf{Tesseract} (Apache 2.0 licence) with its French and English models: reading label text (OCR),
+        offline.
+  \item \textbf{Tectonic} (MIT licence), a one-file LaTeX engine, shipped with a \emph{cache} of the LaTeX
+        packages needed by the wine list, the insurance report and this manual: the fine PDFs are made
+        offline. The cache is copied once into your profile with the first document.
+\end{itemize}
+Run from source, Vendémiaire looks for these tools on the system (Tesseract installed separately; Tectonic,
+XeLaTeX, LuaLaTeX or pdfLaTeX). Without a LaTeX engine each document is written by Qt: same content, simpler
+typography.
+
+\subsection{Automatic updates}
+At start-up Vendémiaire checks (without blocking) whether a newer version exists and offers to install it,
+on all three systems. Only the application code is replaced: your data, settings and backups live elsewhere
+and are never touched. \menu{Help › Check for updates...} does it on demand.
+\begin{attention}[Bundled tools come with the full package]
+The automatic update replaces the code only. Tesseract, Tectonic, Python and Qt come with the full package
+(installer, disk image, archive). An installation updated from a version that did not have them keeps
+looking for these tools on the system, as before; reinstalling the full package adds them.
+\end{attention}
+
+\subsection{First start}
+\begin{enumerate}
+  \item The language follows the system; \menu{Language} changes it at any time (it is remembered).
+  \item Vendémiaire asks whether it may send crash reports (see section~\ref{sec:confidentialite}). Saying
+        no removes no feature.
+  \item Your cellar is empty: start with \menu{Cellar › New wine...} or with an import
+        (section~\ref{sec:imports}).
+\end{enumerate}
+
+% =====================================================================
+\section{The cellar}
+
+\subsection{The list and the record}
+The \menu{Cellar} tab shows one wine per row, with its ``sleeve'' (the photo of its label, or a drawn
+label), the number of bottles and the drinking window. Search accepts any word (estate, cuvée, appellation,
+vintage...); filters pick the colour and the status. Columns can be moved and hidden, and are remembered.
+On the right, the wine's record gathers everything: bottles and locations, window and its \emph{why},
+serving, pairings, critics, values, tastings, photos, world identifiers.
+
+\capture{en-cave.png}{The Cellar tab: list, search, filters, and the selected wine's record.}
+
+\subsection{Entering a wine}
+\menu{Cellar › New wine...} (\touche{Ctrl+N}) opens the form: estate, cuvée, appellation, region, country,
+colour and type, grapes and percentages, vintage (or ``non-vintage''), alcohol, classification, barcode,
+restock threshold, favourite, notes. The form completes appellations, grapes and estates from your cellar and
+the official registers (INAO, eAmbrosia) and suggests the official spelling. The style (wine family of the
+rules) is worked out automatically; it can be forced.
+
+\capture[0.8]{en-saisie-vin.png}{Entering a wine.}
+
+\subsection{Bottles}
+Every bottle is tracked on its own: format (from piccolo to melchizedek, 20 formats), status (in cellar,
+awaiting delivery, en primeur, drunk, given away, sold, broken, corked), location (cellar › furniture › rack ›
+row › column), purchase price and place, dates, ullage, condition of label, capsule and cork, original wooden
+case (complete or not), provenance, storage history, invoice. \menu{Cellar › Add bottles...}
+(\touche{Ctrl+Shift+B}) adds several at once; an en primeur bottle is ``received'' on delivery (the dashboard
+reminds you until it is).
+
+\capture[0.8]{en-bouteille.png}{A bottle: location, purchase, ullage, condition, case, provenance.}
+
+\subsection{Taking a bottle out}
+\menu{Cellar › Take out the selected bottle...} (\touche{Ctrl+Shift+D}): drunk, given away, sold, broken or
+corked, with the occasion, guests, dish, score (out of 20 or 100) and comment. It is written into the cellar
+book and frees the slot.
+
+\capture[0.7]{en-sortie.png}{Taking a bottle out: everything that goes into the cellar book.}
+
+\subsection{The label wall}
+The \menu{Label wall} tab shows the cellar like a record collection: one tile per wine, with its label photo.
+Dropping a photo on a tile adds it to the wine.
+
+\capture{en-mur.png}{The label wall.}
+
+% =====================================================================
+\section{The rack plan}
+The \menu{Rack plan} tab draws your cellars, furniture and racks (rows × columns). One dot per bottle, in the
+wine's colour, with the last two digits of the vintage; a golden ring marks a large format.
+\begin{itemize}
+  \item \textbf{Drag and drop} a bottle to a free slot, or onto another to swap them.
+  \item \textbf{Draw a box} around several bottles, then \emph{Move selection to...}: the batch goes into
+        the free slots of another rack; an impossible batch is refused as a whole.
+  \item \emph{Put bottles without a slot here} fills the free slots.
+  \item Every move is recorded (the bottle's history).
+\end{itemize}
+
+\capture{en-plan.png}{The plan of a 6 × 10 rack.}
+
+\begin{clavier}[The plan with the keyboard]
+Click in the plan (or reach it with \touche{Tab}): the \textbf{arrows} pick the next bottle;
+\touche{Ctrl}+\textbf{arrow} moves it one slot (swapping if the slot is taken); \touche{Enter} opens its
+record.
+\end{clavier}
+
+% =====================================================================
+\section{The cellar book}
+The \menu{Cellar book} tab is the log of everything in and out: date, movement, wine, occasion, guests, dish,
+score, comment. Search (\touche{Ctrl+F}) covers all these fields; a double-click completes a row.
+
+\subsection{Moment photos}
+The dish, the table, the open bottle: on the right, the \emph{Moment photos} panel shows the photos of the
+selected row. \emph{Add photos...} (or dropping files) files them with the cellar-book row; they also join
+the wine's gallery (\menu{Photos...} in the record), without ever replacing its sleeve. The \emph{Photos}
+column counts them for each row; \emph{Open} shows a photo in your viewer, \emph{Remove} takes it out.
+
+\capture{en-livre.png}{The cellar book and the moment photos of the selected row.}
+
+% =====================================================================
+\section{World databases and identifiers}
+Like a song in a music database, each wine can receive a worldwide identifier and complete its record.
+Everything is \textbf{optional}; nothing is written without your confirmation.
+
+\subsection{LWIN, the fine-wine trade identifier}
+The \textbf{LWIN} (Liv-ex Wine Identification Number) is the ``ISBN of wine'': 7 digits for the wine, 11 with
+the vintage; over 200,000 wines. The database is free (CC BY 4.0 licence) but Liv-ex hands it out through a
+\textbf{form} (name, e-mail address): Vendémiaire never fills it in for you.
+\begin{enumerate}
+  \item \menu{References › Reference databases and licences...}, button \emph{Liv-ex download page...}: the page
+        opens in your browser; fill in the form, Liv-ex sends the file.
+  \item \emph{Import the LWIN file...}: the file (XLSX or CSV) is converted into a local reference database
+        (\texttt{references.db}, next to the cellar) in about fifteen seconds, in the background: the cellar
+        stays usable. An interrupted import leaves the previous copy intact.
+  \item If Liv-ex gives you a stable direct link, paste it into the same window and tick the 30-day update
+        (only if online look-ups are allowed).
+\end{enumerate}
+Searching LWIN then works \textbf{offline}.
+
+\capture{en-references.png}{Reference databases: LWIN (Liv-ex form, import, direct link), appellation
+registers, consent for online look-ups, licences.}
+
+\subsection{Other sources}
+\begin{itemize}
+  \item \textbf{Wikidata} (CC0): estates, châteaux, appellations, grapes — foundation, coordinates, website,
+        Wikipedia links; an image from Wikimedia Commons with its author and licence.
+  \item \textbf{Open Food Facts} (ODbL database, CC BY-SA photos): reading an EAN barcode gives name, alcohol
+        and photo.
+  \item \textbf{Official registers}: INAO (Licence Ouverte 2.0) and the European Union's eAmbrosia, bundled:
+        the exact list and official spelling of PDOs/PGIs.
+  \item \textbf{No scraping}: Vivino and Wine-Searcher have no public interface; a button only opens a search
+        in your browser.
+\end{itemize}
+
+\subsection{Identifying a wine}
+\menu{References › Identify the selected wine...} looks for candidates, each with a \textbf{score explained}
+criterion by criterion (estate, cuvée, appellation, colour, country, vintage). Below 0.45 nothing is
+preselected; if two candidates are too close, Vendémiaire declines to choose. You see, field by field, what
+will be filled in: only fields that are \textbf{empty and not typed by hand} can be, and each filling is
+logged in the record's \emph{journal} (References tab), with its source.
+
+\capture{en-identifier.png}{Identifying a wine: candidates, explained score, proposed fields.}
+\capture{en-fiche-references.png}{The wine record, References tab: identifiers kept, and a journal of what
+was filled in and from where.}
+
+\begin{astuce}[Online look-ups]
+Offline by default. Consent is asked at the first online look-up and can be changed in \menu{References ›
+Reference databases and licences...}. Vendémiaire identifies itself politely (at most one request per second
+per service) and honours the delays servers ask for.
+\end{astuce}
+
+% =====================================================================
+\section{Label photos and text reading}
+\subsection{The sleeve}
+Every wine has its picture: \emph{Label photo...} in the record, the \emph{Photos...} window (label, back label,
+capsule, case, bottle, invoice), dropping onto the sleeve or the wall, or the webcam. Free images (Open Food
+Facts, Wikimedia Commons) are stored with their credit and licence; no protected image is ever downloaded
+automatically.
+
+\subsection{Straightening}
+A label photographed at an angle is \textbf{cropped and straightened} automatically: edge detection,
+perspective correction, quarter turns and even \emph{unrolling} a label wrapped around the bottle. The four
+corners can be moved by hand. The original photo is always kept; the settings stay editable.
+
+\capture{en-retouche.png}{Retouching: corners found, perspective corrected.}
+
+\subsection{Reading the text (OCR) and identifying}
+\emph{Read the text (OCR)} passes the straightened label to Tesseract (bundled, offline, French and English):
+Vendémiaire extracts clues — vintage, alcohol, volume, barcode, colour, register appellations, the
+largest-printed lines — then looks for candidates (LWIN, and on request Wikidata or Open Food Facts).
+\menu{References › New bottle from its photo...} chains it all, up to the wine created with its photo.
+
+\capture{en-retouche-ocr.png}{The text read and the clues found.}
+
+\begin{attention}[Straighten first]
+On a raw, tilted photo Tesseract reads almost nothing; once the label is straightened it reads the essentials.
+A sharp, front-on, well-lit photo remains the best help.
+\end{attention}
+
+% =====================================================================
+\section{Rules and their sources}
+\label{sec:regles}
+All of Vendémiaire's oenological answers — ageing, serving, storage, ullage, pairings, faults, aromas — come
+from the rule files of the ``Le vin'' study, copied unchanged with their fingerprints (a retouched copy is
+refused when loading). \menu{References › Rules from the ``Le vin'' study...} shows them all: value,
+explanation, sources, confidence level.
+
+\capture{en-regles.png}{The rules: 194 rules, their sources and their confidence level.}
+
+\subsection{The wine's style}
+Each wine is placed in one of the study's 28 \emph{styles} (great age-worthy red, mineral white, non-vintage
+sparkling, vintage port, young fruity fortified...), from its colour, type, appellation, cuvée, region and
+grapes. The record says why (``\emph{pauillac} found in the appellation...''). A style can be forced by hand;
+the automatic classification stays visible.
+
+\subsection{The drinking window}
+Three windows can coexist: \textbf{yours}, a \textbf{critic's}, and the one \textbf{computed} by Vendémiaire;
+yours wins, then the critic's. The computed window starts from the style's ages (``ready'', ``peak'',
+``end'') and adjusts them:
+\begin{itemize}
+  \item to the \textbf{vintage}: 0.44 year per point out of 100 above or below the region's average in the
+        same vintage chart;
+  \item to the cellar's \textbf{measured temperature}: durations are divided by $2^{(T-12)/10}$ (a warmer
+        cellar ages wine faster);
+  \item to the chosen \textbf{ageing level} (long ageing, everyday, early drinking, New World).
+\end{itemize}
+The model is a plateau or a bell (peak in the middle of the drinking peak). The record's \emph{why} details
+each step, the sources and the confidence.
+
+\capture{en-fiche-regles.png}{The wine record: style, computed window and its why.}
+\capture{en-garde.png}{The drinking-window curve: how many bottles become ready each year.}
+
+\begin{sources}[What the rules do not say]
+A magnum ages more slowly and a half-bottle faster, but no source puts a figure on it: the record says so, the
+window does not change. A critic's score for the wine itself does not change the window (no rule links them);
+only the vintage score counts. A rule whose source is ``DOSSIER'' is a convention for lack of a published
+figure: the interface says so.
+\end{sources}
+
+\subsection{Alerts}
+The dashboard flags bottles \textbf{to drink this year}, \textbf{declining} and \textbf{too young}, opened
+bottles to finish, cellar readings out of range and corks to check.
+
+% =====================================================================
+\section{Tonight: choosing and serving}
+\subsection{What to drink tonight?}
+The \menu{Tonight} tab suggests bottles from \emph{your} cellar for a dish, a budget, a colour, an occasion
+(aperitif, everyday, special occasion), the most urgent first (declining, then ``drink this year''). Pairings
+come from the study, with their explanation; difficult matches (artichoke, vinaigrette, chilli with tannins,
+oily fish with red wine, dessert with a dry wine) are flagged.
+
+\capture{en-ce-soir.png}{What to drink tonight? Dish, budget, occasion; the most urgent first.}
+
+\subsection{The ``tonight'' sheet}
+For one bottle: serving temperature, \textbf{when to take it out of the cellar} (computed with the study's
+cooling law, for the room, the fridge or an ice bucket), decant or not and for how long, suggested glass,
+dishes. It prints to HTML or PDF.
+
+\capture[0.85]{en-fiche-ce-soir.png}{The ``tonight'' sheet of a bottle.}
+
+\subsection{Pairings both ways}
+``I am opening this wine'': the wine record lists the dishes that suit it. ``I have this dish'': the
+\menu{Tonight} tab searches, tolerantly, for the cellar's bottles that match. Each pairing says why it works and
+where it comes from.
+
+% =====================================================================
+\section{Storing}
+\subsection{Cellar conditions}
+The \menu{Cellar conditions} tab takes temperature and humidity, typed or imported (a sensor's CSV, for
+instance). Curves, out-of-range readings (10–15~°C, 55–75~\% according to the study) and the resulting ageing
+speed; the measured temperature feeds the drinking-window computation.
+
+\capture{en-conditions.png}{Cellar conditions: readings, the study's ranges, alerts.}
+
+\subsection{Opened bottles}
+\emph{Open the bottle...} records what is left and how it is kept (recorked, inert gas or pump, Coravin);
+Vendémiaire computes the ``finish by'' date from the style, and the dashboard reminds you.
+
+\capture[0.7]{en-entamer.png}{An opened bottle and the date to finish it by.}
+
+\subsection{Ullage}
+The fill level (\emph{ullage}) uses the auction-house scale: Bordeaux (into neck, top shoulder, mid
+shoulder...) or Burgundy (centimetres below the cork). The illustrated scale says what each level means
+\textbf{for the wine's age} (normal, excellent, low for its age, risky).
+
+\capture[0.75]{en-niveaux.png}{The illustrated ullage scale and its meaning by age.}
+
+% =====================================================================
+\section{Tasting}
+\subsection{The tasting sheet}
+Colour, nose, palate, finish, aromas picked on the \textbf{aroma wheel}, score out of 20 or 100. Tastings stay
+attached to the wine.
+
+\capture[0.8]{en-degustation.png}{The tasting sheet and the aroma wheel.}
+
+\subsection{Sessions: vertical, horizontal, blind}
+The \menu{Tastings} tab organises a session: \emph{vertical} (one wine across several vintages),
+\emph{horizontal} (several wines of one vintage), \emph{blind} (random order, glasses A, B, C...; score each
+glass, then \emph{reveal}: scores are then frozen).
+
+\capture{en-seances.png}{A tasting session.}
+\capture{en-seance-aveugle.png}{Blind: glasses are scored before the reveal.}
+
+\subsection{Diagnosing a fault}
+\menu{Cellar › Diagnose a bottle (faults)...} helps recognise cork taint (TCA), oxidation, reduction,
+\emph{brettanomyces}, volatile acidity, excess sulphur, geosmin, geranium, smoke taint, a cooked wine or tartrate
+crystals, according to the study's rules.
+
+\capture[0.8]{en-defauts.png}{Diagnosing faults.}
+
+% =====================================================================
+\section{Critics, values, wishes and purchases}
+\subsection{Critics' scores}
+Scores from Parker, Wine Spectator, Decanter, Bettane+Desseauve, Jancis Robinson... are entered with their
+scale, source and date; conversion between 100, 20 and stars follows the study's published table (no table,
+no conversion).
+
+\capture[0.7]{en-critique.png}{A critic's score, with its scale.}
+
+\subsection{Value}
+Purchase price, then \textbf{dated and sourced} values (a value without a source is refused): the cellar's
+value, its gain or loss and its evolution appear on the dashboard and in the statistics.
+
+\subsection{The wish list and price alerts}
+The \menu{Wish list} tab keeps the wines you would like to have: quantity, maximum price, priority.
+Vendémiaire crawls \textbf{no merchant website}: you record a price you saw (button \emph{Price seen...}:
+amount, compulsory source, date, link), or import a CSV file of recorded prices (\emph{Import prices...}:
+columns \texttt{producteur}, \texttt{cuvee}, \texttt{millesime} or \texttt{envie}, \texttt{prix},
+\texttt{date}, \texttt{source}, \texttt{url}; English headers such as \texttt{producer}, \texttt{wine},
+\texttt{vintage}, \texttt{price} work too). When a price recorded in the last 90 days is at most your maximum
+price — or when the latest value entered for the linked wine is — the row turns into an \textbf{alert} (gold
+background) and the dashboard says so.
+
+\capture{en-envies.png}{The wish list: the first wish is on alert (price reached).}
+\capture[0.75]{en-prix.png}{Recorded prices for a wish: source and date required.}
+
+\subsection{The shopping list}
+\menu{Documents › Shopping list...} (\touche{Ctrl+Shift+L}) builds it: first \textbf{restocking} (for each
+wine whose threshold is no longer met — ``keep at least 6 bottles'' — how many to buy, the last price paid and
+where), then, if you wish, \textbf{wishes} and their price alerts. Save it as PDF to print, or as CSV.
+
+\capture[0.8]{en-achats.png}{The shopping list: restock and wishes, with tick boxes.}
+
+% =====================================================================
+\section{Stock-take, QR codes and scanner}
+\subsection{Stock-take}
+\menu{Cellar › Stock-take...}: pick a rack, count (or scan) what is in it; Vendémiaire shows the differences
+(missing bottles, extra bottles) and only writes a missing bottle into the cellar book (``stock-take
+difference'') if you decide so.
+
+\capture{en-inventaire.png}{Stock-take of a rack.}
+
+\subsection{QR rack labels}
+\menu{Documents › QR rack labels...} prints a sheet (3 × 8 labels of 70 × 37 mm, or 3 × 7 of 63.5 × 38.1 mm;
+it can start on a partly used sheet): each label carries its bottle's code.
+
+\capture{en-etiquettes.png}{The QR label sheet.}
+
+\subsection{Scanning a bottle}
+\menu{Cellar › Scan a bottle...} reads a code from the webcam or an image (locally), or typed by a USB barcode
+scanner: a rack-label code finds the bottle and offers to take it out; an EAN barcode finds the cellar's wines
+that carry it.
+
+\capture[0.8]{en-scanner.png}{Scanning a bottle.}
+
+% =====================================================================
+\section{Documents}
+\subsection{The ``great restaurant'' wine list}
+\menu{Documents › Wine list...} composes a printable list from your cellar (all of it or a selection:
+``Saturday's dinner'') following the rules of the great houses:
+\begin{itemize}
+  \item \textbf{classic order}: sparkling, whites, rosés, reds, sweet wines, fortified; then country, region,
+        appellation, producer, vintage — never by price;
+  \item each line: BIN number, producer, cuvée, vintage, format, price (if you show prices), a pairing line;
+        \textbf{verticals} grouped;
+  \item by the glass and by the carafe, half-bottles and large formats apart, favourites highlighted;
+  \item title page, welcome note, \textbf{tonight's menu} (a wine from the list suggested for each dish, with
+        the why), small regional maps (Natural Earth, public domain), producer index;
+  \item three designs: \emph{classic} (Garamond, burgundy and gold), \emph{modern}, \emph{bistro}; A4
+        booklet, A5 booklet or single sheet; in English or French.
+\end{itemize}
+A \textbf{saved} list regenerates in one click from today's cellar: a bottle drunk disappears from the list.
+
+\capture{en-carte-reglages.png}{The wine list: design, format, language, options.}
+\capture{en-carte-vins.png}{The wines on the list: selection, prices, by the glass, pairing line.}
+\capture{en-carte-apercu.png}{The preview before the PDF.}
+
+\subsection{Insurance or inventory report}
+\menu{Documents › Insurance / inventory report...}: a PDF listing each bottle with its location, its ullage
+and what it means for its age, the condition of label, capsule and cork, the case, provenance, purchase and
+the \textbf{dated, sourced value} (or the purchase price, stated as such), with the label photo, a summary and
+a statement to sign.
+
+\capture[0.8]{en-assurance.png}{The insurance report.}
+
+\subsection{Sharing the cellar}
+\menu{Documents › Share the cellar (HTML, PDF)...} writes a self-contained HTML file (thumbnails included, no
+script, no online link) or its PDF. By default no prices, values, locations or private notes: tick them to add
+them.
+
+\capture[0.8]{en-partage.png}{Sharing the cellar read-only.}
+
+% =====================================================================
+\section{Statistics}
+The \menu{Statistics} tab breaks the cellar down by country, region, colour, grape (pro rata of percentages),
+vintage, price band, format and cellar — in bottles or in value; it plots the cellar's value over time
+(purchase cost and stated value), bottles in and out per year, the drinking pace compared with the
+drinking-window curve (``how many to drink a year''), and the drinking-window curve by colour.
+
+\capture{en-statistiques.png}{Statistics: breakdowns, value over time, in and out.}
+\capture{en-statistiques-cepages.png}{Breakdown by grape, by value.}
+
+% =====================================================================
+\section{Import and export}
+\label{sec:imports}
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[CellarTracker] \menu{File › Import a CellarTracker export...}: ``Inventory'' exports (one row per
+    bottle) or ``List'' exports (one row per wine) as CSV or tab-separated text. The word \texttt{Unknown}
+    counts as an empty field, vintage \texttt{1001} as non-vintage.
+  \item[Excel, CSV] \menu{File › Import a spreadsheet (Excel, CSV)...}: the column mapping is suggested from the
+    headers, editable, with a preview.
+  \item[Vivino] \menu{File › Import a Vivino export...}: the mapping starts from plausible headers; check it
+    before importing.
+  \item[Vendémiaire] CSV (one row per bottle) round trip, and \menu{File › Export everything to JSON...}: every
+    table, nothing held hostage.
+\end{description}
+A ``before import'' backup precedes every import, and an import \textbf{never replaces} what you typed by
+hand: it only fills empty fields.
+
+\capture{en-import-vivino.png}{Importing a spreadsheet: column mapping and preview.}
+
+% =====================================================================
+\section{Backups}
+Vendémiaire backs the database up every 30 minutes if it changed, and before every migration or import.
+Copies are consistent even with the database open. The last 10 automatic copies are kept, plus one a week for
+8 weeks; ``manual'' and ``before import'' copies (up to 20) are never removed by rotation.
+\begin{itemize}
+  \item \menu{File › Back up now};
+  \item \menu{File › Restore a backup...} (the current database is backed up first);
+  \item \menu{File › Open the backups folder}.
+\end{itemize}
+Backups live with the data, never in the program folder.
+
+% =====================================================================
+\section{The database on a NAS or a shared folder}
+By default the data live in your profile:
+\begin{itemize}
+  \item Windows: \texttt{\%LOCALAPPDATA\%\textbackslash Vendemiaire}
+  \item macOS: \texttt{\textasciitilde/Library/Application Support/Vendemiaire}
+  \item Linux: \texttt{\textasciitilde/.local/share/Vendemiaire}
+\end{itemize}
+They can live in a \textbf{shared folder on a NAS} (network drive), so that another computer or another
+program can read them:
+\begin{enumerate}
+  \item connect the shared folder (on Windows, map it to a network drive letter);
+  \item \menu{File › Data folder...} and choose it; Vendémiaire keeps the database (\texttt{cave.db}), images,
+        backups and its lock there.
+\end{enumerate}
+\begin{attention}[A single writer]
+Only one copy of Vendémiaire can write at a time: the lock sits \emph{in} the data folder, so on the share
+itself. A second copy (on another computer) says so and does not open for writing. Other programs read the
+database read-only, preferably a copy or the latest backup. The database never uses WAL mode, which does not
+work on network shares.
+\end{attention}
+
+% =====================================================================
+\section{Privacy and crash reports}
+\label{sec:confidentialite}
+\begin{itemize}
+  \item Your cellar never leaves your computer (or your share). No telemetry about the cellar.
+  \item \textbf{Online look-ups} (Wikidata, Open Food Facts, register updates) only happen with your consent;
+        the automatic update only queries the project's release page.
+  \item \textbf{Crash reports} (crash, freeze, native crash, or \menu{Help › Report a problem...}) are only
+        sent with your consent, asked at first start and changeable in the Help menu (\emph{Send crash reports
+        automatically}). A report contains the version, the system, the technical trace of the error, the
+        computer's name and a random installation identifier; paths and user names are masked in traces; never
+        your cellar, files or photos. Without consent they stay on your computer.
+\end{itemize}
+
+% =====================================================================
+\section{Accessibility and keyboard shortcuts}
+Everything works from the keyboard (on macOS, Ctrl is the Command key): \touche{Tab} and \touche{Shift+Tab}
+move through fields and buttons (the focused one has a golden outline), \touche{Alt} and the underlined
+letters open the menus.
+
+\begin{center}
+\begin{tabular}{>{\sffamily}l l}
+\toprule
+\textbf{Keys} & \textbf{Action} \\
+\midrule
+Ctrl+1 … Ctrl+9, Ctrl+0 & go to one of the ten tabs (the tab's tooltip shows it) \\
+Ctrl+Tab, Ctrl+Shift+Tab & next, previous tab \\
+Ctrl+N & new wine \\
+Ctrl+E & edit the selected wine \\
+Ctrl+Shift+B & add bottles \\
+Ctrl+Shift+D & take out the selected bottle \\
+Ctrl+Shift+L & shopping list \\
+Ctrl+F & search (cellar book) \\
+F1 & this manual \\
+Ctrl+Q & quit (Windows: Alt+F4) \\
+\midrule
+arrows (plan) & next bottle \\
+Ctrl+arrows (plan) & move the bottle one slot \\
+Enter (plan) & the bottle's record \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Data sources and licences}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.27\linewidth} X}
+\toprule
+\textbf{Source} & \textbf{Licence, use} \\
+\midrule
+``Le vin'' study & ageing, serving, storage, ullage and pairing rules; each rule cites its sources (guides,
+encyclopaedias, studies, official texts) \\
+LWIN (Liv-ex) & CC BY 4.0; ``LWIN © Liv-ex Ltd''; converted local copy, downloaded by you \\
+Wikidata & CC0 \\
+Wikimedia Commons & each image's licence, stored with it \\
+Open Food Facts & ODbL database, DbCL contents, CC BY-SA photos (``Open Food Facts contributors'') \\
+INAO (data.gouv.fr) & Licence Ouverte 2.0 \\
+eAmbrosia (EU) & reuse authorised (Decision 2011/833/EU) \\
+Natural Earth & public domain (small regional maps) \\
+Tesseract, \emph{tessdata\_fast} models & Apache 2.0 \\
+Tectonic & MIT; the LaTeX packages in its cache keep their own licences (LPPL, OFL for fonts...) \\
+Qt, PyQt6 & LGPL v3; GPL v3 \\
+segno, zxing-cpp & BSD; Apache 2.0 \\
+Source Sans 3, Cormorant Garamond fonts & SIL Open Font License \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Vendémiaire itself is released under the MIT licence (file \texttt{LICENSE}).
+
+% =====================================================================
+\section{Troubleshooting}
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[``Another copy of Vendémiaire is using this cellar''] another window (or another computer, if the
+    database is shared) is open: close it. A lock left by a program that stopped abruptly is taken over
+    automatically.
+  \item[OCR reads nothing] straighten the label first; check in \menu{References › Reference databases and
+    licences...} that Tesseract is found.
+  \item[The PDF looks ``plain''] no LaTeX engine was found (running from source): install Tectonic or a TeX
+    distribution, or use the full package.
+  \item[A LaTeX document fails offline] the bundled cache covers Vendémiaire's documents; a missing LaTeX
+    package is downloaded when the network is available.
+  \item[Anything else] \menu{Help › Report a problem...}: describe what happened; the report goes with your
+    consent, or stays as a file to send by hand.
+\end{description}
+
 \end{document}

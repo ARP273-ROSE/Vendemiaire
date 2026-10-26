@@ -45,7 +45,7 @@ jamais touchée : la démonstration a son propre dossier de données.
 
 \subsection{Installer}
 Les fichiers se téléchargent sur la page des versions du projet (dépôt public
-\texttt{ARP273-ROSE/Vendemiaire}, rubrique \emph{Releases}).
+\texttt{ARP273-ROSE/\allowbreak Vendemiaire}, rubrique \emph{Releases}).
 \begin{description}[style=nextline,leftmargin=1.2em]
   \item[Windows] \texttt{Vendemiaire-Setup.exe}. L'installation se fait dans votre profil, sans mot de
     passe administrateur. L'installeur n'étant pas signé, Windows peut afficher « Windows a protégé votre
@@ -53,8 +53,8 @@ Les fichiers se téléchargent sur la page des versions du projet (dépôt publi
   \item[macOS] l'image disque qui correspond à votre Mac (\texttt{macos-arm64} pour Apple Silicon,
     \texttt{macos-x86\_64} pour Intel) ; glissez l'application dans Applications. La première fois :
     clic droit sur l'application, \emph{Ouvrir}, puis confirmer.
-  \item[Linux] décompressez l'archive \texttt{.tar.gz} de votre processeur (x86\_64 ou ARM64) et lancez
-    \texttt{./installer.sh} : installation dans \texttt{\textasciitilde/.local/share}, entrée de menu,
+  \item[Linux] décompressez l'archive \texttt{.tar.gz} qui correspond à votre processeur (x86\_64 ou
+    ARM64), puis lancez \texttt{./installer.sh} : installation dans \texttt{\textasciitilde/.local/share}, entrée de menu,
     commande \texttt{vendemiaire} dans un terminal, sans \texttt{sudo}.
 \end{description}
 
@@ -183,7 +183,7 @@ Le \textbf{LWIN} (Liv-ex Wine Identification Number) est le « code ISBN du vin 
 11 avec le millésime ; plus de 200\,000 vins. La base est gratuite (licence CC BY 4.0) mais Liv-ex la remet
 par un \textbf{formulaire} (nom, adresse électronique) : Vendémiaire ne le remplit jamais à votre place.
 \begin{enumerate}
-  \item \menu{Références › Bases de référence et licences…}, bouton \emph{Page de téléchargement de Liv-ex} :
+  \item \menu{Références › Bases de référence et licences…}, bouton \emph{Page de téléchargement de Liv-ex…} :
         la page s'ouvre dans votre navigateur ; remplissez le formulaire, Liv-ex envoie le fichier.
   \item \emph{Importer le fichier LWIN…} : le fichier (XLSX ou CSV) est converti en une base de référence
         locale (\texttt{references.db}, à côté de la cave), en une quinzaine de secondes, dans un fil de fond :
@@ -243,7 +243,7 @@ réglages restent modifiables.
 \capture{fr-retouche.png}{Retouche : coins détectés, perspective corrigée.}
 
 \subsection{Lire le texte (OCR) et identifier}
-\emph{Lire le texte} passe l'étiquette redressée à Tesseract (embarqué, hors ligne, en français et en
+\emph{Lire le texte (OCR)} passe l'étiquette redressée à Tesseract (embarqué, hors ligne, en français et en
 anglais) : Vendémiaire en tire des indices — millésime, degré, contenance, code-barres, couleur,
 appellations du registre, lignes écrites le plus gros — puis cherche les candidats (LWIN, et sur demande
 Wikidata ou Open Food Facts). \menu{Références › Nouvelle bouteille d'après sa photo…} enchaîne tout,
@@ -332,7 +332,7 @@ vieillissement qui en découle ; la température mesurée sert au calcul des fen
 \capture{fr-conditions.png}{Les conditions de cave : mesures, plages du dossier, alertes.}
 
 \subsection{La bouteille entamée}
-\emph{Entamer} une bouteille note ce qui reste et le mode de conservation (rebouchée, gaz inerte ou pompe,
+\emph{Entamer la bouteille…} note ce qui reste et le mode de conservation (rebouchée, gaz inerte ou pompe,
 Coravin) ; Vendémiaire calcule la date « à finir avant » selon le style, et le tableau de bord la rappelle.
 
 \capture[0.7]{fr-entamer.png}{Une bouteille entamée et la date à laquelle la finir.}
@@ -504,10 +504,14 @@ Les sauvegardes vivent avec les données, jamais dans le dossier du programme.
 
 % =====================================================================
 \section{La base sur un NAS ou un dossier partagé}
-Les données vivent par défaut dans votre profil (Windows~: \texttt{\%LOCALAPPDATA\%\textbackslash
-Vendemiaire} ; macOS~: \texttt{\textasciitilde/Library/Application Support/Vendemiaire} ; Linux~:
-\texttt{\textasciitilde/.local/share/Vendemiaire}). Elles peuvent vivre dans un \textbf{dossier partagé sur
-un NAS} (lecteur réseau), pour qu'un autre ordinateur ou un autre programme les lise :
+Les données vivent par défaut dans votre profil :
+\begin{itemize}
+  \item Windows : \texttt{\%LOCALAPPDATA\%\textbackslash Vendemiaire}
+  \item macOS : \texttt{\textasciitilde/Library/Application Support/Vendemiaire}
+  \item Linux : \texttt{\textasciitilde/.local/share/Vendemiaire}
+\end{itemize}
+Elles peuvent vivre dans un \textbf{dossier partagé sur un NAS} (lecteur réseau), pour qu'un autre
+ordinateur ou un autre programme les lise :
 \begin{enumerate}
   \item connectez le dossier partagé (sous Windows, une lettre de lecteur réseau) ;
   \item \menu{Fichier › Dossier des données…} et choisissez-le ; Vendémiaire y range la base

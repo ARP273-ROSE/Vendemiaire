@@ -51,6 +51,8 @@ def compiler(langue: str) -> int:
     print(f"manuel-{langue}.pdf : {n.group(1) if n else '?'} pages, {pdf.stat().st_size / 1e6:.1f} Mo ; "
           f"dollars {texte.count('$')}, caractères manquants {manquants}, références indéfinies {indefinies}, "
           f"débordements {debord}")
+    for m in re.findall(r"Overfull \\hbox \(([\d.]+)pt too wide\) in paragraph at lines (\d+--\d+)", journal):
+        print(f"   débordement de {m[0]} pt, lignes {m[1]}")
     for m in sorted(set(re.findall(r"Missing character: There is no (.) ", journal))):
         print("   caractère manquant :", repr(m))
     return 0 if not (texte.count("$") or manquants or indefinies) else 1

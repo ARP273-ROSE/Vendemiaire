@@ -1,5 +1,28 @@
 # Vendémiaire — journal
 
+## 1.0.0 — 2026-10-27 — phase 5 : première version publiable
+
+- **Outils embarqués sur les trois systèmes** (kit commun, clé `outils` de `kit.json`) : **Tesseract**
+  (conda-forge, modèles `fra` et `eng` de tessdata_fast) pour lire les étiquettes, **Tectonic** (MIT) avec un
+  **cache de paquets LaTeX pré-rempli** (cartes des vins, rapport d'assurance, manuel) : PDF soignés **hors
+  ligne** ; le cache est recopié dans le profil, jamais écrit dans le dossier d'installation. Essai réel à la
+  construction (code QR écrit puis relu, étiquette lue, document compilé sans réseau).
+- **Manuel PDF** français et anglais (format maison, 41 et 40 pages, captures réelles de la cave de
+  démonstration), régénéré par chaque construction des paquets, ouvert par **Aide › Manuel** (F1).
+- **Livre de cave** : photos du moment (le plat, la tablée…) rangées avec chaque ligne.
+- **Liste d'achats** (Documents, Ctrl+Maj+L) générée par les seuils de réassort et, au choix, les envies ;
+  PDF imprimable et CSV.
+- **Alertes de prix** sur la liste d'envies, sans aspirateur : prix vus saisis (source et date obligatoires)
+  ou importés (CSV) ; alerte quand un prix récent (90 jours) est au plus le prix maximal (schéma v7 :
+  `prix_observe`).
+- **Accessibilité au clavier** : Ctrl+1…0 pour les onglets, raccourcis des actions principales, plan des
+  casiers au clavier (flèches, Ctrl+flèches, Entrée), focus toujours visible.
+- **Grande cave** : 20 000 bouteilles s'ouvrent en ≈ 2 s ; plus aucun gel au-delà de 0,6 s (état de la cave
+  mis en cache, fenêtres recalculées seulement si elles changent, onglets rafraîchis à leur ouverture).
+- **Cave de démonstration** depuis le menu Aide (autre fenêtre, données séparées).
+- **Règles** resynchronisées : porto ruby/LBV → « muté jeune et fruité », tawny/colheita → « muté
+  oxydatif », muscat de Rivesaltes → « muté jeune et fruité » (corrigé dans le dossier « Le vin », 69 sources).
+
 ## 0.4.0 — 2026-10-26 — phase 4 : documents et statistiques (non publiée)
 
 - **Carte des vins** « de grand restaurant » (`documents/carte.py`, Documents › Carte des vins) : ordre

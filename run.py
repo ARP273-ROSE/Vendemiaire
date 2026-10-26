@@ -66,7 +66,9 @@ def _verifier() -> int:
         assert style.style_de_base(app) == "fusion", style.style_de_base(app)
         assert not logo.pixmap(64).isNull(), "logo"
         assert not i18n.cles_manquantes(), i18n.cles_manquantes()[:5]
-        with tempfile.TemporaryDirectory() as d:
+        # ignore_cleanup_errors : sous Windows, l'antivirus tient parfois un instant le
+        # fichier tout juste créé ; le nettoyage d'un dossier temporaire n'est pas l'essai
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as d:
             b = Base(Path(d) / "essai.db")
             assert b.version() == VERSION_SCHEMA
             # phase 2 : registres d'appellations livrés, base de référence, règles livrées
