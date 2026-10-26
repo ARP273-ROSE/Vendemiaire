@@ -3,17 +3,24 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
-## État courant (26/10/2026, nuit)
+## État courant (26/10/2026, nuit — fin de phase 4)
 
-- **Phases 1, 2 et 3 livrées** dans le code, version `0.3.0`, **non publiées** (aucun tag ni release :
+- **Phases 1 à 4 livrées** dans le code, version `0.4.0`, **non publiées** (aucun tag ni release :
   décision de l'utilisateur).
-- 197 essais (`tests/`), tous verts sous Xvfb (Python 3.11 local) ; la CI (`tests.yml`, Python 3.12)
-  installe aussi Tesseract. Les essais qui relisent le dossier « Le vin » (copie identique, TOUS ses
-  tableaux de fenêtres, températures et accords) se sautent en CI (dossier absent) et passent en local.
-- `run.py --check` : « interface OK » (vérifie aussi le jeu de règles : 194 règles, empreintes).
-- Captures réelles FR/EN : `docs/captures/{fr,en}-*.png` (26 par langue : + fiche-regles, garde,
-  ce-soir, fiche-ce-soir, niveaux, degustation, defauts, entamer, regles).
-- Prochaine étape : **phase 4** — documents et statistiques (voir « Reste à faire »).
+- 221 essais (`tests/`), tous verts sous Xvfb (Python 3.11 local, avec et sans moteur LaTeX) ; la CI
+  (`tests.yml`, Python 3.12) installe Tesseract et poppler ; sans LaTeX en CI, l'essai de compilation se
+  saute et le repli Qt est essayé. Les essais qui relisent le dossier « Le vin » se sautent en CI.
+- `run.py --check` : « interface OK » (194 règles, empreintes).
+- Captures réelles FR/EN : `docs/captures/{fr,en}-*.png` (38 par langue ; phase 4 : statistiques,
+  statistiques-cepages, seances, seance-aveugle, carte-reglages, carte-vins, carte-apercu, assurance,
+  partage, etiquettes, scanner, import-vivino).
+- Exemples PDF sur la démonstration : `docs/exemples/` (cartes classique A4 FR, moderne A4 EN, bistrot
+  A5 FR ; rapport d'assurance ; planche QR) — `python outils/exemples.py`, regardés page par page.
+- Règles du dossier corrigées À LA SOURCE (`_docs/Vin/scripts/regles.py`, voir son `audit/faits_regles.md`,
+  corrections 3 à 5) puis resynchronisées : champagne sans millésime → `eff_sans_annee`, banyuls rimage
+  et VDN grenat → `mute_fruite`, rattachement des millésimes dans `rattachement_millesimes.json` du
+  dossier (plus de table dans l'appli). 194 règles inchangées, 66 sources.
+- Prochaine étape : **phase 5** — manuel, kit (binaires embarqués), polissage, publication.
 
 ## Les phases
 
@@ -22,7 +29,7 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | **1 — socle et cave** | kit standard, logo/icônes, base SQLite versionnée pour tout le cahier, liste, fiche, saisie, plan des casiers (glisser-déposer, lot), livre de cave, tableau de bord simple, CSV, import CellarTracker, sauvegardes, démonstration, essais, CI | ✅ 26/10/2026 |
 | **2 — bases mondiales et étiquettes** | copie locale LWIN et recherche hors ligne, Wikidata, Open Food Facts (EAN), registres INAO + eAmbrosia, appariement (score expliqué, confirmation, journal), photos (recadrage, perspective, déroulage, original gardé, vignettes, mur, webcam), OCR local (Tesseract), envies, critiques + conversion, valeurs, conditions de cave, inventaire | ✅ 26/10/2026 (import Vivino/Excel et lecture de code-barres À L'IMAGE : reportés, voir plus bas) |
 | **3 — d'après le dossier « Le vin »** | moteur de règles (194 règles copiées avec empreintes), style, fenêtre calculée (plateau/cloche, millésime, température de cave, pourquoi, sources, confiance), alertes, courbe d'apogée, service (température, sortie de cave, carafe, verre, fiche « ce soir » HTML/PDF), conservation (plages, bouchons, bouteille entamée), niveaux selon l'âge (illustrés), accords dans les deux sens, « que boire ce soir ? », dégustation (roue des arômes), diagnostic des défauts, libellés anglais | ✅ 26/10/2026 |
-| **4 — documents et statistiques** | carte des vins LaTeX « de grand restaurant » (modèles classique/moderne/bistrot, livret A5/A4, aperçu HTML, bilingue), rapport d'assurance/inventaire PDF (format maison), statistiques et graphiques complets, étiquettes de casier à code QR, lecture du code-barres À L'IMAGE, imports Vivino/Excel, partage en lecture seule (HTML/PDF), séances de dégustation | ⏳ |
+| **4 — documents et statistiques** | carte des vins LaTeX « de grand restaurant » (modèles classique/moderne/bistrot, livret A4/A5, carte simple, aperçu, FR/EN, mise à jour d'un clic, repli Qt), rapport d'assurance/inventaire PDF (format maison), statistiques complètes, étiquettes de casier QR, lecture du code À L'IMAGE (zxing-cpp), imports Excel/Vivino, partage en lecture seule (HTML/PDF), séances de dégustation | ✅ 26/10/2026 |
 | **5 — publication** | manuel PDF LaTeX FR+EN (format maison, captures réelles), polissage, README, première version publiée (dépôt de distribution public, MAJ auto testée en réel) | ⏳ |
 
 ## Chaque fonction du cahier des charges : où elle est faite
@@ -33,14 +40,14 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | Contenances de la piccolo au melchisédech | 1 | ✅ `referentiels.FORMATS` (20 formats) |
 | Bouteilles individuelles : emplacement, prix, lieu, date d'entrée, bouchon, niveau | 1 | ✅ `bouteille` ; `DialogueBouteille` |
 | Statuts en cave / en attente / primeur / bue / offerte / vendue / cassée / bouchonnée | 1 | ✅ ; réception d'un primeur : `Cave.recevoir` |
-| Suivi des primeurs (livraison prévue, relance) | 1 / 4 | ✅ date prévue + alerte du tableau de bord ; relance active en 4 |
+| Suivi des primeurs (livraison prévue, relance) | 1 | ✅ date prévue + alerte du tableau de bord (relance : l'alerte reste tant que la bouteille n'est pas reçue) |
 | Plusieurs caves, emplacements cave › meuble › casier › rangée › colonne | 1 | ✅ `emplacement` + `bouteille.rangee/colonne` |
 | Plan visuel, glisser-déposer, déplacement en lot, historique des déplacements | 1 | ✅ `ui/plan.py`, `deplacement` (lot) |
-| Vue 3D simple de la cave | 4 | ⏳ si faisable |
+| Vue 3D simple de la cave | 5 | ⏳ si faisable (pas faite en phase 4 : le plan 2D suffit ; à décider) |
 | Livre de cave : entrées/sorties, occasion, convives, plat, note, commentaire | 1 | ✅ `mouvement`, `ui/livre.py`, `DialogueSortie` |
-| Photos dans le livre de cave | 2 / 4 | 🧱 `image.mouvement_id` + `ajouter_image(mouvement_id=)` ; écran en 4 |
+| Photos dans le livre de cave | 2 / 5 | 🧱 `image.mouvement_id` + `ajouter_image(mouvement_id=)` ; écran : polissage phase 5 |
 | Grille de dégustation robe/nez/bouche/finale, roue des arômes, /20 ou /100 | 3 | ✅ `ui/degustation.py` (`aromes.json`), liste dans la fiche |
-| Dégustations verticales, horizontales, à l'aveugle | 3 / 4 | ✅ case « à l'aveugle » ; séances (table `seance` prête) en 4 |
+| Dégustations verticales, horizontales, à l'aveugle | 4 | ✅ onglet « Dégustations » (`seances.py`, `ui/seances.py`) : propositions, ordre tiré au hasard, notes figées après la révélation |
 | Fenêtres de dégustation à 3 sources (mienne, critiques, calculée) + pourquoi | 1 / 3 | ✅ `regles/garde.py`, `Cave.enregistrer_fenetres_calculees`, « pourquoi ? » dans la fiche |
 | Alertes à boire / en déclin / trop jeune ; courbe d'apogée | 3 | ✅ `Cave.alertes_garde`, `Cave.courbe_apogee`, tableau de bord |
 | Servir : température, carafe, verre, sortie de cave, fiche « ce soir » | 3 | ✅ `regles/service.py`, `ui/ce_soir.py` (HTML + PDF Qt) |
@@ -48,29 +55,29 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 | Conservation : conseils, bouchons fatigués, température de cave | 3 | ✅ `regles/conservation.py` ; onglet Conditions (plages, hors plage, vitesse de vieillissement) |
 | Notes des critiques avec échelle | 1 / 2 | ✅ saisie/modif/suppression `ui/critiques.py` (fourchette, source, date) |
 | Conversion /100 ↔ /20 ↔ étoiles | 2 | ✅ `regles/notes.py` lit `regles/donnees/notes.json` du dossier (table Decanter ; pas de table → pas de conversion) |
-| Valeur : prix d'achat, valeur datée et sourcée, total, plus/moins-value | 1 / 2 / 4 | ✅ saisie (source obligatoire) et liste dans la fiche ; évolution et plus-value en 4 |
-| Statistiques par région, couleur, millésime, cépage, prix ; graphiques | 1 / 4 | ✅ répartitions simples ; complet en 4 |
-| Rythme de consommation vs achats, « combien à boire par an pendant 20 ans » | 3 / 4 | ✅ courbe d'apogée sur 20 ans ; rythme vs achats en 4 |
-| Liste d'envies, cave idéale, alertes de prix | 2 / 4 | ✅ onglet « Liste d'envies » (`ui/envies.py`) ; alertes de prix en 4 |
-| Seuil de réassort et liste d'achats générée | 1 / 4 | ✅ seuil + alerte ; liste générée en 4 |
+| Valeur : prix d'achat, valeur datée et sourcée, total, plus/moins-value | 1 / 2 / 4 | ✅ saisie (source obligatoire) ; évolution et écart dans Statistiques |
+| Statistiques par région, couleur, millésime, cépage, prix ; graphiques | 4 | ✅ onglet « Statistiques » (`statistiques.py`) |
+| Rythme de consommation vs achats, « combien à boire par an pendant 20 ans » | 3 / 4 | ✅ courbe d'apogée (et par couleur), entrées/sorties par an, rythme comparé |
+| Liste d'envies, cave idéale, alertes de prix | 2 / 5 | ✅ onglet « Liste d'envies » ; alertes de prix : ⏳ (aucune source de prix en ligne autorisée ; prix max de l'envie comparé aux valeurs saisies : phase 5) |
+| Seuil de réassort et liste d'achats générée | 1 / 5 | ✅ seuil + alerte ; liste d'achats imprimable : ⏳ phase 5 |
 | Inventaire de contrôle (compter un casier, écarts) | 2 | ✅ Cave › Inventaire de contrôle (`ui/inventaire.py`) : codes lus, écarts, sortie « écart d'inventaire » sur décision |
 | Bouteille ouverte (reste, jours de garde selon le mode) | 3 | ✅ `Cave.entamer` (« à finir avant »), alerte au tableau de bord |
 | Niveau (ullage) bordelais et bourguignon, illustré, signification selon l'âge | 1 / 3 | ✅ `regles/niveaux.py`, `IllustrationNiveaux` (saisie de la bouteille, règles) |
 | État étiquette / capsule / bouchon, caisse bois d'origine, caisse complète, photos | 1 / 2 | ✅ champs + photos (étiquette, contre-étiquette, capsule, caisse) |
 | Provenance, historique de stockage, facture | 1 | ✅ |
-| Rapport d'assurance / d'inventaire en PDF | 4 | ⏳ |
-| Carte des vins imprimable « grand restaurant » (LaTeX) | 4 | ⏳ (champ `bouteille.bin` prêt) |
+| Rapport d'assurance / d'inventaire en PDF | 4 | ✅ `documents/assurance.py` (format maison) |
+| Carte des vins imprimable « grand restaurant » (LaTeX) | 4 | ✅ `documents/carte.py`, `ui/carte_vins.py` ([docs](docs/documents.md)) |
 | Import/export CSV, import CellarTracker | 1 | ✅ `echanges.py`, [docs/import_cellartracker.md](docs/import_cellartracker.md) |
-| Import Vivino / Excel | 4 | ⏳ reporté (pas d'export Vivino officiel documenté ; Excel → passer par le CSV) |
+| Import Vivino / Excel | 4 | ✅ `imports_tableur.py` (XLSX sans dépendance, correspondance des colonnes) ; Vivino : en-têtes à valider sur un vrai export |
 | Export complet (aucune donnée prisonnière) | 1 | ✅ JSON de toutes les tables |
 | Sauvegardes automatiques | 1 | ✅ `sauvegarde.py` |
 | Saisie rapide : complétion appellations, cépages, domaines | 1 / 2 | ✅ cave + registres officiels ; orthographe officielle proposée |
 | Identifiant mondial LWIN, Wikidata, Open Food Facts, registres d'appellations | 2 | ✅ `mondial/`, `references.py`, `ui/identifier.py`, `ui/references.py` ([docs](docs/bases_mondiales.md)) |
 | Appariement : normalisation, candidats + score, confirmation, COALESCE, journal | 2 | ✅ `mondial/appariement.py` ; journal visible dans la fiche |
-| Photo d'étiquette = « pochette » partout | 2 | ✅ liste, fiche, mur ; recadrage/perspective/déroulage, OCR ([docs](docs/photos_et_ocr.md)) ; carte des vins en 4 |
+| Photo d'étiquette = « pochette » partout | 2 / 4 | ✅ liste, fiche, mur, rapport d'assurance, partage ; recadrage/perspective/déroulage, OCR ([docs](docs/photos_et_ocr.md)) ; pas de photo sur la carte des vins (choix typographique des grandes cartes) |
 | Images libres avec crédit et licence ; pas d'images protégées automatiques | 2 | ✅ OFF (CC BY-SA) et Commons (auteur + licence) enregistrés avec l'image |
-| Lecture code-barres webcam, impression d'étiquettes QR de casier | 2 / 4 | ✅ EAN tapé, lu par l'OCR ou par une douchette (clavier) ; photo webcam ; décodage du code-barres À L'IMAGE et QR de casier en 4 |
-| Partage en lecture seule (HTML/PDF) | 4 | ⏳ |
+| Lecture code-barres webcam, impression d'étiquettes QR de casier | 2 / 4 | ✅ `codes.py` (zxing-cpp, segno), `documents/etiquettes.py`, Cave › Scanner une bouteille |
+| Partage en lecture seule (HTML/PDF) | 4 | ✅ `documents/partage.py` |
 | Conditions de cave : saisie/import T° et hygrométrie, courbes, alertes | 2 / 3 | ✅ onglet + plages du dossier, mesures hors plage, alerte au tableau de bord |
 | « Que boire ce soir ? » | 3 | ✅ onglet « Ce soir » (`Cave.que_boire`) |
 | Lien avec le dossier « Le vin » (encadrés sur les bouteilles de la cave) | 1 | ✅ vues `v_dossier_vin`, `v_dossier_livre` + `python -m vendemiaire.export_dossier` ([contrat](docs/export_dossier.md)) |
@@ -96,7 +103,7 @@ vendemiaire/
   sauvegarde.py            copies cohérentes (API backup de SQLite), rotation, restauration
   chemins.py               dossier des données (profil, ou partage choisi), jamais le dossier de l'appli
   regles/                  MOTEUR des règles du dossier « Le vin » (phase 3) : jeu.py (chargement, empreintes,
-                           validation), styles, garde, millesimes (+ RATTACHEMENT appellation → région), service,
+                           validation), styles, garde, millesimes (rattachement appellation → région LU dans le dossier), service,
                            conservation, niveaux, accords, degustation, dossier (FournisseurDossier), anglais
   cave_regles.py           Cave × règles : fenêtres calculées, alertes, courbe, entamer, dégustations, que_boire
   demo.py                  cave de démonstration générée (producteurs inventés)
@@ -111,24 +118,35 @@ vendemiaire/
   donnees/                 registres d'appellations embarqués + sources.json (date, licence)
   regles/donnees/          les 13 JSON + LISEZMOI du dossier « Le vin », TELS QUELS, + MANIFESTE.json (empreintes,
                            date d'audit) — `outils/synchroniser_regles.py [--verifier]`
+  documents/               PHASE 4 : latex (moteur, échappement, compilation dans un fil), carte (carte des vins :
+                           contenu, LaTeX 3 modèles, HTML), geo (petites cartes TikZ/SVG), maison (préambule
+                           format maison), assurance, partage, etiquettes (planche QR), qt_pdf (repli HTML → PDF)
+  statistiques.py          répartitions, valeur dans le temps, entrées/sorties, rythme, apogée par couleur
+  codes.py                 lecture des codes à l'image (zxing-cpp), matrice QR (segno)
+  imports_tableur.py       Excel/CSV/Vivino avec correspondance des colonnes
+  seances.py               séances de dégustation (verticale, horizontale, aveugle)
+  donnees/cartes_simplifiees.json   contours Natural Earth simplifiés + positions des régions (outils/cartes_simplifiees.py)
   ui/                      fenetre, liste, fiche, saisie, plan, livre, tableau, pochette, mur, photos,
                            identifier, references, envies, critiques, conditions, inventaire, travail,
-                           regles_ui (pourquoi, sources, échelle des niveaux), ce_soir, degustation
+                           regles_ui (pourquoi, sources, échelle des niveaux), ce_soir, degustation,
+                           phase 4 : carte_vins, documents (assurance, partage, étiquettes), statistiques,
+                           graphiques, seances, scanner, import_tableur
 branding/logo.svg          SEULE source du logo ; docs/logo_* en dérivent
 outils/                    rendre_logo.js (PNG via resvg), captures.py (captures réelles)
 ```
 
-### Base de données (schéma v5)
+### Base de données (schéma v6)
 
 Tables : `producteur`, `vin`, `vin_cepage`, `identifiant_externe`, `emplacement`, `bouteille`,
 `deplacement`, `seance`, `degustation`, `mouvement`, `note_critique`, `fenetre_degustation`, `valeur`,
 `envie`, `bouteille_ouverte`, `condition_cave`, `inventaire`, `image`, `origine_champ`,
-`journal_enrichissement`, `meta`. Vues : `v_dossier_vin`, `v_dossier_livre`.
+`journal_enrichissement`, `meta`, `carte`, `carte_vin`, `seance_vin`. Vues : `v_dossier_vin`, `v_dossier_livre`.
 
 - v1 = schéma complet ; v2 = formes normalisées des noms (`nom_normalise`, `cuvee_normalisee`) ;
   v3 = vues du dossier « Le vin » ; v4 = `image.fichier_original/retouche/texte_ocr`, table
   `fiche_externe`, formes normalisées recalculées (abréviations) ; v5 = `vin.style`, `vin.niveau_garde`
-  (choix de l'utilisateur, NULL = automatique). **Une migration publiée ne se modifie jamais** (empreintes dans
+  (choix de l'utilisateur, NULL = automatique) ; v6 = `carte`, `carte_vin` (cartes des vins enregistrées),
+  `seance_vin`, `seance.revelee_le`. **Une migration publiée ne se modifie jamais** (empreintes dans
   `tests/test_migrations.py`) : en ajouter une à `MIGRATIONS`.
 - Chaque migration dans sa propre transaction ; une base plus récente que l'application est refusée ;
   sauvegarde « avant-migration » au démarrage.
@@ -166,6 +184,8 @@ python run.py --demo                                                    # essaye
 python outils/registres_appellations.py                                 # rafraîchir les registres embarqués (réseau)
 python outils/synchroniser_regles.py --verifier                         # règles identiques au dossier « Le vin » ?
 python outils/synchroniser_regles.py                                    # recopier après une correction DANS le dossier
+xvfb-run -a python outils/exemples.py                                   # docs/exemples/ (PDF sur la démonstration)
+python outils/cartes_simplifiees.py <ne_10m_admin_0_countries.shp> <dossier Le vin>   # petites cartes (pyshp)
 ```
 
 - Reposer le kit après une évolution du gabarit : `python <kit>/poser_le_kit.py . --multiplateforme
@@ -222,10 +242,9 @@ python outils/synchroniser_regles.py                                    # recopi
 
 - Les expressions de `styles.json` sont des MOTIFS (`\bpx\b`) : recherche par expression régulière
   dans le texte normalisé (sans accents, traits d'union = espaces), pas une simple inclusion.
-- Le classement littéral du dossier range **tout** champagne (même sans année) en `eff_millesime`
-  (« champagne » est dans ses appellations) et un **banyuls rimage** en `mute_oxydatif` (« banyuls »
-  dans ses appellations) : appliqué tel quel, signalé à l'utilisateur (style imposable dans la saisie) ;
-  à corriger dans `scripts/regles.py` du dossier si on le veut autrement.
+- Le classement littéral du dossier rangeait **tout** champagne (même sans année) en `eff_millesime` et un
+  **banyuls rimage** en `mute_oxydatif` : corrigé DANS le dossier (critères `millesime` et `exclure` de
+  `styles.json`, phase 4), l'appli applique la règle sans exception codée.
 - « Moyenne de la région » : moyenne de la MÊME source sur la région (la régression du dossier a des
   effets propres à chaque région), pas la moyenne globale de `millesimes.json`.
 - Arrondi des années : `round()` de Python est bancaire (2034,5 → 2034) ; arrondi « à la moitié
@@ -236,27 +255,43 @@ python outils/synchroniser_regles.py                                    # recopi
   clés manquantes (préfixe `cave.`) → constantes `regles.conservation.TEMPERATURE/HYGROMETRIE`.
 - `QTextDocument.print(QPdfWriter)` suffit pour la fiche « ce soir » en PDF (pas de QtPrintSupport).
 
-## Reste à faire (prochaine reprise : phase 4)
+## Pièges payés (phase 4)
 
-1. **Carte des vins LaTeX « de grand restaurant »** (cahier des charges, section dédiée) : générée
-   depuis la cave ou une sélection (« dîner de samedi ») ; ordre classique (effervescents → blancs →
-   rosés → rouges → doux → mutés ; pays › région › appellation › producteur › millésime ; jamais par
-   prix) ; ligne = BIN (`bouteille.bin`), producteur, cuvée, appellation, millésime, format, prix
-   facultatif ; verticales regroupées ; modèles classique / moderne / bistrot ; livret A5/A4 ou carte
-   simple ; aperçu HTML ; bilingue ; « menu du soir » → accords proposés par plat (réutiliser
-   `regles.accords`) ; compilation dans un fil, temporaires supprimés, PDF format maison.
-2. **Rapport d'assurance / d'inventaire PDF** (format maison) : liste, photos, état, niveau ET son sens
-   (`regles.niveaux`), valeur datée et sourcée, total ; provenance et historique de stockage.
-3. **Statistiques complètes** : graphiques par région, couleur, millésime, cépage, prix, valeur dans le
-   temps et plus-value, rythme de consommation vs achats (mouvements), courbe d'apogée par couleur.
-4. **Code-barres à l'image** (photo / webcam ; décodeur local à choisir : zbar via `pyzbar` ou ZXing ;
-   pas d'envoi en ligne) et **étiquettes de casier à code QR** (`bouteille.code_interne`).
-5. **Imports Vivino / Excel** : Excel via `openpyxl` en lecture seule (ou CSV), correspondance de
-   colonnes assistée ; Vivino : pas d'export officiel documenté → n'accepter qu'un fichier que
-   l'utilisateur fournit, colonnes à relever sur un vrai fichier.
-6. Séances de dégustation (verticale, horizontale, à l'aveugle : on note avant de révéler) — table
-   `seance` prête ; partage en lecture seule (HTML/PDF) ; liste d'achats générée ; alertes de prix.
-7. Toujours : valider LWIN et CellarTracker sur de vrais fichiers ; manuel PDF en phase 5.
+- `QTextDocument.print()` : NE PAS fixer `doc.setPageSize()` en pixels du `QPdfWriter` (300 dpi) — le texte
+  sortait minuscule (la fiche « ce soir » de la phase 3 aussi : corrigée, `documents/qt_pdf.html_vers_pdf`). Le HTML de Qt ignore `display:inline-block` et `font-variant:small-caps` (lettres mangées) ;
+  une image doit porter `width` ET `height`.
+- `\usepackage{josefin}` définit la famille sans empattement, pas de macro `\josefin` : `\sffamily`.
+- Modèle bistrot : la couleur des titres de section (crème, sur bandeau ardoise) était invisible sur le
+  fond kraft pour les autres titres → couleur `rubrique` distincte.
+- Un prix saisi pour un vin est celui de la BOUTEILLE : recopié tel quel sur la demie et le magnum, il
+  mentait ; il ne s'applique qu'aux formats « normaux ».
+- Une bouteille bue garde sa case dans l'historique et l'export CSV : de nouvelles bouteilles de
+  démonstration posées dans une case libérée faisaient échouer l'aller-retour CSV (« case occupée ») →
+  ne prendre que des cases jamais occupées.
+- L'essai « une seule source pour le logo » refusait tout `<svg` dans le code : les petites cartes
+  (`documents/geo.py`, `qt_pdf.py`) sont nommées en exception.
+- Les macros LaTeX à argument facultatif utilisent `\ifx&#1&` : tout texte passe par `latex.echapper()`
+  (aucun `&`, `%`, `$`, `#`, `_` brut ; espaces insécables Unicode convertis).
+- Dates Excel : nombre de jours depuis 1899-12-30 (45210 = 11/10/2023).
+- `zxing-cpp` lit une `memoryview` 2D sans numpy ; une QImage en niveaux de gris a des lignes alignées sur
+  4 octets : retirer le bourrage.
+
+## Reste à faire (prochaine reprise : phase 5)
+
+1. **Manuel PDF LaTeX FR + EN** (format maison, captures réelles de `docs/captures/`, exemples de
+   `docs/exemples/`), ouvert par le menu Aide (`docs/manuel-{fr,en}.pdf`).
+2. **Kit : embarquer les binaires sur les 3 systèmes** — Tesseract (+ fra/eng), **Tectonic** avec un cache
+   de paquets pré-rempli (pour compiler hors ligne ; voir [docs/documents.md](docs/documents.md)) ;
+   vérifier que `segno` et `zxing-cpp` (dans `requirements.txt`) s'installent dans le Python embarqué
+   (roues Windows/macOS arm64+x86_64/Linux arm64+x86_64). Le kit ne sait aujourd'hui embarquer des binaires
+   que sous Windows, depuis un zip : évolution du gabarit `_kit_windows`.
+3. **Polissage** : écran des photos du livre de
+   cave, liste d'achats imprimable (seuils de réassort, envies), alertes de prix sur les envies (valeurs
+   saisies), vue 3D (si décidée), petites cartes : chevauchements d'étiquettes résiduels.
+4. **Valider sur de vrais fichiers** : LWIN, CellarTracker, **export Vivino** (en-têtes), webcam réelle
+   (scanner), impression d'une planche d'étiquettes sur le papier choisi (marges).
+5. **Première publication** : VERSION, JOURNAL, README FR/EN, tag → `release.yml` (Windows, macOS, Linux),
+   MAJ auto testée en réel (ancienne version installée → MAJ), Release vérifiée par l'API.
 
 ## Décisions pour l'utilisateur
 
@@ -268,16 +303,22 @@ python outils/synchroniser_regles.py                                    # recopi
   L'embarquer = travail du kit (phase 5). OpenCV : facultatif, non embarqué (≈ 60 Mo).
 - **Recherches en ligne** : désactivées tant que l'utilisateur ne les autorise pas.
 
-- **Publier ?** Dépôt public depuis le 26/10 (CI verte). Publier = tag `v0.3.0` (VERSION déjà à 0.3.0 ; ou essai
-  `gh workflow run release.yml -f version=0.3.0 -f essai=true`).
+- **Publier ?** Dépôt public depuis le 26/10 (CI verte). Publier = tag `v0.4.0` (VERSION déjà à 0.4.0 ; ou essai
+  `gh workflow run release.yml -f version=0.4.0 -f essai=true`).
+- **Moteur PDF** : LaTeX si présent (Tectonic, XeLaTeX, LuaLaTeX, pdfLaTeX), sinon repli Qt (même contenu,
+  typographie simple). Proposition : **embarquer Tectonic** en phase 5 (avec son cache) ; d'ici là, installer
+  MiKTeX (Windows) ou TeX Live/MacTeX donne la belle carte.
+- **Vivino** : faire une demande d'export de ses données à Vivino et essayer l'import (Fichier › Importer un
+  export Vivino) : la correspondance proposée part d'en-têtes supposés.
+- **Prix sur la carte** : saisis par vin dans la carte (prix de la bouteille, prix au verre) ; la
+  démonstration en propose à 2,5 × le prix d'achat, uniquement pour l'exemple.
 - **Emplacement de la base** : profil local (défaut) ou lecteur réseau partagé (menu Fichier › Dossier
   des données…) pour que le dossier « Le vin » la lise.
-- **Règles du dossier à revoir peut-être (dans `scripts/regles.py`, pas dans l'appli)** : champagne sans
-  année classé « millésimé ou de prestige », banyuls rimage classé « oxydatif » (classement littéral) ;
-  magnum « plus lent » non chiffré (fenêtre inchangée) ; la note d'un critique sur le vin lui-même ne
-  modifie pas la fenêtre (aucune règle) — seule la note du millésime le fait.
-- **Rattachement appellation → région des millésimes** (`regles/millesimes.py`) : table de
-  l'application, à reprendre dans le dossier si l'on veut une source unique.
+- **Règles du dossier à revoir peut-être (dans `scripts/regles.py`, pas dans l'appli)** : porto ruby / LBV
+  classé « porto vintage » (« porto » dans ses appellations) et muscat de Rivesaltes classé « muté
+  oxydatif » (« rivesaltes ») ; magnum « plus lent » non chiffré (fenêtre inchangée) ; la note d'un
+  critique sur le vin lui-même ne modifie pas la fenêtre (aucune règle). Corrigés le 26/10 : champagne sans
+  année, banyuls rimage / VDN grenat, rattachement des millésimes (source unique dans le dossier).
 - Formats : les noms au-delà du magnum varient selon les régions (bordelais / champenois) ; la liste
   actuelle est à valider avec le dossier « Le vin ».
 - CellarTracker : valider l'import sur un vrai export (colonnes documentées dans

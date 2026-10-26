@@ -69,13 +69,14 @@ class RoueAromes(QTreeWidget):
 
 class DialogueDegustation(QDialog):
     def __init__(self, cave, vin_id: int, degustation: dict | None = None, bouteille_id: int | None = None,
-                 parent=None):
+                 parent=None, seance_id: int | None = None, titre: str | None = None):
         super().__init__(parent)
-        self.cave, self.vin_id = cave, vin_id
+        self.cave, self.vin_id, self.seance_id = cave, vin_id, seance_id
         self.did = degustation["id"] if degustation else None
         d = dict(degustation) if degustation else {}
         self.bid = d.get("bouteille_id") or bouteille_id
-        self.setWindowTitle(tr("deg.titre", vin=cave.nom_vin(vin_id)))
+        # à l'aveugle, le titre ne nomme pas le vin (« Vin B ») : la séance le fournit
+        self.setWindowTitle(titre or tr("deg.titre", vin=cave.nom_vin(vin_id)))
         self.resize(940, 680)
         racine = QVBoxLayout(self)
         coupe = QSplitter()
@@ -148,7 +149,15 @@ class DialogueDegustation(QDialog):
                 "aveugle": 1 if self.aveugle.isChecked() else 0}
 
     def accepter(self) -> None:
-        self.did = self.cave.enregistrer_degustation(self.donnees(), self.did)
+        if self.seance_id is not None:
+            from .. import seances
+            try:
+                self.did = seances.noter(self.cave, self.seance_id, self.vin_id, self.donnees())
+            except seances.SeanceRevelee:
+                QMessageBox.warning(self, tr("seance.titre"), tr("seance.figee"))
+                return
+        else:
+            self.did = self.cave.enregistrer_degustation(self.donnees(), self.did)
         self.accept()
 
 

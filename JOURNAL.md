@@ -1,5 +1,25 @@
 # Vendémiaire — journal
 
+## 0.4.0 — 2026-10-26 — phase 4 : documents et statistiques (non publiée)
+
+- **Carte des vins** « de grand restaurant » (`documents/carte.py`, Documents › Carte des vins) : ordre
+  classique, BIN, verticales, au verre, demies et grands formats, coups de cœur, menu du soir (accords du
+  dossier), petites cartes des régions (Natural Earth, domaine public), index des producteurs ; modèles
+  classique, moderne, bistrot ; A4, A5, carte simple ; FR/EN ; cartes enregistrées régénérées d'un clic
+  (tables `carte`, `carte_vin`, schéma v6). PDF par LaTeX (Tectonic, XeLaTeX, LuaLaTeX, pdfLaTeX), repli Qt.
+- **Rapport d'assurance / d'inventaire** (format maison) : valeur datée et sourcée, niveau et son sens,
+  état, caisse, provenance, photo.
+- **Statistiques** (onglet) : répartitions, valeur dans le temps, entrées/sorties, rythme, apogée par couleur.
+- **Codes QR** (segno) et **lecture à l'image** (zxing-cpp) : planche d'étiquettes de casier, scanner pour
+  sortir une bouteille.
+- **Imports** Excel (XLSX lu sans dépendance) et Vivino (correspondance proposée, à vérifier sur un vrai
+  export) ; **partage** en lecture seule HTML/PDF.
+- **Séances de dégustation** (onglet) : verticale, horizontale, à l'aveugle (notes figées après la
+  révélation ; table `seance_vin`, `seance.revelee_le`).
+- Règles du dossier resynchronisées : champagne sans millésime → « effervescent sans année », banyuls
+  rimage / VDN grenat → « muté jeune et fruité » ; rattachement des millésimes lu dans le dossier
+  (`rattachement_millesimes.json`) ; 66 sources.
+
 ## 0.3.0 — 2026-10-26 — phase 3 : règles du dossier « Le vin » (non publiée)
 
 - **Moteur de règles** `vendemiaire/regles/` : les 194 règles et 62 sources du

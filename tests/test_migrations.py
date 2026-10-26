@@ -69,6 +69,7 @@ def test_migrations_jamais_modifiees():
     assert hashlib.sha256(module_base.VUES_DOSSIER.encode()).hexdigest()[:12] == EMPREINTE_V3
     assert hashlib.sha256(module_base.SCHEMA_V4.encode()).hexdigest()[:12] == EMPREINTE_V4
     assert hashlib.sha256(module_base.SCHEMA_V5.encode()).hexdigest()[:12] == EMPREINTE_V5
+    assert hashlib.sha256(module_base.SCHEMA_V6.encode()).hexdigest()[:12] == EMPREINTE_V6
 
 
 def test_migration_v3_vers_v4(tmp_path):
@@ -96,6 +97,7 @@ EMPREINTE_V1 = "0d2c1269a646"
 EMPREINTE_V3 = "bd9bc28d3ee5"
 EMPREINTE_V4 = "eef3a6f1a29a"
 EMPREINTE_V5 = "cd333c4bbf56"
+EMPREINTE_V6 = "b480608b36a8"
 
 
 def test_migration_v4_vers_v5(tmp_path):

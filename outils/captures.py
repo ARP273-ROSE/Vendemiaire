@@ -158,6 +158,72 @@ def phase3(app, w, cave, langue, attendre):
     QtWidgets.QApplication.processEvents()
 
 
+def phase4(app, w, cave, langue, attendre):
+    """Captures de la phase 4 : statistiques, séances, carte des vins, rapport
+    d'assurance, partage, étiquettes QR, scanner, import d'un tableau."""
+    from PyQt6 import QtWidgets
+    from vendemiaire.ui.carte_vins import DialogueCarteVins
+    from vendemiaire.ui.documents import DialogueAssurance, DialogueEtiquettes, DialoguePartage
+    from vendemiaire.ui.import_tableur import DialogueImportTableur
+    from vendemiaire.ui.scanner import DialogueScanner
+
+    def capture(widget, nom):
+        widget.show()
+        attendre()
+        widget.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
+
+    w.onglets.setCurrentWidget(w.statistiques)
+    w.statistiques.rafraichir()
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-statistiques.png"))
+    w.statistiques.axe.setCurrentIndex(3)
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-statistiques-cepages.png"))
+    w.onglets.setCurrentWidget(w.seances)
+    w.seances.rafraichir()
+    w.seances.liste.setCurrentRow(1)              # la verticale notée
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-seances.png"))
+    w.seances.liste.setCurrentRow(0)              # l'aveugle, vins cachés
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-seance-aveugle.png"))
+    d = DialogueCarteVins(cave, w)
+    d.liste.setCurrentRow(0)
+    if langue == "en":
+        d.langue.setCurrentIndex(d.langue.findData("en"))
+        d.menu.setPlainText("Oysters\nRoast leg of lamb\nCheese board\nLemon tart")
+        d.mot.setPlainText("Welcome! Tonight the cellar opens for you.")
+    capture(d, "carte-reglages")
+    d.onglets.setCurrentIndex(1)
+    capture(d, "carte-vins")
+    d.onglets.setCurrentIndex(2)
+    d.rafraichir_apercu()
+    capture(d, "carte-apercu")
+    d.close()
+    a = DialogueAssurance(cave, w)
+    capture(a, "assurance")
+    a.close()
+    p = DialoguePartage(cave, w)
+    capture(p, "partage")
+    p.close()
+    e = DialogueEtiquettes(cave, None, w)
+    capture(e, "etiquettes")
+    e.close()
+    s = DialogueScanner(cave, w, camera=False)
+    s.traiter(cave.base.valeur("SELECT code_interne FROM bouteille WHERE statut='en_cave' ORDER BY id LIMIT 1"))
+    capture(s, "scanner")
+    s.close()
+    f = SORTIE.parent / "_import_demo.csv"
+    f.write_text("Winery,Wine name,Vintage,Region,Country,Wine type,Your rating,Your review,Scan date\n"
+                 "Bodega Ejemplo,Reserva,2016,Rioja,Spain,Red Wine,4.5,Lovely,2024-02-03\n"
+                 "Weingut Beispiel,Kabinett,2019,Mosel,Germany,White Wine,4,,2024-03-01\n", encoding="utf-8")
+    i = DialogueImportTableur(cave, str(f), "vivino", w)
+    capture(i, "import-vivino")
+    i.close()
+    f.unlink()
+    QtWidgets.QApplication.processEvents()
+
+
 def main() -> int:
     from PyQt6 import QtWidgets
     temp = Path(tempfile.mkdtemp())
@@ -214,6 +280,7 @@ def main() -> int:
             d.close()
         phase2(app, w, cave, langue, attendre)
         phase3(app, w, cave, langue, attendre)
+        phase4(app, w, cave, langue, attendre)
         w.minuteur.stop()
         w.close()
         cave.fermer_references()

@@ -43,8 +43,8 @@
   "icone_grande": "docs/logo_512.png",
   "nom_affiche_fr": "Vendémiaire",
   "nom_affiche_en": "Vendémiaire",
-  "description_fr": "Gestion de cave à vin : bouteilles, plan des casiers, livre de cave, étiquettes, bases mondiales, apogée, service et accords",
-  "description_en": "Wine cellar manager: bottles, rack plan, cellar book, labels, world databases, drinking windows, serving and pairings",
+  "description_fr": "Gestion de cave à vin : bouteilles, plan des casiers, livre de cave, étiquettes, bases mondiales, apogée, service, accords, carte des vins et statistiques",
+  "description_en": "Wine cellar manager: bottles, rack plan, cellar book, labels, world databases, drinking windows, serving, pairings, wine list and statistics",
   "categories_linux": "Office;Database;",
   "icone_icns": "docs/logo.icns",
   "verification_import": [
@@ -74,7 +74,17 @@
     "vendemiaire.logo",
     "PyQt6.QtSvg",
     "interface_kit",
-    "kit_aide"
+    "kit_aide",
+    "vendemiaire.documents.carte",
+    "vendemiaire.documents.latex",
+    "vendemiaire.documents.assurance",
+    "vendemiaire.documents.etiquettes",
+    "vendemiaire.codes",
+    "vendemiaire.statistiques",
+    "vendemiaire.imports_tableur",
+    "vendemiaire.seances",
+    "segno",
+    "zxingcpp"
   ],
   "journal_technique": "JOURNAL.md",
   "tests_ci": [
@@ -90,7 +100,8 @@
     "tests/test_phase2_modele.py",
     "tests/test_interface_phase2.py",
     "tests/test_regles.py",
-    "tests/test_phase3.py"
+    "tests/test_phase3.py",
+    "tests/test_phase4.py"
   ],
   "copies": [
     {

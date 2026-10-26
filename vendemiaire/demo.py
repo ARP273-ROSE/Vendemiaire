@@ -220,8 +220,87 @@ def generer(chemin: str | Path, graine: int = 1792) -> Cave:
                         round(12.5 + saison + hasard.uniform(-0.4, 0.4), 1),
                         round(72 + hasard.uniform(-5, 5))))
     cave.ajouter_conditions(mesures, source="démonstration")
+    phase4(cave, aujourdhui, random.Random(graine + 4))
     base.definir_meta("demonstration", "1")
     return cave
+
+
+def phase4(cave, aujourdhui: date, hasard: random.Random) -> None:
+    """Ajouts de la phase 4 (tirage séparé : les données précédentes ne bougent
+    pas) : demi-bouteilles, un brut sans année et un banyuls rimage, des valeurs
+    plus anciennes (évolution), deux séances de dégustation et une carte des
+    vins enregistrée avec des prix d'exemple."""
+    from . import seances
+    from .documents import carte
+    base = cave.base
+    casier = base.valeur("SELECT id FROM emplacement WHERE nom='Clayette 2'")
+    # cases jamais occupées (une bouteille bue garde sa case dans l'historique et dans l'export CSV)
+    prises = {(r["rangee"], r["colonne"]) for r in base.lire(
+        "SELECT rangee, colonne FROM bouteille WHERE emplacement_id=?", (casier,))}
+    libres = [c for c in cave.cases_libres(casier) if c not in prises]
+
+    def places(n):
+        return [(casier, *libres.pop(0)) if libres else None for _ in range(n)]
+    sauternes = base.valeur("SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id "
+                            "WHERE p.nom='Château Bel-Orme du Sud' ORDER BY v.millesime LIMIT 1")
+    achat = (aujourdhui - timedelta(days=400)).isoformat()
+    cave.ajouter_bouteilles(sauternes, 3, {"format": "demi", "prix_achat": 24.0, "date_achat": achat,
+                                           "lieu_achat": "Caviste"}, places(3),
+                            date_mouvement=achat)
+    nv = cave.enregistrer_vin({"producteur": "Maison Aubertin & Fils", "cuvee": "Brut nature", "appellation": "Champagne",
+                               "region": "Champagne", "pays": "France", "couleur": "blanc", "type": "effervescent",
+                               "non_millesime": 1, "degre": 12.0, "coup_de_coeur": 1,
+                               "cepages": [("Pinot noir", 50), ("Chardonnay", 50)]})
+    cave.ajouter_bouteilles(nv, 6, {"prix_achat": 36.0, "date_achat": achat, "lieu_achat": "Au domaine"},
+                            places(6), date_mouvement=achat)
+    rimage = cave.enregistrer_vin({"producteur": "Mas des Vents Marins", "cuvee": "Rimage", "appellation": "Banyuls",
+                                   "region": "Roussillon", "pays": "France", "couleur": "rouge", "type": "mute",
+                                   "millesime": 2021, "degre": 16.5, "cepages": [("Grenache", 100)]})
+    cave.ajouter_bouteilles(rimage, 2, {"format": "cinquante", "prix_achat": 21.0, "date_achat": achat,
+                                        "lieu_achat": "Salon des vins"},
+                            places(2), date_mouvement=achat)
+    # valeurs plus anciennes (exemples ; valeurs inventées) : l'évolution se voit dans les statistiques
+    for r in base.lire("SELECT vin_id, format, montant FROM valeur"):
+        for mois, facteur in ((24, 0.82), (12, 0.91)):
+            jour = date(aujourdhui.year - mois // 12, aujourdhui.month, 1).isoformat()
+            cave.ajouter_valeur_complete(r["vin_id"], round(r["montant"] * facteur * hasard.uniform(0.95, 1.05)),
+                                         "estimation (démonstration)", jour, format_code=r["format"])
+    # séances : une verticale notée, une à l'aveugle pas encore révélée
+    chenes = [x["id"] for x in base.lire(
+        "SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id WHERE p.nom='Château des Trois Chênes' "
+        "AND v.cuvee='Grand vin' AND EXISTS(SELECT 1 FROM bouteille b WHERE b.vin_id=v.id AND b.statut='en_cave') "
+        "ORDER BY v.millesime")]
+    if chenes:
+        sid = seances.creer(cave, "verticale", "Trois Chênes, grand vin", (aujourdhui - timedelta(days=20)).isoformat())
+        for i, vid in enumerate(chenes):
+            seances.ajouter_vin(cave, sid, vid)
+            seances.noter(cave, sid, vid, {"note": 16 + i * 0.5, "echelle": "20",
+                                           "commentaire": hasard.choice(COMMENTAIRES)})
+    rouges = [x["id"] for x in base.lire(
+        "SELECT DISTINCT v.id FROM vin v JOIN bouteille b ON b.vin_id=v.id WHERE b.statut='en_cave' "
+        "AND v.couleur='rouge' AND v.type='tranquille' ORDER BY v.id LIMIT 4")]
+    sid = seances.creer(cave, "aveugle", "Rouges à l'aveugle", aujourdhui.isoformat())
+    for vid in rouges:
+        seances.ajouter_vin(cave, sid, vid)
+    seances.melanger(cave, sid, graine=7)
+    # carte des vins enregistrée : quelques prix d'exemple (≈ 2,5 × le prix d'achat moyen), deux vins au verre
+    reglages = {}
+    for r in base.lire("SELECT vin_id, AVG(prix_achat) p FROM bouteille WHERE statut='en_cave' AND format='bouteille' "
+                       "GROUP BY vin_id"):
+        if r["p"]:
+            reglages[r["vin_id"]] = {"prix": round(r["p"] * 2.5 / 5) * 5}
+    for vid in (nv, base.valeur("SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id "
+                                "WHERE p.nom='Domaine du Coteau Fleuri' AND v.appellation='Sancerre' LIMIT 1")):
+        if vid in reglages:
+            reglages[vid].update(au_verre=True, prix_verre=round(reglages[vid]["prix"] / 5))
+    cid = carte.enregistrer(cave, "Dîner de samedi", {"prix": True, "lieu": "La maison des vendanges",
+                                                     "mot": "Bienvenue ! Ce soir, la cave s'ouvre pour vous.",
+                                                     "menu": ["Huîtres", "Gigot d'agneau", "Plateau de fromages",
+                                                              "Tarte au citron"]}, None)
+    with base.ecriture() as c:
+        for vid, d in reglages.items():
+            c.execute("INSERT INTO carte_vin(carte_id, vin_id, au_verre, prix, prix_verre) VALUES(?,?,?,?,?)",
+                      (cid, vid, 1 if d.get("au_verre") else 0, d["prix"], d.get("prix_verre")))
 
 
 def references_demo(cave) -> int:

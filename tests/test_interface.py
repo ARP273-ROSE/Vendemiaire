@@ -48,7 +48,7 @@ def _textes_d_interface(w) -> list[str]:
 
 
 def test_fenetre_et_onglets(fenetre):
-    assert fenetre.onglets.count() == 8
+    assert fenetre.onglets.count() == 10
     assert fenetre.vue_cave.modele.rowCount() > 30
     assert not [x for x in _textes_d_interface(fenetre) if re.match(r"^<[a-z_]+\.[a-z0-9_.]+>$", x)]
 

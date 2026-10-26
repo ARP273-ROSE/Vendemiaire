@@ -32,6 +32,16 @@ def tr(cle: str, **valeurs) -> str:
     return texte.format(**valeurs) if valeurs else texte
 
 
+def tr_en(langue_doc: str, cle: str, **valeurs) -> str:
+    """Comme `tr`, mais dans la langue d'un DOCUMENT (carte des vins en anglais
+    depuis une interface française…)."""
+    jeu = T.get(cle)
+    if jeu is None:
+        return f"<{cle}>"
+    texte = jeu.get(langue_doc) or jeu["en"]
+    return texte.format(**valeurs) if valeurs else texte
+
+
 def lib(enum: str, code) -> str:
     """Libellé d'un code de référentiel (statut, couleur, format…)."""
     return referentiels.libelle(enum, code, _langue)

@@ -71,6 +71,29 @@ checksum; every result shows its **why**, its **sources** and its **confidence**
 ![Rules in the wine sheet](docs/captures/en-fiche-regles.png)
 ![What to drink tonight?](docs/captures/en-ce-soir.png)
 
+## What phase 4 adds
+
+Documents and statistics ([details, in French](docs/documents.md), [PDF examples](docs/exemples/)).
+
+- **Fine-dining wine list** as a LaTeX PDF: classic order (sparkling → white → rosé → red → sweet →
+  fortified; country, region, appellation, producer, vintage — never by price), BIN numbers, grouped
+  verticals, by the glass, half bottles and large formats apart, favourites, tonight's menu with a wine
+  suggested per dish, small region maps, index of producers; three templates (classic, modern, bistro),
+  A4, A5 or single sheet, French or English; a saved list updates in one click. Without LaTeX, the same
+  content is written by Qt.
+- **Insurance / inventory report**: photo, fill level and its meaning, condition, case, provenance,
+  dated and sourced value.
+- **Statistics**: breakdowns (country, region, colour, grape, vintage, price...), value over time, bottles
+  in versus out, drinking-window curve by colour.
+- **QR codes and barcodes**: printable rack labels, reading from the webcam or a photo, taking a bottle
+  out by scanning it.
+- **Imports** from Excel and Vivino (column mapping), read-only **sharing** (HTML, PDF).
+- **Tasting sessions**: vertical, horizontal, blind (rate before revealing).
+
+![Wine list](docs/captures/en-carte-apercu.png)
+![Statistics](docs/captures/en-statistiques.png)
+![Tasting sessions](docs/captures/en-seances.png)
+
 ## Run from source
 
 ```bash

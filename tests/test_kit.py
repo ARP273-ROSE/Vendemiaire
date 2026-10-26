@@ -173,9 +173,12 @@ def test_une_seule_source_pour_le_logo(app):
         assert QtGui.QImage(str(logo.png(t))).width() == t, t
     assert (RACINE / "docs" / "logo.ico").read_bytes()[:4] == b"\x00\x00\x01\x00"
     assert (RACINE / "docs" / "logo.icns").read_bytes()[:4] == b"icns"
-    # aucun second dessin du logo dans le code
+    # aucun second dessin du logo dans le code (les petites cartes des régions de la
+    # carte des vins sont des SVG générés, pas un logo : modules nommés ici)
+    cartes = {RACINE / "vendemiaire" / "documents" / "geo.py", RACINE / "vendemiaire" / "documents" / "qt_pdf.py"}
     for p in (RACINE / "vendemiaire").rglob("*.py"):
-        assert "<svg" not in p.read_text(encoding="utf-8"), p
+        if p not in cartes:
+            assert "<svg" not in p.read_text(encoding="utf-8"), p
     # le PNG publié ressemble au rendu Qt du SVG (même dessin, pas un autre logo)
     a = QtGui.QImage(str(logo.png(64))).convertToFormat(QtGui.QImage.Format.Format_ARGB32)
     b = logo.rendu_svg(64).toImage().convertToFormat(QtGui.QImage.Format.Format_ARGB32)

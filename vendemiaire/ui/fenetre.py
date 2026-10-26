@@ -28,6 +28,7 @@ from .tableau import TableauDeBord
 log = logging.getLogger(__name__)
 FILTRE_CSV = "CSV (*.csv *.txt *.tsv)"
 FILTRE_JSON = "JSON (*.json)"
+FILTRE_TABLEURS = "Excel / CSV (*.xlsx *.xlsm *.csv *.txt *.tsv)"
 MOTIF_IMAGES = "(*.jpg *.jpeg *.png *.webp *.tif *.tiff)"
 FILTRE_BASE = "SQLite (*.db)"
 #: sauvegarde automatique : toutes les 30 minutes si la base a changé
@@ -79,13 +80,19 @@ class FenetrePrincipale(QMainWindow):
         self.envies = VueEnvies(self.cave)
         self.conditions = VueConditions(self.cave)
         from .ce_soir import VueCeSoir
+        from .seances import VueSeances
+        from .statistiques import VueStatistiques
         self.ce_soir = VueCeSoir(self.cave)
+        self.statistiques = VueStatistiques(self.cave)
+        self.seances = VueSeances(self.cave)
         self.onglets.addTab(self.tableau, tr("onglet.tableau"))
         self.onglets.addTab(self.vue_cave, tr("onglet.cave"))
         self.onglets.addTab(self.mur, tr("onglet.mur"))
         self.onglets.addTab(self.plan, tr("onglet.plan"))
         self.onglets.addTab(self.livre, tr("onglet.livre"))
         self.onglets.addTab(self.ce_soir, tr("onglet.ce_soir"))
+        self.onglets.addTab(self.statistiques, tr("onglet.statistiques"))
+        self.onglets.addTab(self.seances, tr("onglet.seances"))
         self.onglets.addTab(self.envies, tr("onglet.envies"))
         self.onglets.addTab(self.conditions, tr("onglet.conditions"))
         ancien = self.centralWidget()
@@ -126,6 +133,8 @@ class FenetrePrincipale(QMainWindow):
         m = self.menuBar().addMenu(tr("menu.fichier"))
         self._action(m, "menu.importer_csv", self.importer_csv)
         self._action(m, "menu.importer_ct", self.importer_cellartracker)
+        self._action(m, "menu.importer_tableur", lambda: self.importer_tableur("generique"))
+        self._action(m, "menu.importer_vivino", lambda: self.importer_tableur("vivino"))
         m.addSeparator()
         self._action(m, "menu.exporter_csv", self.exporter_csv)
         self._action(m, "menu.exporter_json", self.exporter_json)
@@ -145,6 +154,7 @@ class FenetrePrincipale(QMainWindow):
         self._action(m, "menu.sortir", self._sortir_courante)
         m.addSeparator()
         self._action(m, "menu.inventaire", self.inventaire)
+        self._action(m, "menu.scanner", self.scanner)
         m.addSeparator()
         self._action(m, "menu.ce_soir", lambda: self.onglets.setCurrentWidget(self.ce_soir))
         self._action(m, "menu.fiche_ce_soir", lambda: self._vin_courant(self.fiche_ce_soir))
@@ -152,6 +162,12 @@ class FenetrePrincipale(QMainWindow):
             self.vue_cave.fiche.bouteille_choisie()))
         m.addSeparator()
         self._action(m, "menu.supprimer_vin", lambda: self._vin_courant(self.supprimer_vin))
+
+        m = self.menuBar().addMenu(tr("menu.documents"))
+        self._action(m, "menu.carte_vins", self.carte_vins)
+        self._action(m, "menu.assurance", self.rapport_assurance)
+        self._action(m, "menu.partage", self.partager)
+        self._action(m, "menu.etiquettes", self.etiquettes_qr)
 
         m = self.menuBar().addMenu(tr("menu.references"))
         self._action(m, "menu.identifier_vin", lambda: self._vin_courant(self.identifier_vin))
@@ -206,6 +222,8 @@ class FenetrePrincipale(QMainWindow):
             self.tableau.rafraichir()
         elif w is self.mur:
             self.mur.rafraichir()
+        elif w is self.statistiques:
+            self.statistiques.rafraichir()
 
     def changer_langue(self, code: str) -> None:
         i18n.definir_langue(code)
@@ -236,6 +254,9 @@ class FenetrePrincipale(QMainWindow):
         self.envies.rafraichir()
         self.ce_soir.rafraichir()
         self.conditions.rafraichir()
+        self.seances.rafraichir()
+        if self.onglets.currentWidget() is self.statistiques:
+            self.statistiques.rafraichir()
         if self.onglets.currentWidget() is self.mur:
             self.mur.rafraichir()
 
@@ -488,6 +509,46 @@ class FenetrePrincipale(QMainWindow):
         if chemin:
             n = sum(echanges.exporter_json(self.cave, chemin).values())
             self.statusBar().showMessage(tr("etat.exporte", n=n, chemin=chemin), 8000)
+
+    def importer_tableur(self, profil: str = "generique") -> None:
+        from .import_tableur import DialogueImportTableur
+        cle = "menu.importer_vivino" if profil == "vivino" else "menu.importer_tableur"
+        chemin, _ = QFileDialog.getOpenFileName(self, tr(cle), str(Path.home()), FILTRE_TABLEURS)
+        if not chemin:
+            return
+        try:
+            d = DialogueImportTableur(self.cave, chemin, profil, self)
+        except (OSError, ValueError) as ex:
+            QMessageBox.warning(self, tr(cle), tr("imp.illisible", erreur=str(ex)))
+            return
+        if d.exec() == QDialog.DialogCode.Accepted:
+            self._avant_import()
+            self._rapport(d.importer())
+
+    # ------------------------------------------------------------------ documents (phase 4)
+    def carte_vins(self) -> None:
+        from .carte_vins import DialogueCarteVins
+        DialogueCarteVins(self.cave, self).exec()
+        self.tout_rafraichir()
+
+    def rapport_assurance(self) -> None:
+        from .documents import DialogueAssurance
+        DialogueAssurance(self.cave, self).exec()
+
+    def partager(self) -> None:
+        from .documents import DialoguePartage
+        DialoguePartage(self.cave, self).exec()
+
+    def etiquettes_qr(self) -> None:
+        from .documents import DialogueEtiquettes
+        DialogueEtiquettes(self.cave, self.vue_cave.vin_courant(), self).exec()
+
+    def scanner(self) -> None:
+        from .scanner import DialogueScanner
+        d = DialogueScanner(self.cave, self)
+        d.sortir.connect(self.sortir_bouteille)
+        d.voir_vin.connect(self.montrer_vin)
+        d.exec()
 
     # ------------------------------------------------------------------ sauvegardes
     def dossier_sauvegardes(self) -> Path:

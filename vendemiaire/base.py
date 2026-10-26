@@ -622,6 +622,45 @@ def _v5(c: sqlite3.Connection) -> None:
     _script(c, SCHEMA_V5)
 
 
+SCHEMA_V6 = """
+-- Phase 4 : cartes des vins enregistrées (mise à jour d'un clic) et séances de dégustation
+CREATE TABLE carte (
+    id              INTEGER PRIMARY KEY,
+    nom             TEXT NOT NULL,
+    options         TEXT NOT NULL DEFAULT '{}', -- JSON : modèle, format, langue, prix, menu du soir…
+    toute_la_cave   INTEGER NOT NULL DEFAULT 1, -- 1 = tous les vins en cave ; 0 = la sélection carte_vin
+    dernier_pdf     TEXT,
+    cree_le         TEXT NOT NULL,
+    modifie_le      TEXT NOT NULL
+);
+CREATE TABLE carte_vin (
+    carte_id        INTEGER NOT NULL REFERENCES carte(id) ON DELETE CASCADE,
+    vin_id          INTEGER NOT NULL REFERENCES vin(id) ON DELETE CASCADE,
+    au_verre        INTEGER NOT NULL DEFAULT 0,
+    prix            REAL,                       -- prix affiché de la bouteille (facultatif)
+    prix_verre      REAL,
+    accord          TEXT,                       -- ligne d'accord ou de description saisie
+    PRIMARY KEY (carte_id, vin_id)
+);
+CREATE TABLE seance_vin (
+    id              INTEGER PRIMARY KEY,
+    seance_id       INTEGER NOT NULL REFERENCES seance(id) ON DELETE CASCADE,
+    vin_id          INTEGER NOT NULL REFERENCES vin(id) ON DELETE CASCADE,
+    bouteille_id    INTEGER REFERENCES bouteille(id) ON DELETE SET NULL,
+    ordre           INTEGER NOT NULL DEFAULT 0, -- ordre de service (tiré au hasard à l'aveugle)
+    etiquette       TEXT                        -- « A », « B »… pour l'aveugle
+);
+CREATE INDEX seance_vin_seance ON seance_vin(seance_id, ordre);
+ALTER TABLE seance ADD COLUMN revelee_le TEXT;   -- aveugle : NULL tant que les vins sont cachés
+CREATE INDEX degustation_seance ON degustation(seance_id);
+"""
+
+
+def _v6(c: sqlite3.Connection) -> None:
+    """v6 (phase 4) : cartes des vins, contenu et révélation des séances."""
+    _script(c, SCHEMA_V6)
+
+
 #: migrations dans l'ordre : MIGRATIONS[i] fait passer de la version i à i+1.
 #: Ne JAMAIS modifier une migration publiée : en ajouter une nouvelle.
 MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
@@ -630,6 +669,7 @@ MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
     _v3,
     _v4,
     _v5,
+    _v6,
 ]
 VERSION_SCHEMA = len(MIGRATIONS)
 

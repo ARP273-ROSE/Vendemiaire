@@ -10,8 +10,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-from PyQt6.QtCore import QMarginsF, QSizeF, Qt, QTime, pyqtSignal
-from PyQt6.QtGui import QPageLayout, QPageSize, QPdfWriter, QTextDocument
+from PyQt6.QtCore import Qt, QTime, pyqtSignal
 from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QCompleter, QDialog,
                              QDialogButtonBox, QDoubleSpinBox, QFileDialog, QFormLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton, QSplitter, QTableWidget, QTableWidgetItem,
@@ -109,16 +108,10 @@ def html_ce_soir(cave, vin_ids: list[int], heure: QTime | None, piece_c: float |
 
 
 def ecrire_pdf(html: str, chemin: str | Path) -> None:
-    """PDF A4 de la fiche (rendu Qt du même HTML)."""
-    w = QPdfWriter(str(chemin))
-    w.setPageLayout(QPageLayout(QPageSize(QPageSize.PageSizeId.A4), QPageLayout.Orientation.Portrait,
-                                QMarginsF(15, 15, 15, 15), QPageLayout.Unit.Millimeter))
-    w.setResolution(300)
-    w.setCreator("Vendemiaire")
-    doc = QTextDocument()
-    doc.setHtml(html)
-    doc.setPageSize(QSizeF(w.width(), w.height()))
-    doc.print(w)
+    """PDF A4 de la fiche (rendu Qt du même HTML). Pas de `setPageSize` en pixels
+    du QPdfWriter : le texte en sortait minuscule (corrigé en phase 4)."""
+    from ..documents.qt_pdf import html_vers_pdf
+    html_vers_pdf(html, chemin)
 
 
 class DialogueFicheCeSoir(QDialog):

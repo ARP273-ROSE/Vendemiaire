@@ -78,6 +78,29 @@ quelles avec leur empreinte ; chaque résultat affiche son **pourquoi**, ses **s
 ![Que boire ce soir ?](docs/captures/fr-ce-soir.png)
 ![Fiche « ce soir »](docs/captures/fr-fiche-ce-soir.png)
 
+## Ce qu'ajoute la phase 4
+
+Documents et statistiques ([détails](docs/documents.md), [exemples PDF](docs/exemples/)).
+
+- **Carte des vins « de grand restaurant »** en PDF LaTeX : ordre classique (effervescents → blancs →
+  rosés → rouges → doux → mutés ; pays, région, appellation, producteur, millésime — jamais par prix),
+  BIN, verticales regroupées, au verre, demi-bouteilles et grands formats à part, coups de cœur,
+  menu du soir avec un vin proposé par plat, petites cartes des régions, index des producteurs ; trois
+  modèles (classique, moderne, bistrot), A4, A5 ou carte simple, français ou anglais ; une carte
+  enregistrée se met à jour d'un clic. Sans LaTeX, le même contenu est écrit par Qt.
+- **Rapport d'assurance / d'inventaire** : photo, niveau et son sens, état, caisse, provenance, valeur
+  datée et sourcée.
+- **Statistiques** : répartitions (pays, région, couleur, cépage, millésime, prix…), valeur dans le temps,
+  entrées contre sorties, courbe d'apogée par couleur.
+- **Codes QR et codes-barres** : étiquettes de casier imprimables, lecture à la webcam ou sur une photo,
+  sortie d'une bouteille en la scannant.
+- **Imports** Excel et Vivino (correspondance des colonnes), **partage** en lecture seule (HTML, PDF).
+- **Séances de dégustation** verticales, horizontales, à l'aveugle (on note avant de révéler).
+
+![Carte des vins](docs/captures/fr-carte-apercu.png)
+![Statistiques](docs/captures/fr-statistiques.png)
+![Séances de dégustation](docs/captures/fr-seances.png)
+
 ## Lancer depuis les sources
 
 ```bash
