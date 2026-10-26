@@ -275,7 +275,7 @@ def micromamba(cache: Path, systeme: str, arch: str, log=_log) -> Path:
         raise ErreurOutil(f'micromamba indisponible pour {systeme}-{arch}')
     nom, sha = choix
     url = f'https://github.com/mamba-org/micromamba-releases/releases/download/{MICROMAMBA_VERSION}/{nom}'
-    exe = telecharger(url, cache / f'{MICROMAMBA_VERSION}-{nom}' + ('.exe' if systeme == 'windows' else ''), sha, log)
+    exe = telecharger(url, cache / (f'{MICROMAMBA_VERSION}-{nom}' + ('.exe' if systeme == 'windows' else '')), sha, log)
     if systeme != 'windows':
         exe.chmod(0o755)
     return exe

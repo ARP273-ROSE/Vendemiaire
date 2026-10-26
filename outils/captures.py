@@ -224,6 +224,25 @@ def phase4(app, w, cave, langue, attendre):
     QtWidgets.QApplication.processEvents()
 
 
+def phase5(app, w, cave, langue, attendre):
+    """Captures de la phase 5 : prix relevés d'une envie, liste d'achats."""
+    from vendemiaire.ui.achats import DialogueAchats
+    from vendemiaire.ui.envies import DialoguePrix
+
+    def capture(widget, nom):
+        widget.show()
+        attendre()
+        widget.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
+        widget.close()
+
+    w.onglets.setCurrentWidget(w.envies)
+    w.envies.rafraichir()
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-envies.png"))
+    capture(DialoguePrix(cave, w.envies.lignes[0], w), "prix")
+    capture(DialogueAchats(cave, w), "achats")
+
+
 def main() -> int:
     from PyQt6 import QtWidgets
     temp = Path(tempfile.mkdtemp())
@@ -253,15 +272,19 @@ def main() -> int:
         w.resize(1440, 900)
         w.show()
         attendre()
-        noms = ["tableau-de-bord", "cave", "plan", "livre"]
-        for i, nom in enumerate(noms):
-            w.onglets.setCurrentIndex(i)
+        noms = {"tableau-de-bord": w.tableau, "cave": w.vue_cave, "plan": w.plan, "livre": w.livre}
+        for nom, vue_onglet in noms.items():
+            w.onglets.setCurrentWidget(vue_onglet)
             if nom == "cave":
                 vue = w.vue_cave
                 vue.recherche.setText("")
                 vid = cave.base.valeur("SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id "
                                        "WHERE p.nom LIKE 'Domaine Marchand%' ORDER BY millesime LIMIT 1")
                 vue.selectionner(vid)
+            if nom == "livre":                     # la ligne la plus récente qui a des photos du moment
+                avec = cave.nombre_photos_mouvements()
+                r = next((i for i, m in enumerate(w.livre.lignes) if m["id"] in avec), 0)
+                w.livre.table.setCurrentCell(r, 0)
             attendre()
             w.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
         w.onglets.setCurrentIndex(1)
@@ -281,6 +304,7 @@ def main() -> int:
         phase2(app, w, cave, langue, attendre)
         phase3(app, w, cave, langue, attendre)
         phase4(app, w, cave, langue, attendre)
+        phase5(app, w, cave, langue, attendre)
         w.minuteur.stop()
         w.close()
         cave.fermer_references()
