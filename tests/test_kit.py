@@ -185,14 +185,18 @@ def test_une_seule_source_pour_le_logo(app):
 
 
 def test_regles_d_oenologie_pas_inventees():
-    """Aucune règle d'apogée, de service ni d'accord dans le code ; l'interface
-    l'annonce au lieu d'estimer. Phase 2 : seule la conversion des notes est
-    branchée, et elle lit le fichier du dossier « Le vin » tel quel."""
+    """Aucune règle d'apogée, de service ni d'accord dans le code : elles sont lues
+    dans les fichiers du dossier « Le vin » (phase 3), et un vin sans couleur ni
+    type ne reçoit AUCUNE estimation inventée. La conversion des notes lit
+    notes.json tel quel."""
     import json
     from vendemiaire import regles
     regles.charger_livres()
-    assert not regles.disponibles("fenetre_degustation")
+    assert regles.disponibles("fenetre_degustation")
     assert regles.demander("fenetre_degustation", {}) is None
+    e = regles.demander("fenetre_degustation", {"couleur": "rouge", "type": "tranquille",
+                                                "appellation": "Pauillac", "millesime": 2016})
+    assert e.regle == "rouge_bordeaux/garde" and e.sources and e.explication_fr
     assert regles.disponibles("convertir_note")
     donnees = RACINE / "vendemiaire" / "regles" / "donnees"
     notes = json.loads((donnees / "notes.json").read_text(encoding="utf-8"))

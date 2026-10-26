@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Conditions de cave : température et hygrométrie, saisies à la main ou
 importées d'une sonde (CSV, export Home Assistant). Courbe simple, minimum,
-maximum, moyenne. Les alertes et les plages conseillées viendront des règles
-du dossier « Le vin » (conservation.json, phase 3/4)."""
+maximum, moyenne ; plages conseillées et mesures hors plage d'après le dossier
+« Le vin » (conservation.json), effet de la température sur le vieillissement
+(garde.json)."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -16,6 +17,7 @@ from PyQt6.QtWidgets import (QAbstractItemView, QComboBox, QDateTimeEdit, QDialo
 
 from .. import echanges, style
 from ..i18n import date_affichee, langue, nombre, tr
+from ..regles import conservation as r_conservation
 from .saisie import _reel
 
 FILTRE_CSV = "CSV (*.csv *.txt *.tsv)"
@@ -147,6 +149,10 @@ class VueConditions(QWidget):
         self.resume = QLabel()
         self.resume.setWordWrap(True)
         racine.addWidget(self.resume)
+        self.plages = QLabel()
+        self.plages.setWordWrap(True)
+        self.plages.setTextFormat(Qt.TextFormat.RichText)
+        racine.addWidget(self.plages)
         coupe = QSplitter(Qt.Orientation.Vertical)
         self.courbe = Courbe()
         coupe.addWidget(self.courbe)
@@ -175,10 +181,14 @@ class VueConditions(QWidget):
         self.table.setRowCount(min(len(mesures), 500))
         for r, m in enumerate(mesures[:500]):
             quand = date_affichee(m["date_heure"]) + " " + m["date_heure"][11:16]
+            hors = {regle for regle, _sens in r_conservation.hors_plage(m["temperature"], m["hygrometrie"])}
             for c, val in enumerate((quand, f"{nombre(m['temperature'])} °C" if m["temperature"] is not None
                                      else "", f"{nombre(m['hygrometrie'], 0)} %"
                                      if m["hygrometrie"] is not None else "", m["source"] or "")):
                 it = QTableWidgetItem(val)
+                if (c == 1 and r_conservation.TEMPERATURE in hors) or (c == 2 and r_conservation.HYGROMETRIE in hors):
+                    it.setForeground(QColor(style.BORDEAUX_CLAIR))
+                    it.setToolTip(tr("cond.hors_plage"))
                 it.setFlags(it.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 if c == 0:
                     it.setData(Qt.ItemDataRole.UserRole, m["id"])
@@ -191,6 +201,22 @@ class VueConditions(QWidget):
                                    debut=date_affichee(s["debut"]), fin=date_affichee(s["fin"])))
         else:
             self.resume.setText(tr("cond.aucune"))
+        self._plages(mesures, s)
+
+    def _plages(self, mesures, s: dict) -> None:
+        """Plages du dossier (conservation.json), mesures hors plage, effet de la
+        température moyenne sur le vieillissement (garde.temperature_cave)."""
+        from html import escape
+        from ..regles import garde as r_garde
+        t = r_conservation.regle(r_conservation.TEMPERATURE)
+        h = r_conservation.regle(r_conservation.HYGROMETRIE)
+        n = sum(1 for m in mesures if r_conservation.hors_plage(m["temperature"], m["hygrometrie"]))
+        texte = tr("cond.plages", tmin=t["valeur"]["min_c"], tmax=t["valeur"]["max_c"],
+                   hmin=h["valeur"]["min_pct"], hmax=h["valeur"]["max_pct"], n=n)
+        if s.get("tmoy") is not None:
+            f = r_garde.facteur_vitesse(s["tmoy"])
+            texte += " " + tr("cond.vitesse", t=nombre(s["tmoy"]), f=nombre(f, 2))
+        self.plages.setText(f"<span>{escape(texte)}</span> — <i>{escape(t['explication_fr'] if langue() == 'fr' else t.get('explication_en') or '')}</i>")
 
     def ajouter(self) -> None:
         if DialogueMesure(self.cave, self.lieu.currentData(), self).exec() == QDialog.DialogCode.Accepted:

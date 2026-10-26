@@ -1,0 +1,1612 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "explication_fr": "Fenêtres en années après le millésime (pour un vin sans millésime : après l'achat). « niveau » : courant, garde (défaut), primeur, nouveau_monde, tous. Modèle « plateau » : qualité qui monte de « pret » à « apogee_debut », reste haute jusqu'à « apogee_fin », décline jusqu'à « fin » ; « cloche » : sommet au milieu de l'apogée. « preuves » : seuils du calcul empirique (Wine Enthusiast 2018 : pret, apogee_debut, apogee_fin, declin), repères de Jancis Robinson et seuils Wine Society 2026.",
+ "styles": {
+  "eff_sans_annee": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": null,
+     "fin": null
+    },
+    "marge_ans": null,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Prêt à la sortie de cave du producteur : comme la plupart des effervescents, il est mis en vente quand il est à boire et ne gagne pas grand-chose à vieillir. Les sources ne chiffrent pas la limite ; l'application affiche « à boire » sans date de fin.",
+    "explication_en": "Ready on release; little gain from ageing; no published end date.",
+    "sources": [
+     "WIKI_AGING"
+    ],
+    "preuves": {}
+   }
+  ],
+  "eff_aromatique": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 1,
+     "fin": 2
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Asti et moscato : à boire jeunes, pour leur fruit (Jancis Robinson : pas de potentiel de garde). Fin à 2 ans : convention du dossier.",
+    "explication_en": "Drink young (no ageing potential); 2-year end is a convention.",
+    "sources": [
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "eff_millesime": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 8,
+     "apogee_debut": 15,
+     "apogee_fin": 21,
+     "fin": 28
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Champagne millésimé (tableau Wine Enthusiast, millésime moyen) : prêt vers 8 ans, apogée vers 15-21 ans, déclin au-delà de 28 ans — valeur extrapolée hors des âges du tableau. The Wine Society cite 2019, 2016, 2012, 2008, 2006, 2002, 1998, 1996 et 1995 comme grands millésimes à garder.",
+    "explication_en": "Vintage Champagne: ready ~8 y, peak ~15-21 y (Wine Enthusiast 2018, extrapolated beyond 26 y).",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Champagne",
+       "pret": 7.9,
+       "apogee_debut": 14.7,
+       "apogee_fin": 21.4,
+       "declin": 28.2,
+       "extrapole": true
+      },
+      {
+       "tableau": "Lombardy / Franciacorta",
+       "pret": 0,
+       "apogee_debut": 6.4,
+       "apogee_fin": 14.2,
+       "declin": 21.9,
+       "extrapole": false
+      }
+     ]
+    }
+   }
+  ],
+  "blanc_frais": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 4
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "À boire jeune : dans le tableau Wine Enthusiast, le sauvignon de Marlborough est à son apogée à 2 ans et « peut-être passé » dès 3 ans ; les blancs de Galice (albariño) de même. Les meilleurs muscadets et sancerres font exception (voir le chapitre Loire).",
+    "explication_en": "Drink young: Marlborough sauvignon peaks at 2 y, may be past from 3 y (Wine Enthusiast).",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Marlborough / Sauvignon Blanc",
+       "pret": 0,
+       "apogee_debut": 0,
+       "apogee_fin": 0,
+       "declin": 1.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Galicia / Whites",
+       "pret": 0,
+       "apogee_debut": 0,
+       "apogee_fin": 0,
+       "declin": 2.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Loire / Dry Whites",
+       "pret": 0,
+       "apogee_debut": 5.9,
+       "apogee_fin": 12.5,
+       "declin": 19.2,
+       "extrapole": false
+      }
+     ]
+    }
+   }
+  ],
+  "rose": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 1,
+     "fin": 2
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "faible",
+    "explication_fr": "Le rosé se boit dans l'année : Jancis Robinson le classe parmi les vins sans potentiel de garde, car le court contact avec les peaux lui donne peu de composés protecteurs. Les rosés de garde (Tavel, Bandol, rosés des Riceys) font exception. Fin à 2 ans : convention du dossier.",
+    "explication_en": "Drink within the year (no ageing potential, little skin contact); 2-year end is a convention.",
+    "sources": [
+     "JR_GARDE",
+     "WIKI_AGING",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "orange": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 2,
+     "apogee_fin": 6,
+     "fin": 10
+    },
+    "marge_ans": 3,
+    "modele": "plateau",
+    "confiance": "faible",
+    "explication_fr": "Aucune donnée publiée sur la garde des vins orange en général : fenêtre de blanc structuré par convention du dossier.",
+    "explication_en": "No published data; convention of a structured white.",
+    "sources": [
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "blanc_mineral_garde": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 3,
+     "apogee_debut": 9,
+     "apogee_fin": 16,
+     "fin": 22
+    },
+    "marge_ans": 4,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Grands blancs vifs (Chablis premier et grand cru, rieslings et chenins de garde) : le tableau Wine Enthusiast place l'apogée vers 10-16 ans pour Chablis, 10-18 ans pour les rieslings allemands ; Jancis Robinson donne 2 à 30 ans pour le riesling et 4 à 30 ans pour le chenin de Loire. Les meilleurs dépassent largement la fenêtre.",
+    "explication_en": "Age-worthy crisp whites: peak ~10-16 y (Chablis), 10-18 y (German riesling); Robinson: riesling 2-30 y, Loire chenin 4-30 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Burgundy / Chablis",
+       "pret": 4.5,
+       "apogee_debut": 10.2,
+       "apogee_fin": 15.9,
+       "declin": 21.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Mosel / Whites",
+       "pret": 1.9,
+       "apogee_debut": 9.8,
+       "apogee_fin": 17.6,
+       "declin": 25.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Alsace",
+       "pret": 1.1,
+       "apogee_debut": 7.6,
+       "apogee_fin": 14.1,
+       "declin": 20.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Clare Valley / Riesling",
+       "pret": 0,
+       "apogee_debut": 6.8,
+       "apogee_fin": 15.2,
+       "declin": 23.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Hunter Valley / Semillon",
+       "pret": 0.3,
+       "apogee_debut": 7.3,
+       "apogee_fin": 14.4,
+       "declin": 21.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Danube Regions / Whites",
+       "pret": 2.2,
+       "apogee_debut": 9.1,
+       "apogee_fin": 16.1,
+       "declin": 23.1,
+       "extrapole": false
+      }
+     ],
+     "jr": {
+      "Riesling": [
+       2,
+       30
+      ],
+      "Chenin blanc de Loire": [
+       4,
+       30
+      ],
+      "Sémillon de la Hunter": [
+       6,
+       15
+      ],
+      "Furmint": [
+       3,
+       25
+      ]
+     },
+     "wsoc": [
+      {
+       "tableau": "Chablis",
+       "garder_jusqu_a": 4,
+       "boire_des": 5,
+       "passe_des": 15
+      },
+      {
+       "tableau": "Allemagne",
+       "garder_jusqu_a": null,
+       "boire_des": 12,
+       "passe_des": null
+      },
+      {
+       "tableau": "Alsace",
+       "garder_jusqu_a": null,
+       "boire_des": null,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "blanc_ample": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 2,
+     "apogee_fin": 5,
+     "fin": 6
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Chardonnay courant : 2 à 6 ans selon Jancis Robinson.",
+    "explication_en": "Everyday chardonnay: 2-6 y (Robinson).",
+    "sources": [
+     "JR_GARDE"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 5,
+     "apogee_debut": 11,
+     "apogee_fin": 17,
+     "fin": 22
+    },
+    "marge_ans": 4,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Grands blancs de Bourgogne et de Graves : prêts vers 5 ans, apogée vers 11-17 ans dans le tableau Wine Enthusiast ; The Wine Society juge les Côte d'Or blancs « à boire » dès 8 ans environ et voit 2011 et 2009 passés. Les chardonnays boisés du Nouveau Monde vont plus vite (apogée 5-11 ans pour Napa). Prudence : depuis le milieu des années 1990, des bourgognes blancs s'oxydent prématurément.",
+    "explication_en": "Great white Burgundy and Graves: ready ~5 y, peak ~11-17 y (Wine Enthusiast); New World oaked chardonnay faster.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Burgundy / Côte de Beaune (white)",
+       "pret": 5.7,
+       "apogee_debut": 11.2,
+       "apogee_fin": 16.8,
+       "declin": 22.3,
+       "extrapole": false
+      },
+      {
+       "tableau": "Bordeaux / Graves (white)",
+       "pret": 2.8,
+       "apogee_debut": 9.6,
+       "apogee_fin": 16.3,
+       "declin": 23,
+       "extrapole": false
+      },
+      {
+       "tableau": "Napa / Chardonnay",
+       "pret": 0,
+       "apogee_debut": 5.4,
+       "apogee_fin": 11.3,
+       "declin": 17.2,
+       "extrapole": false
+      },
+      {
+       "tableau": "Northern Rhône / Whites",
+       "pret": 0,
+       "apogee_debut": 5.4,
+       "apogee_fin": 13.2,
+       "declin": 21.1,
+       "extrapole": false
+      }
+     ],
+     "wsoc": [
+      {
+       "tableau": "Bourgogne blanc (Côte d'Or)",
+       "garder_jusqu_a": 4,
+       "boire_des": 8,
+       "passe_des": 15
+      }
+     ]
+    }
+   }
+  ],
+  "moelleux": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 2,
+     "apogee_debut": 8,
+     "apogee_fin": 17,
+     "fin": 23
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Moelleux de la Loire et rieslings doux : le sucre et l'acidité les conservent ; Wine Enthusiast place l'apogée des liquoreux de Loire vers 11-17 ans, des blancs de Moselle et du Rhin vers 10-18 ans.",
+    "explication_en": "Sweet Loire and German rieslings: sugar and acidity preserve them; peak ~10-18 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Loire / Sweet Whites",
+       "pret": 5.8,
+       "apogee_debut": 11.4,
+       "apogee_fin": 17,
+       "declin": 22.6,
+       "extrapole": false
+      },
+      {
+       "tableau": "Mosel / Whites",
+       "pret": 1.9,
+       "apogee_debut": 9.8,
+       "apogee_fin": 17.6,
+       "declin": 25.5,
+       "extrapole": false
+      },
+      {
+       "tableau": "Rhine Regions / Whites",
+       "pret": 1.7,
+       "apogee_debut": 9.7,
+       "apogee_fin": 17.7,
+       "declin": 25.7,
+       "extrapole": false
+      }
+     ]
+    }
+   }
+  ],
+  "liquoreux": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 5,
+     "apogee_debut": 11,
+     "apogee_fin": 18,
+     "fin": 24
+    },
+    "marge_ans": 6,
+    "modele": "cloche",
+    "confiance": "moyenne",
+    "explication_fr": "Liquoreux botrytisés (Sauternes, Burgenland, Tokaji) : prêts vers 5 ans, apogée vers 11-18 ans dans le tableau Wine Enthusiast ; Jancis Robinson donne 5 à 25 ans. Les grands Sauternes vivent bien plus longtemps : la fenêtre décrit un millésime moyen. The Wine Society garde encore les Sauternes de 2016 à 2024.",
+    "explication_en": "Botrytised sweet wines: ready ~5 y, peak ~11-18 y (Wine Enthusiast); Robinson 5-25 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Bordeaux / Sauternes/Barsac",
+       "pret": 5,
+       "apogee_debut": 11.2,
+       "apogee_fin": 17.5,
+       "declin": 23.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Burgenland / Sweet Wines",
+       "pret": 5,
+       "apogee_debut": 11.5,
+       "apogee_fin": 18,
+       "declin": 24.5,
+       "extrapole": false
+      }
+     ],
+     "jr": {
+      "Vins botrytisés": [
+       5,
+       25
+      ],
+      "Furmint hongrois": [
+       3,
+       25
+      ]
+     },
+     "wsoc": [
+      {
+       "tableau": "Sauternes",
+       "garder_jusqu_a": 10,
+       "boire_des": 14,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "vin_de_glace": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 2,
+     "apogee_fin": 10,
+     "fin": 15
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "faible",
+    "explication_fr": "Les vins de glace d'entrée de gamme sont prêts à la vente (Wikipédia, d'après les producteurs) ; pour les meilleurs, aucune source chiffrée : fenêtre par convention.",
+    "explication_en": "Basic icewines are ready on release; no figure for the best.",
+    "sources": [
+     "WIKI_AGING",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "xeres_fino": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 1,
+     "fin": 1.5
+    },
+    "marge_ans": 0.5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Fino et manzanilla ne vieillissent pas en bouteille : à boire dans les 12 à 18 mois après la mise (date du lot au dos).",
+    "explication_en": "Drink within 12-18 months of bottling (lot code).",
+    "sources": [
+     "CATAVINO",
+     "WIKI_AGING"
+    ],
+    "preuves": {}
+   }
+  ],
+  "mute_oxydatif": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 3,
+     "fin": null
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Tawny, madère, amontillado, oloroso : élevés longuement avant la vente, ils sont prêts et ne gagnent guère en bouteille ; le madère, chauffé pendant son élevage, est presque indestructible. Catavino conseille de boire amontillado et oloroso dans les 2 à 3 ans après la mise.",
+    "explication_en": "Ready on release; Madeira nearly indestructible; drink amontillado/oloroso within 2-3 y of bottling.",
+    "sources": [
+     "WIKI_AGING",
+     "CATAVINO",
+     "WIKI_STORAGE"
+    ],
+    "preuves": {}
+   }
+  ],
+  "mute_fruite": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 3,
+     "fin": 6
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "faible",
+    "explication_fr": "Ruby, LBV filtré, VDN grenat : mis en bouteille prêts à boire. Fin indicative : convention du dossier.",
+    "explication_en": "Bottled ready to drink; end is a convention.",
+    "sources": [
+     "WIKI_AGING",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "porto_vintage": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 7,
+     "apogee_debut": 14,
+     "apogee_fin": 21,
+     "fin": 40
+    },
+    "marge_ans": 10,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Porto vintage : Wine Enthusiast le donne prêt vers 7 ans et à l'apogée vers 14-21 ans pour un millésime moyen ; Jancis Robinson parle de 20 à 50 ans. The Wine Society garde encore tous les millésimes déclarés de 2015 à 2024 ; Wine Spectator classe 2019 à 2023 « à garder ». Fin à 40 ans : milieu de la fourchette de Robinson.",
+    "explication_en": "Vintage port: ready ~7 y, peak ~14-21 y (Wine Enthusiast); Robinson 20-50 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE",
+     "WSOC2026",
+     "WS2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Port",
+       "pret": 6.9,
+       "apogee_debut": 14.1,
+       "apogee_fin": 21.4,
+       "declin": 28.7,
+       "extrapole": true
+      }
+     ],
+     "jr": {
+      "Porto vintage": [
+       20,
+       50
+      ]
+     },
+     "wsoc": [
+      {
+       "tableau": "Porto",
+       "garder_jusqu_a": 11,
+       "boire_des": null,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "vin_jaune": [
+   {
+    "niveau": "tous",
+    "fenetre_ans": {
+     "pret": 10,
+     "apogee_debut": 15,
+     "apogee_fin": 50,
+     "fin": null
+    },
+    "marge_ans": 10,
+    "modele": "plateau",
+    "confiance": "faible",
+    "explication_fr": "Le vin jaune, élevé six ans et trois mois sous voile, se conserve « pendant de nombreuses décennies » en clavelin. Aucune source ne chiffre l'apogée : fenêtre très large par convention.",
+    "explication_en": "Keeps for many decades; no published peak.",
+    "sources": [
+     "WIKI_VINJAUNE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ],
+  "rouge_leger": [
+   {
+    "niveau": "primeur",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 0.5,
+     "fin": 1
+    },
+    "marge_ans": 0.5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Primeurs et nouveaux (Beaujolais nouveau) : à boire dans les mois qui suivent ; aucun potentiel de garde (Jancis Robinson).",
+    "explication_en": "Primeur wines: drink within months.",
+    "sources": [
+     "JR_GARDE"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 5,
+     "apogee_fin": 12,
+     "fin": 18
+    },
+    "marge_ans": 4,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Crus du Beaujolais et gamays de qualité : apogée vers 5-12 ans dans le tableau Wine Enthusiast ; Jancis Robinson donne 2 à 8 ans pour le pinot noir courant.",
+    "explication_en": "Beaujolais crus: peak ~5-12 y (Wine Enthusiast).",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Beaujolais",
+       "pret": 0,
+       "apogee_debut": 4.8,
+       "apogee_fin": 11.7,
+       "declin": 18.5,
+       "extrapole": false
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_pinot_garde": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 2,
+     "apogee_debut": 3,
+     "apogee_fin": 6,
+     "fin": 8
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Pinot noir courant : 2 à 8 ans (Jancis Robinson).",
+    "explication_en": "Everyday pinot noir: 2-8 y (Robinson).",
+    "sources": [
+     "JR_GARDE"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "nouveau_monde",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 6,
+     "apogee_fin": 12,
+     "fin": 17
+    },
+    "marge_ans": 4,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Pinots du Nouveau Monde (Central Otago, Oregon, Martinborough, Sonoma) : apogée vers 6-12 ans (Wine Enthusiast).",
+    "explication_en": "New World pinot noir: peak ~6-12 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Central Otago / Pinot Noir",
+       "pret": 0.9,
+       "apogee_debut": 6.2,
+       "apogee_fin": 11.4,
+       "declin": 16.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Willamette Valley / Pinot Noir",
+       "pret": 0.7,
+       "apogee_debut": 6.6,
+       "apogee_fin": 12.5,
+       "declin": 18.4,
+       "extrapole": false
+      },
+      {
+       "tableau": "Martinborough / Pinot Noir",
+       "pret": 2.1,
+       "apogee_debut": 7.3,
+       "apogee_fin": 12.5,
+       "declin": 17.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Sonoma / Pinot Noir",
+       "pret": 0,
+       "apogee_debut": 5.5,
+       "apogee_fin": 11.3,
+       "declin": 17.2,
+       "extrapole": false
+      }
+     ]
+    }
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 6,
+     "apogee_debut": 12,
+     "apogee_fin": 19,
+     "fin": 25
+    },
+    "marge_ans": 5,
+    "modele": "cloche",
+    "confiance": "moyenne",
+    "explication_fr": "Bourgogne rouge de garde (villages, premiers et grands crus) : prêt vers 5-6 ans, apogée vers 12-19 ans pour un millésime moyen (Wine Enthusiast) ; Jancis Robinson donne 8 à 25 ans pour un grand cru. The Wine Society garde encore 2015 et tous les millésimes de 2018 à 2024.",
+    "explication_en": "Age-worthy red Burgundy: ready ~6 y, peak ~12-19 y; Robinson: grand cru 8-25 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Burgundy / Côte de Nuits (red)",
+       "pret": 6.2,
+       "apogee_debut": 12.4,
+       "apogee_fin": 18.6,
+       "declin": 24.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Burgundy / Côte de Beaune (red)",
+       "pret": 5.2,
+       "apogee_debut": 11.8,
+       "apogee_fin": 18.3,
+       "declin": 24.8,
+       "extrapole": false
+      }
+     ],
+     "jr": {
+      "Grand cru de Bourgogne": [
+       8,
+       25
+      ],
+      "Pinot noir": [
+       2,
+       8
+      ]
+     },
+     "wsoc": [
+      {
+       "tableau": "Bourgogne rouge",
+       "garder_jusqu_a": 11,
+       "boire_des": 22,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_bordeaux": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 5,
+     "apogee_debut": 12,
+     "apogee_fin": 20,
+     "fin": 27
+    },
+    "marge_ans": 6,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Bordeaux classé : prêt vers 5 ans, apogée vers 12-20 ans, déclin au-delà de 27 ans pour un millésime moyen (Wine Enthusiast, extrapolé au-delà de 26 ans) ; Jancis Robinson donne 8 à 25 ans. Les grands millésimes vont nettement plus loin : The Wine Society garde encore 2018 à 2024, Wine Spectator classe 2010 et 2005 « à garder ».",
+    "explication_en": "Classed-growth Bordeaux: ready ~5 y, peak ~12-20 y, decline beyond ~27 y; Robinson 8-25 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE",
+     "WSOC2026",
+     "WS2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Bordeaux / Médoc",
+       "pret": 5.3,
+       "apogee_debut": 12.6,
+       "apogee_fin": 19.9,
+       "declin": 27.2,
+       "extrapole": true
+      },
+      {
+       "tableau": "Bordeaux / Pomerol/Saint-Émilion",
+       "pret": 5.2,
+       "apogee_debut": 12.7,
+       "apogee_fin": 20.1,
+       "declin": 27.5,
+       "extrapole": true
+      },
+      {
+       "tableau": "Bordeaux / Graves (red)",
+       "pret": 0.9,
+       "apogee_debut": 10.7,
+       "apogee_fin": 20.4,
+       "declin": 30.2,
+       "extrapole": true
+      }
+     ],
+     "jr": {
+      "Bordeaux classés": [
+       8,
+       25
+      ],
+      "Cabernet sauvignon": [
+       4,
+       20
+      ],
+      "Merlot": [
+       2,
+       10
+      ]
+     },
+     "wsoc": [
+      {
+       "tableau": "Médoc/Graves",
+       "garder_jusqu_a": 8,
+       "boire_des": 13,
+       "passe_des": null
+      },
+      {
+       "tableau": "Saint-Émilion/Pomerol",
+       "garder_jusqu_a": 8,
+       "boire_des": 13,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_cabernet_monde": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 3,
+     "apogee_debut": 9,
+     "apogee_fin": 16,
+     "fin": 22
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Cabernets du Nouveau Monde (Napa, Coonawarra, Washington, Hawke's Bay) : apogée vers 9-16 ans (Wine Enthusiast) ; Bolgheri plus lent (14-20 ans). Jancis Robinson : 4 à 20 ans pour le cabernet.",
+    "explication_en": "New World cabernet: peak ~9-16 y; Bolgheri slower; Robinson 4-20 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Napa / Cabernet Sauvignon",
+       "pret": 2.8,
+       "apogee_debut": 9.1,
+       "apogee_fin": 15.4,
+       "declin": 21.6,
+       "extrapole": false
+      },
+      {
+       "tableau": "Coonawarra / Cabernet Sauvignon",
+       "pret": 3.3,
+       "apogee_debut": 9.9,
+       "apogee_fin": 16.5,
+       "declin": 23.1,
+       "extrapole": false
+      },
+      {
+       "tableau": "Columbia Valley / Cabernet, Merlot",
+       "pret": 1.6,
+       "apogee_debut": 7.3,
+       "apogee_fin": 13,
+       "declin": 18.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Hawke's Bay / Reds",
+       "pret": 1.9,
+       "apogee_debut": 8.4,
+       "apogee_fin": 14.9,
+       "declin": 21.4,
+       "extrapole": false
+      },
+      {
+       "tableau": "Tuscany / Bolgheri",
+       "pret": 7.6,
+       "apogee_debut": 13.9,
+       "apogee_fin": 20.1,
+       "declin": 26.4,
+       "extrapole": true
+      },
+      {
+       "tableau": "Maipo / Reds",
+       "pret": 0,
+       "apogee_debut": 4.2,
+       "apogee_fin": 10.9,
+       "declin": 17.6,
+       "extrapole": false
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_syrah_nord": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 3,
+     "apogee_debut": 11,
+     "apogee_fin": 18,
+     "fin": 26
+    },
+    "marge_ans": 6,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Syrah du Rhône nord : prête vers 3 ans, apogée vers 11-18 ans (Wine Enthusiast) ; The Wine Society garde encore 2019 à 2024 et voit 2003 passé ; Jancis Robinson : 4 à 16 ans pour la syrah.",
+    "explication_en": "Northern Rhône syrah: peak ~11-18 y; Robinson 4-16 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "WSOC2026",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Northern Rhône / Reds",
+       "pret": 3.2,
+       "apogee_debut": 10.8,
+       "apogee_fin": 18.5,
+       "declin": 26.1,
+       "extrapole": true
+      }
+     ],
+     "wsoc": [
+      {
+       "tableau": "Rhône nord",
+       "garder_jusqu_a": 11,
+       "boire_des": 12,
+       "passe_des": 23
+      }
+     ],
+     "jr": {
+      "Syrah": [
+       4,
+       16
+      ]
+     }
+    }
+   }
+  ],
+  "rouge_grenache_sud": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 8,
+     "apogee_fin": 17,
+     "fin": 24
+    },
+    "marge_ans": 6,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Châteauneuf, Gigondas et grands rouges du Sud : apogée vers 8-17 ans (Wine Enthusiast, Rhône sud) ; Languedoc 7-13 ans. The Wine Society voit 2008 et 2003 passés.",
+    "explication_en": "Southern Rhône: peak ~8-17 y; Languedoc 7-13 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Southern Rhône / Reds",
+       "pret": 0,
+       "apogee_debut": 8.6,
+       "apogee_fin": 17.4,
+       "declin": 26.1,
+       "extrapole": true
+      },
+      {
+       "tableau": "Languedoc-Roussillon",
+       "pret": 0.9,
+       "apogee_debut": 7.1,
+       "apogee_fin": 13.4,
+       "declin": 19.6,
+       "extrapole": false
+      },
+      {
+       "tableau": "Catalonia / Reds",
+       "pret": 0,
+       "apogee_debut": 3.6,
+       "apogee_fin": 10.7,
+       "declin": 17.8,
+       "extrapole": false
+      }
+     ],
+     "wsoc": [
+      {
+       "tableau": "Rhône sud",
+       "garder_jusqu_a": 11,
+       "boire_des": 14,
+       "passe_des": 18
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_nebbiolo": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 9,
+     "apogee_debut": 18,
+     "apogee_fin": 26,
+     "fin": 35
+    },
+    "marge_ans": 8,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Barolo : le plus lent de tous dans le tableau Wine Enthusiast — prêt vers 9 ans, apogée vers 18-26 ans, valeurs extrapolées ; Barbaresco un peu plus tôt (15-24 ans). Jancis Robinson donne 4 à 20 ans pour le nebbiolo en général.",
+    "explication_en": "Barolo: slowest of all — ready ~9 y, peak ~18-26 y (extrapolated); Robinson nebbiolo 4-20 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Piedmont / Barolo",
+       "pret": 9.2,
+       "apogee_debut": 17.8,
+       "apogee_fin": 26.5,
+       "declin": 35.1,
+       "extrapole": true
+      },
+      {
+       "tableau": "Piedmont / Barbaresco",
+       "pret": 6.8,
+       "apogee_debut": 15.3,
+       "apogee_fin": 23.7,
+       "declin": 32.1,
+       "extrapole": true
+      }
+     ],
+     "jr": {
+      "Nebbiolo": [
+       4,
+       20
+      ]
+     }
+    }
+   }
+  ],
+  "rouge_sangiovese": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 2,
+     "apogee_debut": 4,
+     "apogee_fin": 7,
+     "fin": 8
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Chianti courant : 2 à 8 ans pour le sangiovese (Jancis Robinson).",
+    "explication_en": "Everyday sangiovese: 2-8 y.",
+    "sources": [
+     "JR_GARDE"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 6,
+     "apogee_debut": 12,
+     "apogee_fin": 19,
+     "fin": 25
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Brunello et Chianti Classico de garde : prêts vers 5-8 ans, apogée vers 11-20 ans (Wine Enthusiast). The Wine Society voit 2005 et 2003 passés en Toscane.",
+    "explication_en": "Brunello and top Chianti: peak ~11-20 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "WSOC2026"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Tuscany / Brunello di Montalcino",
+       "pret": 8,
+       "apogee_debut": 14.1,
+       "apogee_fin": 20.3,
+       "declin": 26.4,
+       "extrapole": true
+      },
+      {
+       "tableau": "Tuscany / Chianti Classico",
+       "pret": 5.1,
+       "apogee_debut": 11,
+       "apogee_fin": 17,
+       "declin": 22.9,
+       "extrapole": false
+      }
+     ],
+     "wsoc": [
+      {
+       "tableau": "Toscane",
+       "garder_jusqu_a": 7,
+       "boire_des": 12,
+       "passe_des": 21
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_tempranillo": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 2,
+     "apogee_fin": 6,
+     "fin": 8
+    },
+    "marge_ans": 2,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Tempranillo courant (crianza) : 2 à 8 ans (Jancis Robinson).",
+    "explication_en": "Everyday tempranillo: 2-8 y.",
+    "sources": [
+     "JR_GARDE"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 1,
+     "apogee_debut": 8,
+     "apogee_fin": 15,
+     "fin": 21
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Rioja et Ribera de garde : apogée vers 7-15 ans (Wine Enthusiast) ; les gran reservas sont vendus déjà âgés (au moins 5 ans d'élevage), ce qui raccourcit la garde chez soi.",
+    "explication_en": "Rioja and Ribera: peak ~7-15 y.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Rioja / Reds",
+       "pret": 0.8,
+       "apogee_debut": 7.7,
+       "apogee_fin": 14.7,
+       "declin": 21.7,
+       "extrapole": false
+      },
+      {
+       "tableau": "Ribera del Duero / Reds",
+       "pret": 0.8,
+       "apogee_debut": 7.2,
+       "apogee_fin": 13.5,
+       "declin": 19.9,
+       "extrapole": false
+      }
+     ],
+     "wsoc": [
+      {
+       "tableau": "Rioja",
+       "garder_jusqu_a": 7,
+       "boire_des": 12,
+       "passe_des": null
+      }
+     ]
+    }
+   }
+  ],
+  "rouge_puissant_soleil": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   },
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 2,
+     "apogee_debut": 7,
+     "apogee_fin": 14,
+     "fin": 20
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Shiraz de Barossa, malbec de Mendoza, zinfandel : apogée vers 4-10 ans pour Mendoza et le zinfandel, 10-17 ans pour les grandes shiraz (Wine Enthusiast) ; Amarone 14-19 ans. Jancis Robinson : 2 à 6 ans pour le zinfandel, 4 à 16 pour la syrah.",
+    "explication_en": "Barossa shiraz, Mendoza malbec, zinfandel: peak 4-17 y depending on style.",
+    "sources": [
+     "WE2018",
+     "GARDE_CALC",
+     "JR_GARDE"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Barossa/McLaren Vale / Shiraz",
+       "pret": 2.7,
+       "apogee_debut": 9.7,
+       "apogee_fin": 16.7,
+       "declin": 23.6,
+       "extrapole": false
+      },
+      {
+       "tableau": "Argentina/Mendoza / Reds",
+       "pret": 0,
+       "apogee_debut": 4.1,
+       "apogee_fin": 10.4,
+       "declin": 16.6,
+       "extrapole": false
+      },
+      {
+       "tableau": "Napa / Zinfandel",
+       "pret": 0,
+       "apogee_debut": 4.8,
+       "apogee_fin": 11.1,
+       "declin": 17.4,
+       "extrapole": false
+      },
+      {
+       "tableau": "Veneto / Amarone",
+       "pret": 8,
+       "apogee_debut": 13.7,
+       "apogee_fin": 19.3,
+       "declin": 24.9,
+       "extrapole": false
+      }
+     ],
+     "jr": {
+      "Zinfandel": [
+       2,
+       6
+      ],
+      "Syrah": [
+       4,
+       16
+      ]
+     }
+    }
+   }
+  ],
+  "rouge_tannique": [
+   {
+    "niveau": "garde",
+    "fenetre_ans": {
+     "pret": 4,
+     "apogee_debut": 10,
+     "apogee_fin": 16,
+     "fin": 22
+    },
+    "marge_ans": 5,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Rouges tanniques (Madiran, Cahors, aglianico, Douro) : Jancis Robinson donne 4 à 12 ans pour le tannat de Madiran, 4 à 15 pour l'aglianico, 3 à 10 pour le saperavi, 4 à 10 pour le xinomavro ; Wine Enthusiast place l'apogée de l'aglianico et des rouges portugais vers 10-17 ans.",
+    "explication_en": "Tannic reds: Robinson tannat 4-12 y, aglianico 4-15 y; Wine Enthusiast peak ~10-17 y.",
+    "sources": [
+     "JR_GARDE",
+     "WE2018",
+     "GARDE_CALC"
+    ],
+    "preuves": {
+     "we": [
+      {
+       "tableau": "Basilicata / Aglianico del Vulture",
+       "pret": 6.6,
+       "apogee_debut": 11.4,
+       "apogee_fin": 16.2,
+       "declin": 21.1,
+       "extrapole": false
+      },
+      {
+       "tableau": "Campania / Reds",
+       "pret": 7.4,
+       "apogee_debut": 12,
+       "apogee_fin": 16.7,
+       "declin": 21.4,
+       "extrapole": false
+      },
+      {
+       "tableau": "Table Wines / Reds",
+       "pret": 4.3,
+       "apogee_debut": 10.6,
+       "apogee_fin": 16.9,
+       "declin": 23.2,
+       "extrapole": false
+      }
+     ],
+     "jr": {
+      "Tannat de Madiran": [
+       4,
+       12
+      ],
+      "Aglianico": [
+       4,
+       15
+      ],
+      "Saperavi": [
+       3,
+       10
+      ],
+      "Xinomavro": [
+       4,
+       10
+      ]
+     }
+    }
+   }
+  ],
+  "rouge_courant": [
+   {
+    "niveau": "courant",
+    "fenetre_ans": {
+     "pret": 0,
+     "apogee_debut": 0,
+     "apogee_fin": 2,
+     "fin": 5
+    },
+    "marge_ans": 1,
+    "modele": "plateau",
+    "confiance": "moyenne",
+    "explication_fr": "Vin courant : la grande majorité des vins se boivent jeunes — on estime que 90 % du vin est fait pour être bu dans l'année et 99 % dans les cinq ans ; Jancis Robinson classe les vins de pays, de marque et de cépages bon marché parmi les vins sans potentiel de garde. Apogée dans les deux ans (convention du dossier).",
+    "explication_en": "Everyday wine: 90 % of wine is meant to be drunk within a year, 99 % within five; peak within two years (convention).",
+    "sources": [
+     "WIKI_AGING",
+     "JR_GARDE",
+     "DOSSIER"
+    ],
+    "preuves": {}
+   }
+  ]
+ },
+ "ajustements": [
+  {
+   "id": "garde.millesime",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "ans_par_point_100": 0.44,
+    "ans_par_point_10": 1.76
+   },
+   "marge": {
+    "ans_par_point_100": 0.06
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Un grand millésime vit plus longtemps. Calcul SageMath sur les 2459 cases du tableau Wine Enthusiast : à âge égal, chaque point de note (sur 100) au-dessus de la moyenne de la région retarde la maturité d'environ 0,44 an (± 0,06) ; sur le tableau de The Wine Society, chaque point sur 10 la retarde d'environ 1,8 ans. On décale donc toute la fenêtre d'autant.",
+   "explication_en": "Each extra point of vintage score (out of 100) above the regional mean delays maturity by about 0.44 year (Wine Enthusiast, SageMath regression).",
+   "sources": [
+    "GARDE_CALC",
+    "WE2018",
+    "WSOC2026"
+   ]
+  },
+  {
+   "id": "garde.temperature_cave",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "facteur_vitesse": "2^((T-12)/10)",
+    "reference_c": 12
+   },
+   "marge": {
+    "relative": 0.5
+   },
+   "confiance": "faible",
+   "explication_fr": "La vitesse des réactions chimiques double à peu près tous les 10 °C : une cave à 18 °C fait vieillir le vin environ 1,5 fois plus vite qu'une cave à 12 °C (calcul SageMath). On divise la fenêtre par ce facteur. Règle de chimie générale, pas une mesure sur le vin : marge large.",
+   "explication_en": "Reaction rates roughly double every 10 °C: a cellar at 18 °C ages wine ~1.5× faster than at 12 °C.",
+   "sources": [
+    "WIKI_STORAGE",
+    "CALC5"
+   ]
+  },
+  {
+   "id": "garde.bouteille_format",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "magnum": "plus lent",
+    "demi": "plus rapide"
+   },
+   "marge": {},
+   "confiance": "faible",
+   "explication_fr": "Un magnum vieillit plus lentement qu'une bouteille et une demi-bouteille plus vite : moins d'oxygène par litre de vin (constat d'expérience largement partagé ; la seule mesure archivée concerne le gaz carbonique des champagnes, qui s'échappe plus lentement des grands formats). Non chiffré.",
+   "explication_en": "Magnums age more slowly (less oxygen per litre); not quantified.",
+   "sources": [
+    "DOSSIER"
+   ]
+  }
+ ],
+ "regression": {
+  "wine_enthusiast": {
+   "pente_age_etat_par_an": 0.14872593855733304,
+   "sd": 0.0018261320194345938,
+   "effet_note_par_point": -0.06498325458365385,
+   "sd_note": 0.0041080390320888125,
+   "annees_de_garde_par_point_WE": 0.4369328929035681,
+   "sd_annees": 0.029776559863767448,
+   "n": 2459,
+   "r2": 0.823880254251325
+  },
+  "wine_society": {
+   "pente_age_etat_par_an": 0.08522439683819578,
+   "effet_note_par_point_sur_10": -0.14998340287678696,
+   "annees_par_point_sur_10": 1.759864644880274,
+   "n": 249
+  }
+ }
+}

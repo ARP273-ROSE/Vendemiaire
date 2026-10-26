@@ -1,0 +1,163 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "bordelaise": [
+  {
+   "code": "IN",
+   "nom_fr": "Dans le goulot",
+   "nom_en": "Into neck",
+   "explication_fr": "Niveau parfait à tout âge ; « remarquable » pour un vin de plus de 10 ans (Tennants).",
+   "normal_si_age_min_ans": 0,
+   "excellent_si_age_min_ans": 0,
+   "risque": "aucun",
+   "sources": [
+    "WINEBID",
+    "TENNANTS",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "BN",
+   "nom_fr": "Base du goulot",
+   "nom_en": "Base of neck",
+   "explication_fr": "Niveau idéal, parfait pour toute bouteille, surtout de plus de 10 ans.",
+   "normal_si_age_min_ans": 0,
+   "excellent_si_age_min_ans": 0,
+   "risque": "aucun",
+   "sources": [
+    "WINEBID",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "VTS",
+   "nom_fr": "Très haut d'épaule",
+   "nom_en": "Very top shoulder",
+   "explication_fr": "Remplissage un peu bas à la mise ou légère évaporation à travers le bouchon : excellent pour un vin de plus de 20 ans (WineBid) ; bon dès 15 ans (Abbey's).",
+   "normal_si_age_min_ans": 15,
+   "excellent_si_age_min_ans": 20,
+   "risque": "faible",
+   "sources": [
+    "WINEBID",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "TS",
+   "nom_fr": "Haut d'épaule",
+   "nom_en": "Top shoulder",
+   "explication_fr": "Normal pour un bordeaux de plus de 15 ans ; très bon au-delà de 35 ans.",
+   "normal_si_age_min_ans": 15,
+   "excellent_si_age_min_ans": 35,
+   "risque": "faible",
+   "sources": [
+    "WINEBID",
+    "TENNANTS",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "HS",
+   "nom_fr": "Haute épaule",
+   "nom_en": "High (upper) shoulder",
+   "explication_fr": "Acceptable vers 20 ans, exceptionnel pour un vin d'avant 1950 (Tennants) ; normal à 20 ans et plus (Abbey's). Début d'usure du bouchon.",
+   "normal_si_age_min_ans": 20,
+   "excellent_si_age_min_ans": 50,
+   "risque": "modéré",
+   "sources": [
+    "TENNANTS",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "MS",
+   "nom_fr": "Mi-épaule",
+   "nom_en": "Mid shoulder",
+   "explication_fr": "Le niveau a baissé (bouchon fatigué ou conservation irrégulière) : pas anormal à 30-40 ans (Tennants), normal au-delà de 40 ans (WineBid), à 50 ans (Abbey's). Risque réel si l'on compte le boire.",
+   "normal_si_age_min_ans": 35,
+   "excellent_si_age_min_ans": null,
+   "risque": "élevé",
+   "sources": [
+    "WINEBID",
+    "TENNANTS",
+    "ABBEYS"
+   ]
+  },
+  {
+   "code": "LS",
+   "nom_fr": "Bas d'épaule",
+   "nom_en": "Low shoulder",
+   "explication_fr": "Risqué à tout âge : n'est accepté en vente que si la bouteille est exceptionnellement rare.",
+   "normal_si_age_min_ans": null,
+   "excellent_si_age_min_ans": null,
+   "risque": "très élevé",
+   "sources": [
+    "TENNANTS",
+    "ABBEYS",
+    "WINEBID"
+   ]
+  },
+  {
+   "code": "BLS",
+   "nom_fr": "Sous le bas d'épaule",
+   "nom_en": "Below low shoulder",
+   "explication_fr": "En général imbuvable.",
+   "normal_si_age_min_ans": null,
+   "excellent_si_age_min_ans": null,
+   "risque": "vin probablement perdu",
+   "sources": [
+    "TENNANTS"
+   ]
+  }
+ ],
+ "bourguignonne_cm": [
+  {
+   "cm_max": 2,
+   "explication_fr": "2 cm ou moins sous le bouchon : excellent à tout âge.",
+   "normal_si_age_min_ans": 0,
+   "sources": [
+    "WINEBID"
+   ]
+  },
+  {
+   "cm_max": 3,
+   "explication_fr": "3 cm : normal à 12 ans et plus, excellent au-delà de 25 ans ; 3,5-4 cm « excellent pour son âge » chez Tennants.",
+   "normal_si_age_min_ans": 12,
+   "sources": [
+    "WINEBID",
+    "TENNANTS"
+   ]
+  },
+  {
+   "cm_max": 4,
+   "explication_fr": "4 cm : normal après 20 ans, excellent après 35 ans.",
+   "normal_si_age_min_ans": 20,
+   "sources": [
+    "WINEBID"
+   ]
+  },
+  {
+   "cm_max": 5,
+   "explication_fr": "5 cm : courant à 30 ans et plus.",
+   "normal_si_age_min_ans": 30,
+   "sources": [
+    "WINEBID"
+   ]
+  },
+  {
+   "cm_max": 7,
+   "explication_fr": "5 à 7 cm : normal, voire bon, pour une bouteille de 50 ans ; même 7 cm est rarement un risque, car le bourgogne souffre moins de la vidange que le bordeaux (Tennants).",
+   "normal_si_age_min_ans": 50,
+   "sources": [
+    "TENNANTS"
+   ]
+  }
+ ],
+ "explication_fr": "Codes identiques à Vendémiaire (referentiels.niveau). Âges = âge du vin depuis le millésime. Le bourgogne se mesure en centimètres sous le bouchon.",
+ "sources_generales": [
+  "WINEBID",
+  "TENNANTS",
+  "ABBEYS"
+ ]
+}

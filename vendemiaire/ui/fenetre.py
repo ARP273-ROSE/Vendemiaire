@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Fenêtre principale : tableau de bord, cave, mur d'étiquettes, plan des
-casiers, livre de cave, liste d'envies, conditions de cave."""
+casiers, livre de cave, « que boire ce soir ? », liste d'envies, conditions de
+cave."""
 from __future__ import annotations
 
 import logging
@@ -46,6 +47,7 @@ class FenetrePrincipale(QMainWindow):
         reseau.autoriser(reglages.value("reseau/autorise", False, type=bool))
         ocr.definir_chemin(reglages.value("ocr/tesseract", "") or None)
         regles.charger_livres()
+        self.recalculer_fenetres()
         self.construire()
         etat = QSettings().value("fenetre/geometrie")
         if etat:
@@ -76,11 +78,14 @@ class FenetrePrincipale(QMainWindow):
         self.livre = VueLivre(self.cave)
         self.envies = VueEnvies(self.cave)
         self.conditions = VueConditions(self.cave)
+        from .ce_soir import VueCeSoir
+        self.ce_soir = VueCeSoir(self.cave)
         self.onglets.addTab(self.tableau, tr("onglet.tableau"))
         self.onglets.addTab(self.vue_cave, tr("onglet.cave"))
         self.onglets.addTab(self.mur, tr("onglet.mur"))
         self.onglets.addTab(self.plan, tr("onglet.plan"))
         self.onglets.addTab(self.livre, tr("onglet.livre"))
+        self.onglets.addTab(self.ce_soir, tr("onglet.ce_soir"))
         self.onglets.addTab(self.envies, tr("onglet.envies"))
         self.onglets.addTab(self.conditions, tr("onglet.conditions"))
         ancien = self.centralWidget()
@@ -105,6 +110,10 @@ class FenetrePrincipale(QMainWindow):
         f.envie.connect(self.envie_depuis_vin)
         f.photo_deposee.connect(self.photo_deposee)
         f.modifie.connect(self.tout_rafraichir)
+        f.ce_soir.connect(self.fiche_ce_soir)
+        f.entamer.connect(self.entamer_bouteille)
+        f.diagnostic.connect(self.diagnostic_bouteille)
+        self.ce_soir.vin_choisi.connect(self.montrer_vin)
         self.mur.vin_choisi.connect(self.montrer_vin)
         self.mur.photo_deposee.connect(self.photo_deposee)
         self.plan.modifie.connect(self.tout_rafraichir)
@@ -137,6 +146,11 @@ class FenetrePrincipale(QMainWindow):
         m.addSeparator()
         self._action(m, "menu.inventaire", self.inventaire)
         m.addSeparator()
+        self._action(m, "menu.ce_soir", lambda: self.onglets.setCurrentWidget(self.ce_soir))
+        self._action(m, "menu.fiche_ce_soir", lambda: self._vin_courant(self.fiche_ce_soir))
+        self._action(m, "menu.diagnostic", lambda: self.diagnostic_bouteille(
+            self.vue_cave.fiche.bouteille_choisie()))
+        m.addSeparator()
         self._action(m, "menu.supprimer_vin", lambda: self._vin_courant(self.supprimer_vin))
 
         m = self.menuBar().addMenu(tr("menu.references"))
@@ -145,6 +159,7 @@ class FenetrePrincipale(QMainWindow):
         self._action(m, "menu.code_barres", self.identifier_par_code)
         m.addSeparator()
         self._action(m, "menu.bases_reference", self.bases_reference)
+        self._action(m, "menu.regles", self.voir_regles)
 
         m = self.menuBar().addMenu(tr("menu.langue"))
         groupe = QActionGroup(self)
@@ -201,7 +216,16 @@ class FenetrePrincipale(QMainWindow):
         if vin:
             self.vue_cave.selectionner(vin)
 
+    def recalculer_fenetres(self, vin_ids=None) -> None:
+        """Fenêtres calculées d'après le dossier « Le vin », rangées dans la base
+        (source « calcul »). Un jeu de règles invalide est signalé, jamais masqué."""
+        try:
+            self.cave.enregistrer_fenetres_calculees(vin_ids)
+        except Exception:
+            log.exception("fenêtres calculées")
+
     def tout_rafraichir(self, vin: int | None = None) -> None:
+        self.recalculer_fenetres([vin] if vin else None)
         self.vue_cave.recharger_filtres()
         if vin:
             self.vue_cave.selectionner(vin)
@@ -210,6 +234,8 @@ class FenetrePrincipale(QMainWindow):
         self.livre.rafraichir()
         self.tableau.rafraichir()
         self.envies.rafraichir()
+        self.ce_soir.rafraichir()
+        self.conditions.rafraichir()
         if self.onglets.currentWidget() is self.mur:
             self.mur.rafraichir()
 
@@ -361,6 +387,29 @@ class FenetrePrincipale(QMainWindow):
         if not self.vue_cave.selectionner(vin_id):
             self.vue_cave.statut.setCurrentIndex(1)
             self.vue_cave.selectionner(vin_id)
+
+    def fiche_ce_soir(self, vin_id: int) -> None:
+        from .ce_soir import DialogueFicheCeSoir
+        DialogueFicheCeSoir(self.cave, [vin_id], parent=self).exec()
+
+    def entamer_bouteille(self, bid: int) -> None:
+        from .ce_soir import DialogueEntamer
+        b = self.cave.bouteille(bid)
+        if b is None or b["statut"] != "en_cave":
+            return
+        if DialogueEntamer(self.cave, bid, self).exec() == QDialog.DialogCode.Accepted:
+            self.tout_rafraichir(b["vin_id"])
+
+    def diagnostic_bouteille(self, bid: int | None = None) -> None:
+        from .degustation import DialogueDiagnostic
+        d = DialogueDiagnostic(self.cave, bid, self)
+        d.exec()
+        if d.sortie and bid:
+            self.tout_rafraichir(self.cave.bouteille(bid)["vin_id"])
+
+    def voir_regles(self) -> None:
+        from .regles_ui import DialogueRegles
+        DialogueRegles(self).exec()
 
     def inventaire(self) -> None:
         from .inventaire import DialogueInventaire

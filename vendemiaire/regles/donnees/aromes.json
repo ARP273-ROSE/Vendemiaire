@@ -1,0 +1,311 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "source": [
+  "WSET_SAT",
+  "NOBLE"
+ ],
+ "explication_fr": "Codes de la roue des arômes : trois cercles (primaires du raisin et de la fermentation, secondaires de la vinification, tertiaires du vieillissement), familles et descripteurs du lexique WSET de niveau 3 ; les familles de la roue d'Ann C. Noble (UC Davis) sont ajoutées pour les défauts.",
+ "familles": [
+  {
+   "code": "P.FLO",
+   "cercle": "primaire",
+   "fr": "Floral",
+   "en": "Floral",
+   "descripteurs": [
+    "acacia",
+    "chèvrefeuille",
+    "camomille",
+    "sureau",
+    "géranium",
+    "fleur blanche",
+    "rose",
+    "violette"
+   ]
+  },
+  {
+   "code": "P.FVE",
+   "cercle": "primaire",
+   "fr": "Fruits verts",
+   "en": "Green fruit",
+   "descripteurs": [
+    "pomme",
+    "groseille à maquereau",
+    "poire",
+    "bonbon anglais",
+    "coing",
+    "raisin"
+   ]
+  },
+  {
+   "code": "P.AGR",
+   "cercle": "primaire",
+   "fr": "Agrumes",
+   "en": "Citrus fruit",
+   "descripteurs": [
+    "pamplemousse",
+    "citron",
+    "citron vert",
+    "écorce d'orange",
+    "zeste de citron"
+   ]
+  },
+  {
+   "code": "P.FNO",
+   "cercle": "primaire",
+   "fr": "Fruits à noyau",
+   "en": "Stone fruit",
+   "descripteurs": [
+    "pêche",
+    "abricot",
+    "nectarine"
+   ]
+  },
+  {
+   "code": "P.TRO",
+   "cercle": "primaire",
+   "fr": "Fruits exotiques",
+   "en": "Tropical fruit",
+   "descripteurs": [
+    "banane",
+    "litchi",
+    "mangue",
+    "melon",
+    "fruit de la passion",
+    "ananas"
+   ]
+  },
+  {
+   "code": "P.FRO",
+   "cercle": "primaire",
+   "fr": "Fruits rouges",
+   "en": "Red fruit",
+   "descripteurs": [
+    "groseille",
+    "canneberge",
+    "framboise",
+    "fraise",
+    "cerise rouge",
+    "prune rouge"
+   ]
+  },
+  {
+   "code": "P.FNR",
+   "cercle": "primaire",
+   "fr": "Fruits noirs",
+   "en": "Black fruit",
+   "descripteurs": [
+    "cassis",
+    "mûre",
+    "myrtille",
+    "cerise noire",
+    "prune noire"
+   ]
+  },
+  {
+   "code": "P.FSE",
+   "cercle": "primaire",
+   "fr": "Fruits secs ou cuits",
+   "en": "Dried/cooked fruit",
+   "descripteurs": [
+    "figue",
+    "pruneau",
+    "raisin sec",
+    "kirsch",
+    "confiture",
+    "fruits cuits"
+   ]
+  },
+  {
+   "code": "P.HBC",
+   "cercle": "primaire",
+   "fr": "Végétal",
+   "en": "Herbaceous",
+   "descripteurs": [
+    "poivron vert",
+    "herbe coupée",
+    "feuille de tomate",
+    "asperge",
+    "bourgeon de cassis"
+   ]
+  },
+  {
+   "code": "P.HER",
+   "cercle": "primaire",
+   "fr": "Herbes aromatiques",
+   "en": "Herbal",
+   "descripteurs": [
+    "eucalyptus",
+    "menthe",
+    "médicinal",
+    "lavande",
+    "fenouil",
+    "aneth"
+   ]
+  },
+  {
+   "code": "P.EPI",
+   "cercle": "primaire",
+   "fr": "Épices piquantes",
+   "en": "Pungent spice",
+   "descripteurs": [
+    "poivre noir",
+    "poivre blanc",
+    "réglisse"
+   ]
+  },
+  {
+   "code": "P.AUT",
+   "cercle": "primaire",
+   "fr": "Minéral et autres",
+   "en": "Other",
+   "descripteurs": [
+    "pierre à fusil",
+    "pierre mouillée",
+    "laine mouillée"
+   ]
+  },
+  {
+   "code": "S.LEV",
+   "cercle": "secondaire",
+   "fr": "Levure (lies, autolyse)",
+   "en": "Yeast",
+   "descripteurs": [
+    "biscuit",
+    "pain",
+    "pain grillé",
+    "pâtisserie",
+    "brioche",
+    "pâte à pain",
+    "fromage"
+   ]
+  },
+  {
+   "code": "S.FML",
+   "cercle": "secondaire",
+   "fr": "Fermentation malolactique",
+   "en": "Malolactic",
+   "descripteurs": [
+    "beurre",
+    "fromage",
+    "crème"
+   ]
+  },
+  {
+   "code": "S.BOI",
+   "cercle": "secondaire",
+   "fr": "Bois (fût de chêne)",
+   "en": "Oak",
+   "descripteurs": [
+    "vanille",
+    "clou de girofle",
+    "muscade",
+    "noix de coco",
+    "caramel au beurre",
+    "pain grillé",
+    "cèdre",
+    "bois brûlé",
+    "fumée",
+    "chocolat",
+    "café",
+    "résine"
+   ]
+  },
+  {
+   "code": "T.OXY",
+   "cercle": "tertiaire",
+   "fr": "Oxydation voulue",
+   "en": "Deliberate oxidation",
+   "descripteurs": [
+    "amande",
+    "massepain",
+    "noisette",
+    "noix",
+    "chocolat",
+    "café",
+    "caramel",
+    "toffee"
+   ]
+  },
+  {
+   "code": "T.FEB",
+   "cercle": "tertiaire",
+   "fr": "Évolution du fruit (blancs)",
+   "en": "Fruit development (white)",
+   "descripteurs": [
+    "abricot sec",
+    "marmelade",
+    "pomme séchée",
+    "banane séchée"
+   ]
+  },
+  {
+   "code": "T.FER",
+   "cercle": "tertiaire",
+   "fr": "Évolution du fruit (rouges)",
+   "en": "Fruit development (red)",
+   "descripteurs": [
+    "figue",
+    "pruneau",
+    "goudron",
+    "mûre séchée",
+    "canneberge séchée",
+    "mûre cuite",
+    "prune cuite"
+   ]
+  },
+  {
+   "code": "T.BTB",
+   "cercle": "tertiaire",
+   "fr": "Vieillissement en bouteille (blancs)",
+   "en": "Bottle age (white)",
+   "descripteurs": [
+    "pétrole",
+    "kérosène",
+    "cannelle",
+    "gingembre",
+    "muscade",
+    "pain grillé",
+    "noisette",
+    "champignon",
+    "foin",
+    "miel"
+   ]
+  },
+  {
+   "code": "T.BTR",
+   "cercle": "tertiaire",
+   "fr": "Vieillissement en bouteille (rouges)",
+   "en": "Bottle age (red)",
+   "descripteurs": [
+    "cuir",
+    "sous-bois",
+    "terre",
+    "champignon",
+    "gibier",
+    "tabac",
+    "végétal",
+    "feuilles mouillées",
+    "salin, sapide",
+    "viande",
+    "ferme, écurie"
+   ]
+  },
+  {
+   "code": "X.DEF",
+   "cercle": "défaut",
+   "fr": "Défauts (familles « chimique », « oxydé », « microbiologique » de la roue de Noble)",
+   "en": "Faults",
+   "descripteurs": [
+    "soufre",
+    "œuf pourri",
+    "carton mouillé",
+    "vinaigre",
+    "vernis",
+    "écurie",
+    "géranium"
+   ]
+  }
+ ]
+}

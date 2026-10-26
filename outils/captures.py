@@ -9,7 +9,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PyQt6 import QtCore  # noqa: E402
+from PyQt6 import QtCore, QtWidgets  # noqa: E402
 
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE))
@@ -87,6 +87,77 @@ def phase2(app, w, cave, langue, attendre):
     QtWidgets.QApplication.processEvents()
 
 
+def phase3(app, w, cave, langue, attendre):
+    """Captures de la phase 3 : règles du dossier « Le vin » dans la fiche,
+    tableau de bord (garde, courbe d'apogée), « ce soir », fiche imprimable,
+    niveaux, dégustation et roue des arômes, défauts, bouteille entamée, règles."""
+    from vendemiaire.ui.ce_soir import DialogueEntamer, DialogueFicheCeSoir
+    from vendemiaire.ui.degustation import DialogueDegustation, DialogueDiagnostic
+    from vendemiaire.ui.regles_ui import DialogueRegles
+    from vendemiaire.ui.saisie import DialogueBouteille
+
+    def capture(widget, nom):
+        widget.show()
+        attendre()
+        widget.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
+
+    vin = cave.base.valeur("SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id "
+                           "WHERE p.nom='Château des Trois Chênes' AND v.cuvee='Grand vin' AND EXISTS("
+                           "SELECT 1 FROM bouteille b WHERE b.vin_id=v.id AND b.statut='en_cave') "
+                           "ORDER BY millesime LIMIT 1")
+    bid = cave.base.valeur("SELECT id FROM bouteille WHERE vin_id=? AND statut='en_cave' ORDER BY id", (vin,))
+    cave.enregistrer_degustation({"vin_id": vin, "robe": "grenat, reflets tuilés" if langue == "fr" else
+                                  "garnet, brick rim", "aromes": "P.FNR:cassis;S.BOI:cèdre;T.BTR:cuir;T.BTR:tabac",
+                                  "note": 17.5, "echelle": "20"})
+    # la fiche : panneau des règles
+    w.onglets.setCurrentWidget(w.vue_cave)
+    w.vue_cave.statut.setCurrentIndex(1)
+    w.tout_rafraichir(vin)
+    attendre()
+    fiche = w.vue_cave.fiche
+    fiche.verticalScrollBar().setValue(fiche.g_fenetres.y() - 10)
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-fiche-regles.png"))
+    fiche.verticalScrollBar().setValue(0)
+    # tableau de bord : garde et courbe d'apogée
+    w.onglets.setCurrentWidget(w.tableau)
+    w.tableau.rafraichir()
+    attendre()
+    w.tableau.verticalScrollBar().setValue(w.tableau.g_garde.y() - 10)
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-garde.png"))
+    w.tableau.verticalScrollBar().setValue(0)
+    # que boire ce soir ?
+    w.onglets.setCurrentWidget(w.ce_soir)
+    w.ce_soir.plat.setText("agneau" if langue == "fr" else "lamb")
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-ce-soir.png"))
+    d = DialogueFicheCeSoir(cave, w.ce_soir.vins_choisis()[:2], w.ce_soir.plat.text(), parent=w)
+    capture(d, "fiche-ce-soir")
+    d.close()
+    b = DialogueBouteille(cave, bid, w)
+    b.resize(760, 640)
+    onglets = b.findChild(QtWidgets.QTabWidget)
+    onglets.setCurrentIndex(1)
+    b.niveau.setCurrentIndex(b.niveau.findData("HS"))
+    capture(b, "niveaux")
+    b.close()
+    g = DialogueDegustation(cave, vin, cave.degustations(vin)[0], parent=w)
+    capture(g, "degustation")
+    g.close()
+    x = DialogueDiagnostic(cave, bid, w)
+    x.recherche.setText("carton mouillé" if langue == "fr" else "wet cardboard")
+    capture(x, "defauts")
+    x.close()
+    e = DialogueEntamer(cave, bid, w)
+    capture(e, "entamer")
+    e.close()
+    r = DialogueRegles(w)
+    capture(r, "regles")
+    r.close()
+    QtWidgets.QApplication.processEvents()
+
+
 def main() -> int:
     from PyQt6 import QtWidgets
     temp = Path(tempfile.mkdtemp())
@@ -142,6 +213,7 @@ def main() -> int:
             d.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
             d.close()
         phase2(app, w, cave, langue, attendre)
+        phase3(app, w, cave, langue, attendre)
         w.minuteur.stop()
         w.close()
         cave.fermer_references()

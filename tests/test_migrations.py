@@ -68,6 +68,7 @@ def test_migrations_jamais_modifiees():
     assert hashlib.sha256(module_base.SCHEMA_V1.encode()).hexdigest()[:12] == EMPREINTE_V1
     assert hashlib.sha256(module_base.VUES_DOSSIER.encode()).hexdigest()[:12] == EMPREINTE_V3
     assert hashlib.sha256(module_base.SCHEMA_V4.encode()).hexdigest()[:12] == EMPREINTE_V4
+    assert hashlib.sha256(module_base.SCHEMA_V5.encode()).hexdigest()[:12] == EMPREINTE_V5
 
 
 def test_migration_v3_vers_v4(tmp_path):
@@ -94,3 +95,18 @@ def test_migration_v3_vers_v4(tmp_path):
 EMPREINTE_V1 = "0d2c1269a646"
 EMPREINTE_V3 = "bd9bc28d3ee5"
 EMPREINTE_V4 = "eef3a6f1a29a"
+EMPREINTE_V5 = "cd333c4bbf56"
+
+
+def test_migration_v4_vers_v5(tmp_path):
+    """v5 (phase 3) : style et niveau de garde choisis par l'utilisateur, vides
+    après migration (classement automatique)."""
+    chemin = tmp_path / "v4.db"
+    b = Base(chemin, jusqu_a=4)
+    with b.ecriture() as c:
+        c.execute("INSERT INTO vin(cuvee, couleur, millesime, cree_le, modifie_le) VALUES('X', 'rouge', 2015, 'x', 'x')")
+    b.fermer()
+    b = Base(chemin)
+    assert b.version() == VERSION_SCHEMA >= 5
+    v = b.un("SELECT * FROM vin")
+    assert v["cuvee"] == "X" and v["style"] is None and v["niveau_garde"] is None

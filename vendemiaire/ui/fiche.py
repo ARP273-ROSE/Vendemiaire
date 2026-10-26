@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Fiche d'un vin : pochette, identité, fenêtres de dégustation, critiques,
-valeurs, et la liste de ses bouteilles avec leurs actions."""
+"""Fiche d'un vin : pochette, identité, fenêtres de dégustation, ce que disent
+les règles du dossier « Le vin » (servir, garder, accorder), dégustations,
+critiques, valeurs, et la liste de ses bouteilles avec leurs actions."""
 from __future__ import annotations
 
 from datetime import date
@@ -13,6 +14,9 @@ from PyQt6.QtWidgets import (QAbstractItemView, QDialog, QFormLayout, QGroupBox,
 
 from .. import referentiels, regles
 from ..i18n import argent, date_affichee, langue, lib, nombre, tr
+from ..regles.degustation import decoder, libelle_arome
+from ..regles.niveaux import sens_niveau
+from . import regles_ui
 from .photos import fichiers_images
 from .pochette import pochette
 
@@ -55,6 +59,9 @@ class FicheVin(QScrollArea):
     envie = pyqtSignal(int)
     photo_deposee = pyqtSignal(object)        # (vin_id, chemin)
     modifie = pyqtSignal(int)
+    ce_soir = pyqtSignal(int)                 # vin
+    entamer = pyqtSignal(int)                 # bouteille
+    diagnostic = pyqtSignal(int)              # bouteille
 
     def __init__(self, cave, parent=None):
         super().__init__(parent)
@@ -113,6 +120,40 @@ class FicheVin(QScrollArea):
         lf.addWidget(self.t_fenetres)
         lf.addWidget(self.calcul)
         racine.addWidget(self.g_fenetres)
+
+        # ce que disent les règles du dossier « Le vin »
+        self.g_regles = QGroupBox(tr("fiche.regles"))
+        lr_ = QVBoxLayout(self.g_regles)
+        self.panneau = QLabel()
+        self.panneau.setWordWrap(True)
+        self.panneau.setTextFormat(Qt.TextFormat.RichText)
+        self.panneau.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        self.panneau.linkActivated.connect(self._pourquoi)
+        lr_.addWidget(self.panneau)
+        br = QHBoxLayout()
+        self.b_ce_soir = QPushButton(tr("fiche.ce_soir"))
+        self.b_entamer = QPushButton(tr("fiche.entamer"))
+        self.b_diagnostic = QPushButton(tr("fiche.diagnostic"))
+        for b in (self.b_ce_soir, self.b_entamer, self.b_diagnostic):
+            br.addWidget(b)
+        br.addStretch(1)
+        lr_.addLayout(br)
+        racine.addWidget(self.g_regles)
+
+        self.g_degustations = QGroupBox(tr("fiche.degustations"))
+        ldg = QVBoxLayout(self.g_degustations)
+        self.t_degustations = self._table(["fiche.d_date", "fiche.d_note", "fiche.d_aromes",
+                                           "fiche.d_commentaire"])
+        ldg.addWidget(self.t_degustations)
+        bdg = QHBoxLayout()
+        self.b_deg_ajouter = QPushButton(tr("fiche.deg_ajouter"))
+        self.b_deg_modifier = QPushButton(tr("fiche.deg_modifier"))
+        self.b_deg_supprimer = QPushButton(tr("fiche.deg_supprimer"))
+        for b in (self.b_deg_ajouter, self.b_deg_modifier, self.b_deg_supprimer):
+            bdg.addWidget(b)
+        bdg.addStretch(1)
+        ldg.addLayout(bdg)
+        racine.addWidget(self.g_degustations)
 
         self.g_critiques = QGroupBox(tr("fiche.critiques"))
         lc = QVBoxLayout(self.g_critiques)
@@ -201,6 +242,13 @@ class FicheVin(QScrollArea):
         self.b_recevoir.clicked.connect(lambda: self._sur_bouteille(self.recevoir))
         self.b_plan.clicked.connect(lambda: self._sur_bouteille(self.voir_plan))
         self.t_bouteilles.itemSelectionChanged.connect(self._etat_boutons)
+        self.b_ce_soir.clicked.connect(lambda: self.vin_id and self.ce_soir.emit(self.vin_id))
+        self.b_entamer.clicked.connect(lambda: self._sur_bouteille(self.entamer))
+        self.b_diagnostic.clicked.connect(lambda: self._sur_bouteille(self.diagnostic))
+        self.b_deg_ajouter.clicked.connect(self.ajouter_degustation)
+        self.b_deg_modifier.clicked.connect(self.modifier_degustation)
+        self.b_deg_supprimer.clicked.connect(self.supprimer_degustation)
+        self.t_degustations.itemDoubleClicked.connect(lambda _i: self.modifier_degustation())
         self.afficher(None)
 
     def _table(self, entetes: list[str]) -> QTableWidget:
@@ -239,6 +287,8 @@ class FicheVin(QScrollArea):
         b = self.cave.bouteille(bid) if bid else None
         statut = b["statut"] if b else None
         self.b_sortir.setEnabled(statut == "en_cave")
+        self.b_entamer.setEnabled(statut == "en_cave")
+        self.b_diagnostic.setEnabled(b is not None)
         self.b_modif_b.setEnabled(b is not None)
         self.b_recevoir.setEnabled(statut in ("primeur", "en_attente"))
         self.b_plan.setEnabled(bool(b and b["emplacement_id"]))
@@ -248,7 +298,7 @@ class FicheVin(QScrollArea):
         v = self.cave.vin(vin_id) if vin_id else None
         for w in (self.b_modifier, self.b_photo, self.b_photos, self.b_identifier, self.b_envie,
                   self.b_ajouter, self.g_fenetres, self.g_critiques, self.g_valeurs, self.g_bouteilles,
-                  self.g_references):
+                  self.g_references, self.g_regles, self.g_degustations):
             w.setEnabled(v is not None)
         while self.formulaire.rowCount():
             self.formulaire.removeRow(0)
@@ -257,8 +307,9 @@ class FicheVin(QScrollArea):
             self.sous_titre.setText(tr("fiche.aucun_aide"))
             self.image.clear()
             for t in (self.t_fenetres, self.t_critiques, self.t_bouteilles, self.t_valeurs,
-                      self.t_journal):
+                      self.t_journal, self.t_degustations):
                 t.setRowCount(0)
+            self.panneau.clear()
             self.valeurs.clear()
             self.references.clear()
             self.image_domaine.clear()
@@ -293,17 +344,35 @@ class FicheVin(QScrollArea):
         # fenêtres de dégustation : la mienne, critiques, calculée (phase 3)
         fen = self.cave.fenetres(vin_id)
         self.t_fenetres.setRowCount(len(fen))
+        calc = self.cave.fenetre_calculee(vin_id) if any(f["source"] == "calcul" for f in fen) else None
         for r, f in enumerate(fen):
             source = lib("source_fenetre", f["source"])
-            if f["detail_source"]:
+            explication = f["explication"]
+            if f["source"] == "calcul" and calc is not None:
+                # style et niveau lisibles, explication dans la langue de l'interface
+                source += f" ({calc.classement.nom(langue())}, {lib('niveau_garde', calc.niveau)})"
+                explication = calc.explication(langue())
+                if calc.pic:
+                    explication = tr("regles.f_pic", annee=calc.pic) + " — " + explication
+            elif f["detail_source"]:
                 source += f" ({f['detail_source']})"
             apogee = "–".join(str(x) for x in (f["apogee_debut"], f["apogee_fin"]) if x)
-            for c, val in enumerate((source, f["debut"], apogee, f["fin"], f["explication"])):
-                self.t_fenetres.setItem(r, c, _cellule(val))
+            for c, val in enumerate((source, f["debut"], apogee, f["fin"], explication)):
+                it = _cellule(val)
+                if c == 4 and explication:
+                    it.setToolTip(explication)
+                self.t_fenetres.setItem(r, c, it)
         if not regles.disponibles("fenetre_degustation"):
             self.calcul.setText(tr("fiche.regles_a_venir"))
         else:
-            self.calcul.clear()
+            from ..regles.jeu import jeu
+            self.calcul.setText(tr("fiche.regles_source", date=date_affichee(jeu().date_audit),
+                                   n=jeu().nombre_regles()))
+        try:
+            self.panneau.setText(regles_ui.panneau_html(self.cave, vin_id))
+        except Exception as ex:                       # jeu de règles invalide : on le dit
+            self.panneau.setText(tr("fiche.regles_erreur", erreur=str(ex)))
+        self._afficher_degustations(vin_id)
 
         from .critiques import equivalence
         notes = self.cave.notes_critiques(vin_id)
@@ -355,10 +424,15 @@ class FicheVin(QScrollArea):
                         argent(b["prix_achat"], b["devise"]), date_affichee(date_ref),
                         lib("niveau", b["niveau"]) or (f"{nombre(b['niveau_cm'])} cm"
                                                         if b["niveau_cm"] else ""), etats)
+            sens = sens_niveau(b["niveau"], regles_ui.age_du_vin(v["millesime"]), b["niveau_cm"]) \
+                if (b["niveau"] or b["niveau_cm"]) else None
             for c, val in enumerate(cellules):
                 it = _cellule(val)
                 if c == 0:
                     it.setData(Qt.ItemDataRole.UserRole, b["id"])
+                if c == 5 and sens is not None:
+                    it.setText(f"{val} — {lib('verdict_niveau', sens.valeur['verdict'])}")
+                    it.setToolTip(sens.explication(langue()))
                 self.t_bouteilles.setItem(r, c, it)
         self.t_bouteilles.resizeColumnsToContents()
         for t in (self.t_fenetres, self.t_critiques, self.t_bouteilles, self.t_valeurs, self.t_journal):
@@ -474,4 +548,51 @@ class FicheVin(QScrollArea):
         if vid and QMessageBox.question(self, tr("fiche.valeurs"), tr("fiche.supprimer_q")) \
                 == QMessageBox.StandardButton.Yes:
             self.cave.supprimer_valeur(vid)
+            self.modifie.emit(self.vin_id)
+
+    # ------------------------------------------------------------------ règles et dégustations
+    def _pourquoi(self, lien: str) -> None:
+        if not self.vin_id or not lien.startswith("pourquoi:"):
+            return
+        sujet = lien.split(":", 1)[1]
+        titres = {"style": "regles.style", "fenetre": "regles.fenetre_calculee", "service": "regles.temperature",
+                  "accords": "regles.accords"}
+        regles_ui.DialoguePourquoi(tr(titres.get(sujet, "regles.pourquoi")) + " — " + self.cave.nom_vin(self.vin_id),
+                                   regles_ui.pourquoi_html(self.cave, self.vin_id, sujet), self).exec()
+
+    def _afficher_degustations(self, vin_id: int) -> None:
+        lg = langue()
+        lignes = self.cave.degustations(vin_id)
+        self.t_degustations.setRowCount(len(lignes))
+        for r, d in enumerate(lignes):
+            note = f"{nombre(d['note'])} {lib('echelle', d['echelle'])}" if d["note"] else ""
+            aromes = ", ".join(libelle_arome(c, x, lg) for c, x in decoder(d["aromes"]))
+            for c, val in enumerate((date_affichee(d["date"]), note, aromes, d["commentaire"] or "")):
+                it = _cellule(val)
+                if c == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, d["id"])
+                self.t_degustations.setItem(r, c, it)
+        self.t_degustations.resizeColumnsToContents()
+        self._ajuster(self.t_degustations, 4)
+        self.b_deg_modifier.setEnabled(bool(lignes))
+        self.b_deg_supprimer.setEnabled(bool(lignes))
+
+    def ajouter_degustation(self) -> None:
+        from .degustation import DialogueDegustation
+        if self.vin_id and DialogueDegustation(self.cave, self.vin_id, None, self.bouteille_choisie(),
+                                               self).exec() == QDialog.DialogCode.Accepted:
+            self.modifie.emit(self.vin_id)
+
+    def modifier_degustation(self) -> None:
+        from .degustation import DialogueDegustation
+        did = self._id_choisi(self.t_degustations)
+        d = next((dict(x) for x in self.cave.degustations(self.vin_id) if x["id"] == did), None) if did else None
+        if d and DialogueDegustation(self.cave, self.vin_id, d, None, self).exec() == QDialog.DialogCode.Accepted:
+            self.modifie.emit(self.vin_id)
+
+    def supprimer_degustation(self) -> None:
+        did = self._id_choisi(self.t_degustations)
+        if did and QMessageBox.question(self, tr("fiche.degustations"), tr("fiche.supprimer_q")) \
+                == QMessageBox.StandardButton.Yes:
+            self.cave.supprimer_degustation(did)
             self.modifie.emit(self.vin_id)

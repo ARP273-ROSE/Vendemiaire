@@ -3,12 +3,12 @@
 # Vendémiaire
 
 **A complete, offline wine cellar manager**: every bottle, its place in the cellar, the cellar book of
-ins and outs, and soon drinking windows, serving advice and food pairings. French / English,
+ins and outs, when to open, how to serve and keep each wine, and food pairings, from sourced rules. French / English,
 Windows, macOS and Linux. No data ever leaves the computer.
 
 *Version française : [README.md](README.md).*
 
-> **Status: phases 1 (foundations and cellar) and 2 (world databases and labels), not released yet.** See [PROGRESSION.md](PROGRESSION.md) (in French).
+> **Status: phases 1 (foundations and cellar), 2 (world databases and labels) and 3 (drinking windows, serving, pairings), not released yet.** See [PROGRESSION.md](PROGRESSION.md) (in French).
 
 ![Dashboard](docs/captures/en-tableau-de-bord.png)
 
@@ -51,6 +51,25 @@ Windows, macOS and Linux. No data ever leaves the computer.
 
 ![Label wall](docs/captures/en-mur.png)
 ![Identify a wine](docs/captures/en-identifier.png)
+
+## What phase 3 adds
+
+Every rule comes from the "Le vin" study (194 audited rules, 62 sources), copied unchanged with its
+checksum; every result shows its **why**, its **sources** and its **confidence**
+([details, in French](docs/regles_du_dossier.md)).
+
+- **When to open**: drinking window, peak and summit, adjusted for the vintage and for the measured
+  cellar temperature; three sources (mine, critic, computed); "drink this year", "declining", "too
+  young" alerts; **cellar peak curve**: how many bottles to drink each year.
+- **Serving**: temperature, when to take it out of the cellar, decanting, glass; printable
+  **"tonight" sheet** (HTML or PDF).
+- **Keeping**: cellar ranges, corks to check, **opened bottle** (how many days).
+- **Fill levels**: illustrated scale and meaning for the wine's age.
+- **Pairings** both ways and **"What to drink tonight?"** (dish, budget, colour, occasion).
+- **Tasting notes** with the aroma wheel, **fault diagnosis** (corked, oxidised...).
+
+![Rules in the wine sheet](docs/captures/en-fiche-regles.png)
+![What to drink tonight?](docs/captures/en-ce-soir.png)
 
 ## Run from source
 

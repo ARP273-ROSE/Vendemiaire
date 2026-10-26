@@ -22,12 +22,13 @@ from pathlib import Path
 from typing import Iterable
 
 from .base import Base, maintenant, normaliser
+from .cave_regles import CaveRegles
 from .referentiels import SORTIE_VERS_STATUT, STATUTS_A_VENIR
 
 #: champs de la table vin modifiables par la saisie et les imports
 CHAMPS_VIN = ("cuvee", "appellation", "region", "sous_region", "pays", "classement",
               "couleur", "type", "millesime", "non_millesime", "degre", "lwin", "ean",
-              "seuil_reassort", "coup_de_coeur", "notes")
+              "seuil_reassort", "coup_de_coeur", "notes", "style", "niveau_garde")
 #: champs de la table bouteille modifiables
 CHAMPS_BOUTEILLE = ("format", "statut", "emplacement_id", "rangee", "colonne", "prix_achat",
                     "devise", "lieu_achat", "date_achat", "date_entree",
@@ -45,7 +46,7 @@ def _vide(v) -> bool:
     return v is None or (isinstance(v, str) and not v.strip())
 
 
-class Cave:
+class Cave(CaveRegles):
     def __init__(self, base: Base, dossier_images: Path | None = None):
         self.base = base
         self.dossier_images = Path(dossier_images) if dossier_images else \

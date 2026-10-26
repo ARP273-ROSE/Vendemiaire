@@ -1,0 +1,327 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "regles": [
+  {
+   "id": "ouverte.effervescent",
+   "styles": [
+    "eff_sans_annee",
+    "eff_millesime",
+    "eff_aromatique"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     1,
+     3
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     2,
+     4
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "réfrigérateur, bouchon hermétique"
+   },
+   "marge": {
+    "jours": 1.0
+   },
+   "confiance": "haute",
+   "explication_fr": "1 à 3 jours au réfrigérateur avec un bouchon spécial (Wine Folly) ; le Comité Champagne recommande un bouchon hermétique. Un champagne garde un peu de mousse « plusieurs jours » (T. Stelzer cité par Decanter).",
+   "explication_en": "",
+   "sources": [
+    "WINEFOLLY_OUV",
+    "DECANTER_OUV",
+    "HEALTHLINE_OUV",
+    "CHAMP_FICHE"
+   ]
+  },
+  {
+   "id": "ouverte.blanc_rose",
+   "styles": [
+    "blanc_frais",
+    "rose",
+    "blanc_mineral_garde"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     2,
+     7
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     3,
+     8
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "réfrigérateur, rebouché"
+   },
+   "marge": {
+    "jours": 2.5
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Les sources divergent : 2-3 jours (Decanter), 4-5 jours (Healthline), 5-7 jours (Wine Folly). Le fruit s'estompe dès le premier jour.",
+   "explication_en": "",
+   "sources": [
+    "WINEFOLLY_OUV",
+    "DECANTER_OUV",
+    "HEALTHLINE_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.blanc_ample",
+   "styles": [
+    "blanc_ample",
+    "orange"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     3,
+     5
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     4,
+     6
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "réfrigérateur, rebouché"
+   },
+   "marge": {
+    "jours": 1.0
+   },
+   "confiance": "moyenne",
+   "explication_fr": "3 à 5 jours : les blancs riches et boisés s'oxydent plus vite que les blancs vifs (Wine Folly, Healthline).",
+   "explication_en": "",
+   "sources": [
+    "WINEFOLLY_OUV",
+    "HEALTHLINE_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.rouge",
+   "styles": [
+    "rouge_leger",
+    "rouge_courant",
+    "rouge_pinot_garde",
+    "rouge_bordeaux",
+    "rouge_cabernet_monde",
+    "rouge_syrah_nord",
+    "rouge_grenache_sud",
+    "rouge_nebbiolo",
+    "rouge_sangiovese",
+    "rouge_tempranillo",
+    "rouge_puissant_soleil",
+    "rouge_tannique"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     3,
+     5
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     4,
+     6
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "endroit frais et sombre ou réfrigérateur, rebouché"
+   },
+   "marge": {
+    "jours": 1.0
+   },
+   "confiance": "haute",
+   "explication_fr": "3 à 5 jours ; plus le vin est tannique et acide, plus il tient (un pinot léger moins qu'une petite sirah). Certains s'améliorent le deuxième jour. Mieux vaut le réfrigérateur qu'une pièce à 21 °C.",
+   "explication_en": "",
+   "sources": [
+    "WINEFOLLY_OUV",
+    "DECANTER_OUV",
+    "HEALTHLINE_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.liquoreux",
+   "styles": [
+    "liquoreux",
+    "moelleux",
+    "vin_de_glace"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     3,
+     10
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     5,
+     14
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "réfrigérateur, rebouché"
+   },
+   "marge": {
+    "jours": 3.5
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Résistants : « plus d'une semaine » au réfrigérateur selon une copropriétaire de Château Coutet (Decanter) ; 3 à 7 jours pour Healthline.",
+   "explication_en": "",
+   "sources": [
+    "DECANTER_OUV",
+    "HEALTHLINE_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.fino",
+   "styles": [
+    "xeres_fino"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     3,
+     7
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     5,
+     7
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "réfrigérateur"
+   },
+   "marge": {
+    "jours": 2.0
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Une semaine au plus après ouverture (Catavino).",
+   "explication_en": "",
+   "sources": [
+    "CATAVINO"
+   ]
+  },
+  {
+   "id": "ouverte.mute_oxydatif",
+   "styles": [
+    "mute_oxydatif"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     14,
+     42
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     21,
+     56
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "frais ou réfrigérateur"
+   },
+   "marge": {
+    "jours": 14.0
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Amontillado 2-3 semaines, oloroso 4-6 semaines, Pedro Ximénez 1-2 mois (Catavino) ; tawny jusqu'à six semaines au réfrigérateur (A. Krebiehl citée par Decanter) ; 28 jours pour les mutés selon Wine Folly. Le madère tient bien plus.",
+   "explication_en": "",
+   "sources": [
+    "CATAVINO",
+    "DECANTER_OUV",
+    "WINEFOLLY_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.mute_fruite",
+   "styles": [
+    "mute_fruite"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     7,
+     21
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     14,
+     28
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "frais ou réfrigérateur"
+   },
+   "marge": {
+    "jours": 7.0
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Ruby et réserve : quelques semaines (Decanter) ; 1 à 3 semaines (Healthline).",
+   "explication_en": "",
+   "sources": [
+    "DECANTER_OUV",
+    "HEALTHLINE_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.porto_vintage",
+   "styles": [
+    "porto_vintage"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     1,
+     3
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     2,
+     4
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "frais"
+   },
+   "marge": {
+    "jours": 1.0
+   },
+   "confiance": "moyenne",
+   "explication_fr": "À finir en quelques jours, contrairement aux autres portos (Decanter).",
+   "explication_en": "",
+   "sources": [
+    "DECANTER_OUV"
+   ]
+  },
+  {
+   "id": "ouverte.vin_jaune",
+   "styles": [
+    "vin_jaune"
+   ],
+   "valeur": {
+    "jours_bouchon": [
+     7,
+     30
+    ],
+    "jours_bouchon_et_vide_ou_gaz": [
+     14,
+     60
+    ],
+    "coravin": "semaines à mois (dires du fabricant)",
+    "lieu": "frais"
+   },
+   "marge": {
+    "jours": 11.5
+   },
+   "confiance": "faible",
+   "explication_fr": "Déjà oxydatif par nature, il résiste à l'ouverture ; aucune source chiffrée : par analogie avec les xérès oxydatifs (convention du dossier).",
+   "explication_en": "",
+   "sources": [
+    "DOSSIER",
+    "CATAVINO"
+   ]
+  }
+ ],
+ "modes": {
+  "id": "ouverte.modes",
+  "styles": [
+   "*"
+  ],
+  "valeur": {
+   "vide_d_air": "+1 à 2 jours",
+   "coravin": "jours à mois (affirmation du fabricant)",
+   "refrigerateur": "ralentit l'oxydation"
+  },
+  "marge": {},
+  "confiance": "moyenne",
+  "explication_fr": "Pompe à vide (Vacu Vin) : un ou deux jours de plus que le bouchon seul, d'expérience (Decanter). Coravin (une aiguille traverse le bouchon et remplace le vin par de l'argon) : le fabricant annonce des jours à des mois selon le modèle. Le froid ralentit tout.",
+  "explication_en": "Vacuum pump: one or two extra days; Coravin: days to months (maker's claim).",
+  "sources": [
+   "DECANTER_OUV",
+   "WINEFOLLY_OUV"
+  ]
+ }
+}

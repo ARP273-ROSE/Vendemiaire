@@ -1,0 +1,155 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "cave": [
+  {
+   "id": "cave.temperature",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "min_c": 10,
+    "max_c": 15,
+    "ideal_c": [
+     11,
+     13
+    ]
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "haute",
+   "explication_fr": "Entre 10 et 15 °C, et surtout stable : c'est la fourchette de Jancis Robinson ; Tom Stevenson cite 11 °C, Karen MacNeil 13 °C. Le vin supporte jusqu'à 21 °C sans dommage durable, et quelques heures très chaudes, mais au-delà de 25 °C pendant longtemps il cuit (goût de fruits cuits, de raisin sec). Dans une étude d'UC Davis, des bouteilles gardées six mois à 40 °C étaient toutes oxydées, quel que soit le bouchage.",
+   "explication_en": "10-15 °C and stable (Robinson); up to 21 °C without lasting harm; above 25 °C for long, wine cooks; 6 months at 40 °C oxidised every wine.",
+   "sources": [
+    "WIKI_STORAGE",
+    "HOPFER2013",
+    "WIKI_AGING"
+   ]
+  },
+  {
+   "id": "cave.variations",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "variation_max_c_par_jour": null
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Éviter les variations rapides (passer souvent d'une pièce chaude au réfrigérateur) : la dilatation pousse le vin contre le bouchon, l'air rentre ensuite. Les sources ne chiffrent pas de limite.",
+   "explication_en": "Avoid rapid swings; no published limit.",
+   "sources": [
+    "WIKI_STORAGE",
+    "WIKI_AGING"
+   ]
+  },
+  {
+   "id": "cave.hygrometrie",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "min_pct": 55,
+    "max_pct": 75
+   },
+   "marge": {
+    "pct": 10
+   },
+   "confiance": "moyenne",
+   "explication_fr": "55 à 75 % d'humidité : trop sec, le bouchon peut se rétracter ; trop humide, moisissures et étiquettes abîmées. Jancis Robinson rappelle que les 75 % souvent cités ne reposent sur presque aucune recherche ; une étude française citée par Matt Kramer trouve 100 % d'humidité à l'intérieur de la bouteille quelle que soit sa position.",
+   "explication_en": "55-75 % humidity; little research behind the often-quoted 75 %.",
+   "sources": [
+    "WIKI_STORAGE",
+    "ELEPHORM"
+   ]
+  },
+  {
+   "id": "cave.lumiere",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "lumiere": "obscurité"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "À l'abri de la lumière, surtout du soleil : les ultraviolets créent des radicaux libres qui oxydent le vin prématurément (les bouteilles claires des rosés et des blancs y sont les plus sensibles).",
+   "explication_en": "Keep dark: UV light causes premature oxidation.",
+   "sources": [
+    "WIKI_AGING",
+    "WIKI_STORAGE"
+   ]
+  },
+  {
+   "id": "cave.vibrations",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "vibrations": "éviter"
+   },
+   "marge": {},
+   "confiance": "faible",
+   "explication_fr": "Les vibrations hâteraient la dégradation du vin : l'idée est répandue, sans mesure chiffrée dans les sources.",
+   "explication_en": "Vibrations said to hasten deterioration; not quantified.",
+   "sources": [
+    "WIKI_AGING"
+   ]
+  },
+  {
+   "id": "cave.position",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "liege": "couchée",
+    "capsule_a_vis_ou_synthetique": "indifférente",
+    "effervescent": "couchée (CIVC) ou debout (débat)"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Couchée pour un bouchon de liège, qui reste humide. Pour le champagne, une étude du CIVC trouve que la bouteille debout vieillit plus lentement, mais le CIVC recommande quand même de la coucher. Capsule à vis ou bouchon synthétique : la position importe peu.",
+   "explication_en": "Lie cork-sealed bottles down; Champagne debated (CIVC study vs. CIVC advice); screwcaps either way.",
+   "sources": [
+    "WIKI_STORAGE"
+   ]
+  },
+  {
+   "id": "cave.refrigerateur",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "duree_max": "quelques semaines"
+   },
+   "marge": {},
+   "confiance": "faible",
+   "explication_fr": "Le réfrigérateur de cuisine n'est pas une cave : il est trop froid et assèche l'air (Tom Stevenson le déconseille pour une longue garde). Quelques semaines ne posent pas de problème.",
+   "explication_en": "A kitchen fridge is too cold and dry for long storage.",
+   "sources": [
+    "WIKI_STORAGE"
+   ]
+  },
+  {
+   "id": "cave.bouchon_fatigue",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "age_controle_ans": 15
+   },
+   "marge": {
+    "ans": 5
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Au-delà d'une quinzaine d'années, vérifier le niveau et l'état du bouchon : Penfolds rebouche gratuitement ses rouges d'au moins 15 ans. Un bouchon de liège tient des décennies mais finit par durcir et laisser passer l'air ; l'oxygène entre aussi très lentement à travers le bouchon lui-même pendant toute la garde.",
+   "explication_en": "Check fill and cork after ~15 years (Penfolds recorks reds 15+ years old).",
+   "sources": [
+    "PENFOLDS",
+    "OXY2026"
+   ]
+  }
+ ]
+}

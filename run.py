@@ -77,6 +77,12 @@ def _verifier() -> int:
             assert cave.references.nb_appellations() > 1000, "registres d'appellations"
             regles.charger_livres()
             assert regles.demander("convertir_note", 90, "100", "20") is not None, "notes.json"
+            # phase 3 : jeu de règles du dossier « Le vin » intact (empreintes) et complet
+            from vendemiaire.regles.jeu import jeu
+            assert jeu().nombre_regles() == 194, "règles du dossier"
+            f = regles.demander("fenetre_degustation", {"couleur": "rouge", "type": "tranquille",
+                                                        "appellation": "Pauillac", "millesime": 2016})
+            assert f is not None and f.sources, "garde.json"
             cave.fermer_references()
             b.fermer()
     except Exception as exc:

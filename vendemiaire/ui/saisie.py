@@ -208,6 +208,20 @@ class DialogueVin(QDialog):
         self.coeur.setChecked(bool(g("coup_de_coeur")))
         self.notes = QPlainTextEdit(g("notes") or "")
         self.notes.setMaximumHeight(80)
+        # style et niveau de garde du dossier « Le vin » : automatiques sauf choix
+        from ..regles.jeu import jeu
+        self.style = QComboBox()
+        self.style.addItem(tr("saisie.style_auto"), None)
+        for s in jeu().styles:
+            self.style.addItem(s["nom_fr"] if langue() == "fr" else s["nom_en"], s["id"])
+        self.style.setCurrentIndex(max(0, self.style.findData(g("style"))))
+        self.style.setToolTip(tr("saisie.style_aide"))
+        self.niveau_garde = QComboBox()
+        self.niveau_garde.addItem(tr("saisie.niveau_garde_auto"), None)
+        for code in referentiels.codes("niveau_garde"):
+            self.niveau_garde.addItem(lib("niveau_garde", code), code)
+        self.niveau_garde.setCurrentIndex(max(0, self.niveau_garde.findData(g("niveau_garde"))))
+        self.niveau_garde.setToolTip(tr("saisie.niveau_garde_aide"))
         for cle, w in (("vin.producteur", self.producteur), ("vin.cuvee", self.cuvee),
                        ("vin.appellation", self.appellation), ("", self.appellation_officielle),
                        ("vin.region_seule", self.region),
@@ -218,7 +232,8 @@ class DialogueVin(QDialog):
         f.addRow(tr("vin.millesime"), ligne_mil)
         for cle, w in (("vin.degre", self.degre), ("vin.cepages", self.cepages),
                        ("vin.lwin", self.lwin), ("vin.ean", self.ean),
-                       ("vin.seuil", self.seuil), ("", self.coeur), ("vin.notes", self.notes)):
+                       ("vin.seuil", self.seuil), ("", self.coeur), ("vin.style", self.style),
+                       ("vin.niveau_garde", self.niveau_garde), ("vin.notes", self.notes)):
             f.addRow(tr(cle) if cle else "", w)
         onglets.addTab(page, tr("saisie.onglet_vin"))
 
@@ -272,6 +287,8 @@ class DialogueVin(QDialog):
             "seuil_reassort": self.seuil.value() or None,
             "coup_de_coeur": 1 if self.coeur.isChecked() else 0,
             "notes": self.notes.toPlainText(),
+            "style": self.style.currentData() or "",
+            "niveau_garde": self.niveau_garde.currentData() or "",
         }
 
     def accepter(self) -> None:
@@ -367,11 +384,20 @@ class DialogueBouteille(QDialog):
                        ("", self.caisse_complete), ("saisie.caisse_ref", self.caisse_ref)):
             fe.addRow(tr(cle) if cle else "", w)
         aide = QGroupBox(tr("saisie.niveau_aide_titre"))
-        la = QVBoxLayout(aide)
-        texte = QLabel(tr("saisie.niveau_aide"))
-        texte.setWordWrap(True)
-        la.addWidget(texte)
+        la = QHBoxLayout(aide)
+        from .regles_ui import IllustrationNiveaux
+        self.illustration = IllustrationNiveaux()
+        la.addWidget(self.illustration)
+        self.sens = QLabel()
+        self.sens.setWordWrap(True)
+        self.sens.setTextFormat(Qt.TextFormat.RichText)
+        la.addWidget(self.sens, 1)
         fe.addRow(aide)
+        v = cave.vin(b["vin_id"])
+        self._millesime = v["millesime"] if v else None
+        self.niveau.currentIndexChanged.connect(lambda _i: self._sens_niveau())
+        self.niveau_cm.valueChanged.connect(lambda _v: self._sens_niveau())
+        self._sens_niveau()
         onglets.addTab(etat, tr("saisie.onglet_etat"))
 
         prov = QWidget()
@@ -391,6 +417,24 @@ class DialogueBouteille(QDialog):
         boutons.accepted.connect(self.accepter)
         boutons.rejected.connect(self.reject)
         racine.addWidget(boutons)
+
+    def _sens_niveau(self) -> None:
+        """Ce que veut dire ce niveau à l'âge du vin (niveaux.json du dossier)."""
+        from html import escape
+        from ..regles.niveaux import sens_niveau
+        from .regles_ui import age_du_vin, sources_html
+        code = _code(self.niveau)
+        self.illustration.definir(code)
+        age = age_du_vin(self._millesime)
+        s = sens_niveau(code, age, self.niveau_cm.value() or None)
+        if s is None:
+            self.sens.setText(escape(tr("saisie.niveau_aide")))
+            return
+        tete = lib("verdict_niveau", s.valeur["verdict"])
+        if age is not None:
+            tete += " " + tr("saisie.niveau_age", age=age)
+        self.sens.setText(f"<p><b>{escape(tete)}</b></p><p>{escape(s.explication(langue()))}</p>"
+                          + sources_html(s.sources))
 
     def accepter(self) -> None:
         a = {

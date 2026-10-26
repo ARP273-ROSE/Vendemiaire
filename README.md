@@ -3,12 +3,13 @@
 # Vendémiaire
 
 **Gestion de cave à vin, complète et hors ligne** : chaque bouteille, son emplacement dans la cave, le
-livre de cave des entrées et sorties, et bientôt l'apogée, le service et les accords mets-vins.
+livre de cave des entrées et sorties, la date d'ouverture, le service, la conservation et les
+accords mets-vins, d'après des règles sourcées.
 Bilingue français / anglais, Windows, macOS et Linux. Aucune donnée ne quitte l'ordinateur.
 
 *English version: [README.en.md](README.en.md).*
 
-> **État : phases 1 (socle et cave) et 2 (bases mondiales et étiquettes), pas encore publiées.** Voir [PROGRESSION.md](PROGRESSION.md).
+> **État : phases 1 (socle et cave), 2 (bases mondiales et étiquettes) et 3 (apogée, service, accords), pas encore publiées.** Voir [PROGRESSION.md](PROGRESSION.md).
 
 ![Tableau de bord](docs/captures/fr-tableau-de-bord.png)
 
@@ -57,6 +58,26 @@ Bilingue français / anglais, Windows, macOS et Linux. Aucune donnée ne quitte 
 ![Identifier un vin](docs/captures/fr-identifier.png)
 ![Recadrer et lire une étiquette](docs/captures/fr-retouche-ocr.png)
 
+## Ce qu'ajoute la phase 3
+
+Toutes les règles viennent du dossier « Le vin » (194 règles, 62 sources, auditées), copiées telles
+quelles avec leur empreinte ; chaque résultat affiche son **pourquoi**, ses **sources** et sa
+**confiance** ([détails](docs/regles_du_dossier.md)).
+
+- **Date d'ouverture** : fenêtre « à boire de… à… », apogée et pic, ajustée au millésime et à la
+  température mesurée de la cave ; trois sources (la mienne, critique, calculée) ; alertes « à boire
+  cette année », « en déclin », « trop jeune » ; **courbe d'apogée** : combien boire chaque année.
+- **Servir** : température, heure de sortie de cave, carafe, verre ; **fiche « ce soir »** en HTML ou PDF.
+- **Conserver** : plages de la cave, bouchons à contrôler, **bouteille entamée** (combien de jours).
+- **Niveaux** : échelle illustrée et sens selon l'âge du vin.
+- **Accords** dans les deux sens et **« Que boire ce soir ? »** (plat, budget, couleur, occasion).
+- **Dégustation** avec la roue des arômes, **diagnostic** des défauts (bouchonné, oxydé…).
+
+![Les règles dans la fiche](docs/captures/fr-fiche-regles.png)
+![Garde et courbe d'apogée](docs/captures/fr-garde.png)
+![Que boire ce soir ?](docs/captures/fr-ce-soir.png)
+![Fiche « ce soir »](docs/captures/fr-fiche-ce-soir.png)
+
 ## Lancer depuis les sources
 
 ```bash
@@ -88,4 +109,4 @@ MIT — voir [LICENSE](LICENSE). Polices embarquées sous SIL Open Font License.
 Données de référence : LWIN © Liv-ex Ltd (CC BY 4.0, non redistribuée : importée par l'utilisateur) ;
 registres INAO (Licence Ouverte 2.0) et eAmbrosia (© Union européenne, réutilisation autorisée)
 embarqués dans `vendemiaire/donnees/` ; Wikidata (CC0) ; Open Food Facts (ODbL, photos CC BY-SA) ;
-règle de conversion des notes : dossier « Le vin » (`vendemiaire/regles/donnees/`).
+règles d'œnologie : dossier « Le vin » (`vendemiaire/regles/donnees/`, sources dans `sources.json`).

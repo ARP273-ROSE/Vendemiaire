@@ -1,0 +1,1246 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "principes": [
+  {
+   "id": "acc.poids",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "poids du vin = poids du plat"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Accorder le poids : un plat léger avec un vin léger, un plat riche avec un vin corsé ; c'est l'alcool qui donne surtout le corps du vin.",
+   "explication_en": "Match weight.",
+   "sources": [
+    "WIKI_PAIRING"
+   ]
+  },
+  {
+   "id": "acc.acidite",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "vin au moins aussi acide que le plat"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "L'acidité du vin « coupe » le gras et le sel et rafraîchit ; face à un plat acide (vinaigrette, citron), un vin moins acide que le plat paraît plat et maigre, un vin trop vif paraît plus doux.",
+   "explication_en": "Wine at least as acidic as the food.",
+   "sources": [
+    "WIKI_PAIRING",
+    "WSET_SPEC"
+   ]
+  },
+  {
+   "id": "acc.sucre",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "vin au moins aussi sucré que le dessert"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Un vin doux doit être plus sucré que le dessert, sinon il paraît aigre et maigre (un brut avec un gâteau de mariage : raté). Le sucre apaise le piment et contraste avec le sel (porto et stilton).",
+   "explication_en": "Wine sweeter than the dish.",
+   "sources": [
+    "WIKI_PAIRING",
+    "WSET_SPEC"
+   ]
+  },
+  {
+   "id": "acc.tanins",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "tanins avec protéines et gras ; pas avec le poisson huileux ni le piment"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Les tanins se lient aux protéines : une viande rouge ou un fromage à pâte dure les rend plus souples. Sans protéines (plat végétarien), ils dessèchent la bouche. Avec un poisson gras, un rouge tannique peut donner un goût métallique : une étude japonaise relie cet arrière-goût de poisson au fer du vin.",
+   "explication_en": "Tannin with protein and fat; avoid oily fish and chilli heat.",
+   "sources": [
+    "WIKI_PAIRING",
+    "TSUJI2012"
+   ]
+  },
+  {
+   "id": "acc.sel",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "le sel adoucit le vin et appelle l'acidité"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Le sel fait paraître le vin plus souple et plus fruité, moins acide et moins amer ; il réveille en revanche la brûlure de l'alcool. D'où les classiques huîtres et blancs vifs, porto et fromages bleus.",
+   "explication_en": "Salt softens wine, heightens alcohol burn.",
+   "sources": [
+    "WIKI_PAIRING",
+    "WSET_SPEC"
+   ]
+  },
+  {
+   "id": "acc.gras",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "le gras appelle acidité, bulles ou tanins"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Le gras se « nettoie » par l'acidité, les bulles ou les tanins qui se lient aux graisses.",
+   "explication_en": "Fat needs acidity, bubbles or tannin.",
+   "sources": [
+    "WIKI_PAIRING"
+   ]
+  },
+  {
+   "id": "acc.umami",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "umami et sucré du plat durcissent le vin"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Le sucré et l'umami du plat (champignons, sauce soja, parmesan, tomate cuite) font paraître le vin plus amer, plus astringent, plus acide et plus alcooleux : choisir un vin fruité, peu tannique.",
+   "explication_en": "Umami and sweetness make wine taste harder.",
+   "sources": [
+    "WSET_SPEC",
+    "WIKI_PAIRING"
+   ]
+  },
+  {
+   "id": "acc.piment",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "piment : vin frais, peu alcoolisé, un peu sucré, peu tannique"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Le piment exalte l'alcool et l'amertume des tanins, et l'alcool exalte le piment : un vin fort aggrave la brûlure. Une étude d'UC Davis montre qu'un rinçage à 5 % d'alcool ne calme pas plus la brûlure que l'eau, alors que le sucre et le froid la calment : d'où les rieslings demi-secs avec la cuisine thaïe ou du Sichuan.",
+   "explication_en": "Chilli: cool, low-alcohol, off-dry, low-tannin wine.",
+   "sources": [
+    "WIKI_PAIRING",
+    "NASRAWI1990"
+   ]
+  },
+  {
+   "id": "acc.region",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "ce qui pousse ensemble va ensemble"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Un vin et un plat d'une même région se sont souvent ajustés au fil des siècles (comté et vin jaune, crottin et sancerre) ; ce n'est pas une loi, mais un bon point de départ.",
+   "explication_en": "What grows together goes together.",
+   "sources": [
+    "CORPUS",
+    "WIKI_PAIRING"
+   ]
+  },
+  {
+   "id": "acc.fromage",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "regle": "fromage : souvent le blanc plutôt que le rouge"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Le fromage atténue l'astringence et modifie la perception du vin (étude de Dijon sur quatre vins et quatre fromages : Époisses, comté, roquefort, crottin) ; les blancs et les vins doux s'accordent souvent mieux que les grands rouges tanniques, sauf avec les pâtes dures.",
+   "explication_en": "Cheese often suits white or sweet wine better than tannic red.",
+   "sources": [
+    "GALMARINI2016",
+    "WIKI_PAIRING"
+   ]
+  }
+ ],
+ "plats": [
+  {
+   "id": "huitres",
+   "plat_fr": "Huîtres, coquillages crus",
+   "styles": [
+    "blanc_frais",
+    "eff_sans_annee",
+    "blanc_mineral_garde",
+    "xeres_fino"
+   ],
+   "exemples_fr": "Muscadet, Chablis, Picpoul, champagne extra-brut",
+   "pourquoi_fr": "Iode et sel appellent un blanc vif, sec, sans bois ; les bruts peu dosés (l'iode se marie mal avec le sucre).",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Muscadet",
+     "url": "https://en.wikipedia.org/wiki/Muscadet",
+     "phrase": "=== Food pairing ===  The classic food and wine pairings in the Pays Nantais region is of Muscadet with the local seafood, particularly oysters."
+    },
+    {
+     "article": "fr_Chablis_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Chablis_grand_cru",
+     "phrase": "Les grands crus de Chablis s'accordent bien avec du foie gras, des huîtres, du homard, de la langouste, des poissons en sauce, des viandes blanches, de la poularde à la crème… Leur durée de garde est de dix à quinze ans et ils se servent entre 12 et 14 °C."
+    },
+    {
+     "article": "fr_Vignoble_de_Chablis",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Chablis",
+     "phrase": "À servir entre 10 et 11 degrés ; ils peuvent être servi lors d'un apéritif ; ils accompagnent bien des sushis, des huîtres, du fromage de chèvre, du beaufort, du comté… Une bouteille de vieilles vignes accompagne aussi le foie gras."
+    },
+    {
+     "article": "fr_Bandol_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bandol_(AOC)",
+     "phrase": "Ils sont considérés comme accompagnant au mieux les poissons blancs locaux, tels que raie, rascasse, rouget, vive, etc., les calmars, seiches et poulpes, ainsi que tous les fruits de mer, notamment les arapèdes, les huîtres, les moules et les clovisses."
+    }
+   ]
+  },
+  {
+   "id": "poisson_grille",
+   "plat_fr": "Poisson grillé, poisson blanc",
+   "styles": [
+    "blanc_frais",
+    "blanc_mineral_garde",
+    "rose"
+   ],
+   "exemples_fr": "Sancerre, Savennières, albariño",
+   "pourquoi_fr": "Chair délicate : blanc sec et vif ; un rouge tannique risque le goût métallique.",
+   "sources": [
+    "WIKI_PAIRING",
+    "TSUJI2012",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Turkish_wine",
+     "url": "https://en.wikipedia.org/wiki/Turkish_wine",
+     "phrase": "Whites including Narince and Emir are usually paired with meze and grilled fish, particularly Levrek (sea bass) and Lüfer (bluefish)."
+    },
+    {
+     "article": "fr_Bourgogne_aligoté",
+     "url": "https://fr.wikipedia.org/wiki/Bourgogne_aligot%C3%A9",
+     "phrase": "S'accorde bien par exemple avec une andouillette grillée, du poisson grillé, des huîtres, ou des salades."
+    },
+    {
+     "article": "fr_Chinon_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Chinon_(AOC)",
+     "phrase": "Les vins rosés s'accordent bien avec des poissons grillés et en sauce, leur durée de garde se situe vers 5 ans et ils se servent vers 12 degrés."
+    },
+    {
+     "article": "fr_Crémant_de_Loire",
+     "url": "https://fr.wikipedia.org/wiki/Cr%C3%A9mant_de_Loire",
+     "phrase": "Il est conseillé pour se marier avec des poissons de la Loire comme le sandre ou le brochet."
+    }
+   ]
+  },
+  {
+   "id": "poisson_sauce",
+   "plat_fr": "Poisson en sauce, au beurre blanc, à la crème",
+   "styles": [
+    "blanc_ample",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "Meursault, Pessac blanc, chenin sec",
+   "pourquoi_fr": "La crème et le beurre demandent un blanc ample ou un blanc vif qui coupe le gras (contraste).",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Chablis_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Chablis_grand_cru",
+     "phrase": "Les grands crus de Chablis s'accordent bien avec du foie gras, des huîtres, du homard, de la langouste, des poissons en sauce, des viandes blanches, de la poularde à la crème… Leur durée de garde est de dix à quinze ans et ils se servent entre 12 et 14 °C."
+    },
+    {
+     "article": "fr_Coulée_de_serrant",
+     "url": "https://fr.wikipedia.org/wiki/Coul%C3%A9e-de-serrant",
+     "phrase": "Il se marie « bien avec les viandes blanches en sauce, les poissons au beurre blanc ou même simplement avec un chèvre ou un vieux cantal »."
+    },
+    {
+     "article": "fr_Graves_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Graves_(AOC)",
+     "phrase": "Ils accompagnent la viande blanche, les poissons en sauce, les crustacés et les fromages ."
+    },
+    {
+     "article": "fr_Vignoble_de_Chablis",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Chablis",
+     "phrase": "À servir entre 10 et 12 degrés ; il accompagne bien un poisson en sauce, une volaille en sauce, des andouillettes, des escargots à la bourguignonne, du jambon au chablis… Le chablis grand cru est d'une couleur or vert pur, avec des arômes minéraux (silex, pierre à fusil), des arômes également de tilleuls, fruits secs, amande… Sa durée de garde va de dix à quinze ans."
+    }
+   ]
+  },
+  {
+   "id": "crustaces",
+   "plat_fr": "Homard, langouste, crustacés",
+   "styles": [
+    "blanc_ample",
+    "eff_millesime",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "Meursault, Corton-Charlemagne, champagne millésimé",
+   "pourquoi_fr": "Chair sucrée et riche : grand blanc ample ou champagne vineux.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Bouzeron_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bouzeron_(AOC)",
+     "phrase": "Il s'accorde bien avec des gougères, des escargots à la bourguignonne, des huîtres, des crustacés, une andouillette grillée, de la volaille, du jambon persillé, du fromage comme le fromage de chèvre ou le comté."
+    },
+    {
+     "article": "fr_Bugey_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bugey_(AOC)",
+     "phrase": "Il accompagne très bien les poissons, les crustacés, mais aussi la raclette et la fondue."
+    },
+    {
+     "article": "fr_Chablis_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Chablis_grand_cru",
+     "phrase": "Les grands crus de Chablis s'accordent bien avec du foie gras, des huîtres, du homard, de la langouste, des poissons en sauce, des viandes blanches, de la poularde à la crème… Leur durée de garde est de dix à quinze ans et ils se servent entre 12 et 14 °C."
+    },
+    {
+     "article": "fr_Collioure_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Collioure_(AOC)",
+     "phrase": "En rouge, ils se révèlent parfaits pour accompagner les viandes rouges, le gibier à poil ou à plume, les différents civets, dont la llagostada, nom catalan du civet de langouste et les daubes, en rosé, il s'accorde avec les viandes blanches, la charcuterie, les terrines, les abats et les champignons."
+    }
+   ]
+  },
+  {
+   "id": "sushi",
+   "plat_fr": "Sushis, poisson cru",
+   "styles": [
+    "eff_sans_annee",
+    "blanc_frais",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "champagne brut, riesling sec, muscadet",
+   "pourquoi_fr": "Pas de tanins (fer, poisson cru), acidité et fraîcheur ; bulles peu dosées.",
+   "sources": [
+    "WIKI_PAIRING",
+    "TSUJI2012",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Sauvignon_blanc",
+     "url": "https://en.wikipedia.org/wiki/Sauvignon_blanc",
+     "phrase": "It is also known as one of the few wines that can pair well with sushi."
+    },
+    {
+     "article": "fr_Champagne_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Champagne_(AOC)",
+     "phrase": "Les extra bruts sont idéaux avec les huîtres (l'iode se marie mal avec le sucre), les poissons crus de la cuisine japonaise et tous les fruits de mer."
+    },
+    {
+     "article": "fr_Vignoble_de_Chablis",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Chablis",
+     "phrase": "À servir entre 10 et 11 degrés ; ils peuvent être servi lors d'un apéritif ; ils accompagnent bien des sushis, des huîtres, du fromage de chèvre, du beaufort, du comté… Une bouteille de vieilles vignes accompagne aussi le foie gras."
+    }
+   ]
+  },
+  {
+   "id": "charcuterie",
+   "plat_fr": "Charcuterie, terrines",
+   "styles": [
+    "rouge_leger",
+    "rose",
+    "blanc_frais"
+   ],
+   "exemples_fr": "Beaujolais, gamay, rosé",
+   "pourquoi_fr": "Sel et gras : rouge léger et fruité, servi frais, ou rosé.",
+   "sources": [
+    "CORPUS",
+    "WIKI_PAIRING"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Beaujolais_nouveau",
+     "url": "https://fr.wikipedia.org/wiki/Beaujolais_nouveau",
+     "phrase": "Il s'accorde traditionnellement avec de la charcuterie (saucisson, grattons, tripes, boudin, cervelas, etc.) et des châtaignes."
+    },
+    {
+     "article": "fr_Brouilly",
+     "url": "https://fr.wikipedia.org/wiki/Brouilly",
+     "phrase": "=== Accord mets-vin ===  On sert ce vin traditionnellement avec une volaille de Bresse ou de la charcuterie et qui peut être servi à l'apéritif."
+    },
+    {
+     "article": "fr_Côte_de_brouilly",
+     "url": "https://fr.wikipedia.org/wiki/C%C3%B4te-de-brouilly",
+     "phrase": "=== Accord mets-vin ===  Le côte-de-brouilly s'associe avec la côte de bœuf, les viandes rouges rôties et les fromages moyennement relevés, ainsi que la charcuterie (rillettes d’oie, terrine de lièvre), la volaille (canard, pintade), le hachis parmentier, les paupiettes de veau et le gibier (lapin, chevreuil)."
+    },
+    {
+     "article": "fr_Gamay",
+     "url": "https://fr.wikipedia.org/wiki/Gamay",
+     "phrase": "Le gamay se marie très bien avec la charcuterie et les fromages frais, par exemple."
+    }
+   ]
+  },
+  {
+   "id": "volaille",
+   "plat_fr": "Volaille rôtie",
+   "styles": [
+    "rouge_pinot_garde",
+    "blanc_ample",
+    "rouge_leger"
+   ],
+   "exemples_fr": "Bourgogne rouge, Meursault",
+   "pourquoi_fr": "Viande fine : pinot noir, grand blanc ou rouge léger.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Beaujolais",
+     "url": "https://en.wikipedia.org/wiki/Beaujolais",
+     "phrase": "The lighter Cru Beaujolais pair well with poultry and the heavier Crus pairing better with red meats and hearty dishes like stews."
+    },
+    {
+     "article": "en_Chardonnay",
+     "url": "https://en.wikipedia.org/wiki/Chardonnay",
+     "phrase": "It is most commonly paired with roast chicken and other white meats such as turkey."
+    },
+    {
+     "article": "en_Chenin_blanc",
+     "url": "https://en.wikipedia.org/wiki/Chenin_blanc",
+     "phrase": "Lighter, dry styles can pair well with light dishes such as salads, fish, and chicken."
+    },
+    {
+     "article": "fr_Alsace_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Alsace_grand_cru",
+     "phrase": "Il se mariera bien avec le foie gras, la poularde, l'oie rôtie, le gratin de langoustines, les plats asiatiques sucrés-salés, du comté ou du beaufort."
+    }
+   ]
+  },
+  {
+   "id": "volaille_creme",
+   "plat_fr": "Volaille à la crème, aux morilles",
+   "styles": [
+    "vin_jaune",
+    "blanc_ample"
+   ],
+   "exemples_fr": "vin jaune, savagnin, grand chardonnay",
+   "pourquoi_fr": "Accord régional jurassien : le vin jaune et sa note de noix avec la crème et les morilles (la recette elle-même se cuisine au vin jaune) ; les grands blancs de Bourgogne s'accordent aussi avec la volaille en sauce à la crème.",
+   "sources": [
+    "CORPUS",
+    "IDEALWINE_POULET",
+    "LAPASSION_ACC_VJ"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Barsac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barsac_(AOC)",
+     "phrase": "C'est un vin liquoreux, donc souvent considéré comme un vin de dessert (accompagnant une salade de fruits, une charlotte, une tarte à l'ananas ou une crème brûlée), mais il peut très bien accompagner en entrée un foie gras, pour poursuivre avec un poulet rôti, de la lotte safranée à l'orange, un fromage à pâte persillée (comme du roquefort) ou, tout simplement, quelques noix et du pain."
+    },
+    {
+     "article": "fr_Chablis_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Chablis_grand_cru",
+     "phrase": "Les grands crus de Chablis s'accordent bien avec du foie gras, des huîtres, du homard, de la langouste, des poissons en sauce, des viandes blanches, de la poularde à la crème… Leur durée de garde est de dix à quinze ans et ils se servent entre 12 et 14 °C."
+    },
+    {
+     "article": "fr_Château_grillet_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Ch%C3%A2teau-grillet_(AOC)",
+     "phrase": "Il peut être dégusté pour lui-même ou en accompagnement de noix ou d’amandes, ou bien peut être associé à une grande variété de poissons, du foie gras truffé, ou une volaille de Bresse à la crème."
+    },
+    {
+     "article": "fr_Gaillac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Gaillac_(AOC)",
+     "phrase": "Daniel Pestre l'imagine bien servi avec une nage d'écrevisse à la coriandre, un filet mignon de veau aux morilles ou une charlotte aux pommes au coulis de fruits exotiques."
+    }
+   ]
+  },
+  {
+   "id": "viande_rouge_grillee",
+   "plat_fr": "Viande rouge grillée, côte de bœuf",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_cabernet_monde",
+    "rouge_puissant_soleil",
+    "rouge_syrah_nord",
+    "rouge_tannique"
+   ],
+   "exemples_fr": "Pauillac, Napa, malbec, Cornas",
+   "pourquoi_fr": "Protéines et gras assouplissent les tanins ; le grillé répond au boisé.",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Cabernet_Sauvignon",
+     "url": "https://en.wikipedia.org/wiki/Cabernet_Sauvignon",
+     "phrase": "Milder spices, such as black pepper, pair better due to their ability to minimize the perception of tannins—such as in the classic pairings of Cabernet Sauvignon with steak au poivre and pepper-crusted ahi tuna."
+    },
+    {
+     "article": "fr_Haut_médoc",
+     "url": "https://fr.wikipedia.org/wiki/Haut-m%C3%A9doc",
+     "phrase": "Ces vins sont à consommer chambrés (aux environs de 18 °C), en accompagnement d'un plat de viande (viande blanche, viande rouge, ou gibier) ou d'un fromage."
+    },
+    {
+     "article": "fr_Margaux_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Margaux_(AOC)",
+     "phrase": "C'est un vin qui se marie très bien avec les viandes rouges."
+    },
+    {
+     "article": "fr_Margaux_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Margaux_(AOC)",
+     "phrase": "La délicatesse des margaux accompagne bien le gibier (canard, perdreau) et l'inévitable recette locale, l'entrecôte à la bordelaise."
+    }
+   ]
+  },
+  {
+   "id": "agneau",
+   "plat_fr": "Agneau",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_grenache_sud",
+    "rouge_tempranillo",
+    "rouge_syrah_nord"
+   ],
+   "exemples_fr": "Pauillac, Rioja reserva, Châteauneuf",
+   "pourquoi_fr": "Viande grasse et parfumée : rouge charpenté ; classique bordelais (agneau de Pauillac).",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Vignoble_de_Bordeaux",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Bordeaux",
+     "phrase": "Ils doivent être servis si possible chambrés (aux environs de 18 °C), en accompagnement de plats au goût relevé, tels que du bœuf rôties ou grillées (par exemple une entrecôte à la bordelaise), du gibier (daubes de chevreuil ou de sanglier), du canard ou de l'agneau de Pauillac."
+    },
+    {
+     "article": "en_Aglianico",
+     "url": "https://en.wikipedia.org/wiki/Aglianico",
+     "phrase": "The rich flavors of the wine make it appropriate for pairing with rich meats such as lamb."
+    },
+    {
+     "article": "en_Areni_grape_",
+     "url": "https://en.wikipedia.org/wiki/Areni_(grape)",
+     "phrase": "Common Armenian pairings include khorovats (barbecue, typically lamb or beef), dolma, herb-based stews, and aged cheeses such as Chanakh."
+    },
+    {
+     "article": "en_Areni_grape_",
+     "url": "https://en.wikipedia.org/wiki/Areni_(grape)",
+     "phrase": "Internationally, suggested pairings include duck with cherry or berry sauce, roasted lamb, mushroom dishes, and hard cheeses; some critics compare its profile to Pinot Noir or Sangiovese as a reference point."
+    }
+   ]
+  },
+  {
+   "id": "plats_mijotes",
+   "plat_fr": "Plats mijotés (bœuf bourguignon, daube, civet)",
+   "styles": [
+    "rouge_pinot_garde",
+    "rouge_grenache_sud",
+    "rouge_tannique"
+   ],
+   "exemples_fr": "Bourgogne, Cahors, Madiran",
+   "pourquoi_fr": "Sauce au vin et longue cuisson : souvent le vin de la région qui a servi à la recette.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Bonnes_mares",
+     "url": "https://fr.wikipedia.org/wiki/Bonnes-mares",
+     "phrase": "S'accorde bien avec du gibier à poils ou plumes, du civet en sauce, de la volaille musquées et laquées, des fromages à forte odeur..."
+    },
+    {
+     "article": "fr_Cahors_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Cahors_(AOC)",
+     "phrase": "Les cahors plus vieux peuvent aussi accompagner les sauces, daubes et civets (civet de canard, civet de biche…)."
+    },
+    {
+     "article": "fr_Barolo_DOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barolo_(DOC)",
+     "phrase": "Ce vin se marie bien avec des viandes rouges en sauce, viandes braisées, gibier à poil et avec des plats à base de champignons."
+    },
+    {
+     "article": "fr_Bouzeron_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bouzeron_(AOC)",
+     "phrase": "Il s'accorde bien avec des gougères, des escargots à la bourguignonne, des huîtres, des crustacés, une andouillette grillée, de la volaille, du jambon persillé, du fromage comme le fromage de chèvre ou le comté."
+    }
+   ]
+  },
+  {
+   "id": "gibier",
+   "plat_fr": "Gibier",
+   "styles": [
+    "rouge_pinot_garde",
+    "rouge_syrah_nord",
+    "rouge_nebbiolo",
+    "rouge_bordeaux"
+   ],
+   "exemples_fr": "vieux bourgogne, Côte-Rôtie, Barolo",
+   "pourquoi_fr": "Goût puissant, sauvage : vieux rouge aux notes tertiaires (sous-bois, cuir).",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Barolo_DOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barolo_(DOC)",
+     "phrase": "Ce vin se marie bien avec des viandes rouges en sauce, viandes braisées, gibier à poil et avec des plats à base de champignons."
+    },
+    {
+     "article": "fr_Margaux_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Margaux_(AOC)",
+     "phrase": "La délicatesse des margaux accompagne bien le gibier (canard, perdreau) et l'inévitable recette locale, l'entrecôte à la bordelaise."
+    },
+    {
+     "article": "fr_Vignoble_de_Bourgogne",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Bourgogne",
+     "phrase": "=== Gastronomie === Les vins rouges s'accordent bien avec la viande (gibier à poils ou à plumes, bœuf…) et certains fromages (époisses, brie) ; les vins blancs s'accordent bien avec la volaille, le poisson, les crustacés et certains fromages (emmental, comté) et les vins rosés s'accordent bien avec les grillades au barbecue ou des salades."
+    },
+    {
+     "article": "en_Bo_azkere",
+     "url": "https://en.wikipedia.org/wiki/Bo%C4%9Fazkere",
+     "phrase": "== Food pairing == Boğazkere wines are commonly paired with robust dishes such as red meat kebabs, lamb, game, and slow-cooked stews."
+    }
+   ]
+  },
+  {
+   "id": "porc",
+   "plat_fr": "Porc, veau, viandes blanches",
+   "styles": [
+    "rouge_leger",
+    "blanc_ample",
+    "rouge_pinot_garde",
+    "rose"
+   ],
+   "exemples_fr": "Beaujolais, chenin, Bourgogne",
+   "pourquoi_fr": "Viandes douces : rouges souples ou blancs amples.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Riesling",
+     "url": "https://en.wikipedia.org/wiki/Riesling",
+     "phrase": "It can be paired with white fish or pork, and is one of the few wines that can stand up to the stronger flavours and spices of Thai and Chinese cuisine."
+    },
+    {
+     "article": "fr_Bourgueil_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bourgueil_(AOC)",
+     "phrase": "=== Gastronomie === Les vins rouges issus de graviers accompagnent bien les viandes blanches et les fromages."
+    },
+    {
+     "article": "fr_Bugey_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bugey_(AOC)",
+     "phrase": "Il accompagnera à merveille les fromages et les charcuteries ainsi que les viandes blanches."
+    },
+    {
+     "article": "fr_Chablis_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Chablis_grand_cru",
+     "phrase": "Les grands crus de Chablis s'accordent bien avec du foie gras, des huîtres, du homard, de la langouste, des poissons en sauce, des viandes blanches, de la poularde à la crème… Leur durée de garde est de dix à quinze ans et ils se servent entre 12 et 14 °C."
+    }
+   ]
+  },
+  {
+   "id": "canard_foie",
+   "plat_fr": "Canard, confit",
+   "styles": [
+    "rouge_tannique",
+    "rouge_bordeaux",
+    "rouge_grenache_sud"
+   ],
+   "exemples_fr": "Madiran, Cahors, Saint-Émilion",
+   "pourquoi_fr": "Accord du Sud-Ouest : le gras du canard contre les tanins du Madiran ou du Cahors.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Cahors_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Cahors_(AOC)",
+     "phrase": "Les cahors plus vieux peuvent aussi accompagner les sauces, daubes et civets (civet de canard, civet de biche…)."
+    },
+    {
+     "article": "fr_Madiran_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Madiran_(AOC)",
+     "phrase": "Ils accompagnent la gastronomie régionale, notamment le canard et les viandes en sauce ou grillées."
+    },
+    {
+     "article": "en_Areni_grape_",
+     "url": "https://en.wikipedia.org/wiki/Areni_(grape)",
+     "phrase": "Internationally, suggested pairings include duck with cherry or berry sauce, roasted lamb, mushroom dishes, and hard cheeses; some critics compare its profile to Pinot Noir or Sangiovese as a reference point."
+    },
+    {
+     "article": "fr_Crépy_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Cr%C3%A9py_(AOC)",
+     "phrase": "En bouche, ce vin blanc est puissant et gras, on peut retrouver des arômes de fruits confits », c'est une découverte pour accompagner une raclette."
+    }
+   ]
+  },
+  {
+   "id": "foie_gras",
+   "plat_fr": "Foie gras",
+   "styles": [
+    "liquoreux",
+    "moelleux",
+    "eff_millesime"
+   ],
+   "exemples_fr": "Sauternes, Jurançon, Alsace vendanges tardives",
+   "pourquoi_fr": "Accord classique de contraste et de richesse : le liquoreux répond au gras ; certains préfèrent un vin sec et vif.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Alsace_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Alsace_grand_cru",
+     "phrase": "Il se mariera bien avec le foie gras, la poularde, l'oie rôtie, le gratin de langoustines, les plats asiatiques sucrés-salés, du comté ou du beaufort."
+    },
+    {
+     "article": "fr_Barsac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barsac_(AOC)",
+     "phrase": "C'est un vin liquoreux, donc souvent considéré comme un vin de dessert (accompagnant une salade de fruits, une charlotte, une tarte à l'ananas ou une crème brûlée), mais il peut très bien accompagner en entrée un foie gras, pour poursuivre avec un poulet rôti, de la lotte safranée à l'orange, un fromage à pâte persillée (comme du roquefort) ou, tout simplement, quelques noix et du pain."
+    },
+    {
+     "article": "fr_Jurançon_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Juran%C3%A7on_(AOC)",
+     "phrase": "Classiquement, il convient très bien en apéritif et peut accompagner foie gras, fromages doux comme le fromage de brebis d'ossau-iraty."
+    },
+    {
+     "article": "fr_Monbazillac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Monbazillac_(AOC)",
+     "phrase": "=== Accord à table === Vin d'apéritif, il se marie avec des amuse-gueule au fromage ou au foie gras."
+    }
+   ]
+  },
+  {
+   "id": "fondue",
+   "plat_fr": "Fondue, raclette, tartiflette",
+   "styles": [
+    "blanc_frais",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "Apremont, Crépy, Chignin-Bergeron",
+   "pourquoi_fr": "Accord savoyard : blanc vif (jacquère, chasselas) qui coupe le fromage fondu.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Chasselas",
+     "url": "https://en.wikipedia.org/wiki/Chasselas",
+     "phrase": "It is considered an ideal pairing for raclette or fondue."
+    },
+    {
+     "article": "en_Jacquère",
+     "url": "https://en.wikipedia.org/wiki/Jacqu%C3%A8re",
+     "phrase": "Jacquère is the grape used in Apremont wines and is the usual wine paired with cheese fondue (a dish from the same region)."
+    },
+    {
+     "article": "fr_Chignin_bergeron",
+     "url": "https://fr.wikipedia.org/wiki/Chignin-bergeron",
+     "phrase": "S'accorde bien avec du poisson et il est parfait sur une raclette."
+    },
+    {
+     "article": "fr_Crépy_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Cr%C3%A9py_(AOC)",
+     "phrase": "Il est particulièrement conseillé sur des fritures de perches du lac Léman ou un filet de Saint Pierre, il est parfait quand il accompagne une fondue ou un fromage d'abondance."
+    }
+   ]
+  },
+  {
+   "id": "champignons",
+   "plat_fr": "Champignons, truffe, risotto",
+   "styles": [
+    "rouge_pinot_garde",
+    "rouge_nebbiolo",
+    "blanc_ample"
+   ],
+   "exemples_fr": "vieux bourgogne, Barolo mûr",
+   "pourquoi_fr": "Umami : vins peu tanniques ou mûrs (attention, l'umami durcit les tanins jeunes).",
+   "sources": [
+    "WSET_SPEC",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Areni_grape_",
+     "url": "https://en.wikipedia.org/wiki/Areni_(grape)",
+     "phrase": "Internationally, suggested pairings include duck with cherry or berry sauce, roasted lamb, mushroom dishes, and hard cheeses; some critics compare its profile to Pinot Noir or Sangiovese as a reference point."
+    },
+    {
+     "article": "en_Chardonnay",
+     "url": "https://en.wikipedia.org/wiki/Chardonnay",
+     "phrase": "Older, more mellow Chardonnays are often paired with more \"earthy\" dishes like mushroom soup and aged cheese."
+    },
+    {
+     "article": "fr_Bandol_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bandol_(AOC)",
+     "phrase": "Les rouges de Bandol accompagnent aussi la brouillade aux truffes."
+    },
+    {
+     "article": "fr_Barolo_DOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barolo_(DOC)",
+     "phrase": "Ce vin se marie bien avec des viandes rouges en sauce, viandes braisées, gibier à poil et avec des plats à base de champignons."
+    }
+   ]
+  },
+  {
+   "id": "pates_tomate",
+   "plat_fr": "Pâtes à la tomate, pizza",
+   "styles": [
+    "rouge_sangiovese",
+    "rouge_leger",
+    "rouge_courant"
+   ],
+   "exemples_fr": "Chianti, barbera",
+   "pourquoi_fr": "La tomate est acide : un rouge italien, vif lui aussi.",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Barolo",
+     "url": "https://en.wikipedia.org/wiki/Barolo",
+     "phrase": "In Piedmont, the wines are often paired with meat dishes, heavy plates of pasta and rich risotti; the tannins bind to the food proteins and come across as softer."
+    },
+    {
+     "article": "en_Dolcetto",
+     "url": "https://en.wikipedia.org/wiki/Dolcetto",
+     "phrase": "== Food pairing == Overall, Dolcetto is considered a light easy drinking red wine that pairs well with pastas and pizza dishes."
+    },
+    {
+     "article": "en_Sangiovese",
+     "url": "https://en.wikipedia.org/wiki/Sangiovese",
+     "phrase": "One of the classic pairings in Italian cuisine is tomato-based pasta and pizza sauces with a Sangiovese-based Chianti."
+    },
+    {
+     "article": "en_Wine_and_food_pairing",
+     "url": "https://en.wikipedia.org/wiki/Wine_and_food_pairing",
+     "phrase": "Wine expert Mark Oldman has noted \"Food and wine pairing can be like sex and pizza: even when it's bad, it can still be pretty good\" and gives the example of wedding cake with a dry sparkling wine."
+    }
+   ]
+  },
+  {
+   "id": "epice_asie",
+   "plat_fr": "Cuisine épicée (thaïe, Sichuan, indienne)",
+   "styles": [
+    "moelleux",
+    "blanc_frais",
+    "rose",
+    "eff_aromatique"
+   ],
+   "exemples_fr": "riesling Kabinett, gewurztraminer, rosé",
+   "pourquoi_fr": "Piment : vin frais, peu alcoolisé, peu tannique, au besoin un peu sucré.",
+   "sources": [
+    "WIKI_PAIRING",
+    "NASRAWI1990"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Gewürztraminer",
+     "url": "https://en.wikipedia.org/wiki/Gew%C3%BCrztraminer",
+     "phrase": "They are ideal accompaniments for Asian cuisine (such as Thai or Indian), spicy dishes, white fresh cheeses, or dishes with bittersweet flavors."
+    },
+    {
+     "article": "en_Riesling",
+     "url": "https://en.wikipedia.org/wiki/Riesling",
+     "phrase": "It can be paired with white fish or pork, and is one of the few wines that can stand up to the stronger flavours and spices of Thai and Chinese cuisine."
+    },
+    {
+     "article": "en_Blaufränkisch",
+     "url": "https://en.wikipedia.org/wiki/Blaufr%C3%A4nkisch",
+     "phrase": "== Wines and food pairings ==  Blaufränkisch wines have aromas of dark ripe cherries and dark berries, are spicy, have medium tannin levels and sometimes very good acidity."
+    },
+    {
+     "article": "en_Cabernet_Sauvignon",
+     "url": "https://en.wikipedia.org/wiki/Cabernet_Sauvignon",
+     "phrase": "Cabernet Sauvignons with high alcohol levels do not pair well with spicy foods due to hotness levels of the capsaicins present in spices like chili peppers being enhanced by the alcohol with the heat accentuating the bitterness of the tannins."
+    }
+   ]
+  },
+  {
+   "id": "maghreb",
+   "plat_fr": "Couscous, tajine",
+   "styles": [
+    "rouge_grenache_sud",
+    "rose",
+    "rouge_leger"
+   ],
+   "exemples_fr": "Boulaouane ou Guerrouane rouges, gris marocains, Collioure",
+   "pourquoi_fr": "Épices douces et fruits secs : rouges méditerranéens souples ou rosés.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Viticulture_au_Maroc",
+     "url": "https://fr.wikipedia.org/wiki/Viticulture_au_Maroc",
+     "phrase": "Le couscous à la viande a ses saveurs rehaussées par un coteaux de l’atlas ou un Tarik, il peut aussi s'accorder parfaitement avec un Boulaouane ou un Guerrouane rouge, le couscous au poisson appelle un vin gris ou chardonnay de Meknès."
+    },
+    {
+     "article": "fr_Collioure_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Collioure_(AOC)",
+     "phrase": "L'AOC Collioure s'accorde aussi avec un certain nombre de mets régionaux (chili con carne, pâtes à la carbonara, tomates à la provençale, couscous, paella, tajine, thon à la provençale, etc.)   == Notes et références ==   === Notes ===   === Références ===   == Voir aussi ==   === Bibliographie === R."
+    },
+    {
+     "article": "fr_Gigondas_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Gigondas_(AOC)",
+     "phrase": "Selon Olivier Bonpas, « les gigondas rouges encore jeunes révèlent tout leur potentiel avec les viandes rôties telles que l’agneau, le lapin, les cailles ou le poulet, accompagnées de légumes méditerranéens, comme un tian, ou d’un tajine aux fruits secs pour une touche d’originalité."
+    },
+    {
+     "article": "fr_Volnay_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Volnay_(AOC)",
+     "phrase": "Un vin aussi fin s'accorde bien avec une volaille (un canard rôti ou laqué ; de la caille farcie), un tajine, un filet mignon, ou un fromage un peu affirmé ; pour un premier cru, un gibier à plume (rôti ou en civet)."
+    }
+   ]
+  },
+  {
+   "id": "barbecue",
+   "plat_fr": "Barbecue",
+   "styles": [
+    "rouge_puissant_soleil",
+    "rouge_cabernet_monde"
+   ],
+   "exemples_fr": "zinfandel, shiraz, malbec",
+   "pourquoi_fr": "Fumé, sucré et grillé : rouges mûrs et fruités du Nouveau Monde.",
+   "sources": [
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Areni_grape_",
+     "url": "https://en.wikipedia.org/wiki/Areni_(grape)",
+     "phrase": "Common Armenian pairings include khorovats (barbecue, typically lamb or beef), dolma, herb-based stews, and aged cheeses such as Chanakh."
+    },
+    {
+     "article": "en_Blaufränkisch",
+     "url": "https://en.wikipedia.org/wiki/Blaufr%C3%A4nkisch",
+     "phrase": "In food and wine pairings, Blaufränkisch/Lemberger are often paired with lamb dishes and grilled meats."
+    },
+    {
+     "article": "en_Brunello_di_Montalcino",
+     "url": "https://en.wikipedia.org/wiki/Brunello_di_Montalcino",
+     "phrase": "The high acidity of the wine allows it to pair well with food, especially grilled meat and game."
+    },
+    {
+     "article": "en_Cabernet_Sauvignon",
+     "url": "https://en.wikipedia.org/wiki/Cabernet_Sauvignon",
+     "phrase": "The oak influences of the wine can be matched with cooking methods that have similar influences on the food—such as grilling, smoking and plank roasting."
+    }
+   ]
+  },
+  {
+   "id": "chevre",
+   "plat_fr": "Fromage de chèvre",
+   "styles": [
+    "blanc_frais",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "Sancerre, Pouilly-Fumé, Savennières",
+   "pourquoi_fr": "Classique de la Loire : crottin de Chavignol et sancerre ; l'acidité répond à l'acidité.",
+   "sources": [
+    "CORPUS",
+    "GALMARINI2016"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "en_Sauvignon_blanc",
+     "url": "https://en.wikipedia.org/wiki/Sauvignon_blanc",
+     "phrase": "Sauvignon blanc, when slightly chilled, pairs well with fish or cheese, particularly chèvre."
+    },
+    {
+     "article": "fr_Sancerre_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Sancerre_(AOC)",
+     "phrase": "=== Gastronomie === Le sancerre blanc s'accorde bien avec les fromages de chèvre et en particulier avec le crottin de Chavignol situé en partie dans l'aire de l'AOC, avec des poissons, coquillages et crustacés."
+    },
+    {
+     "article": "en_Wine_and_food_pairing",
+     "url": "https://en.wikipedia.org/wiki/Wine_and_food_pairing",
+     "phrase": "For example, fresh mozzarella or burrata can pair well with Italian Pinot Grigio, while a fresh goat cheese pair nicely with Riesling from the Finger Lakes or Germany."
+    },
+    {
+     "article": "fr_Bandol_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bandol_(AOC)",
+     "phrase": "Ils peuvent ainsi se marier à la gastronomie provençale des viandes, notamment au gibier, ainsi qu'aux fromages de chèvre."
+    }
+   ]
+  },
+  {
+   "id": "pate_pressee_cuite",
+   "plat_fr": "Comté, beaufort, gruyère (pâtes pressées cuites)",
+   "styles": [
+    "vin_jaune",
+    "blanc_ample",
+    "blanc_mineral_garde",
+    "rouge_leger"
+   ],
+   "exemples_fr": "vin jaune, savagnin, Meursault",
+   "pourquoi_fr": "Fruité, noisette : vin jaune (« duo incontournable » du Jura), blancs de Bourgogne et de Chablis, macvin.",
+   "sources": [
+    "CORPUS",
+    "VINATIS_VJ",
+    "GALMARINI2016"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Macvin_du_Jura",
+     "url": "https://fr.wikipedia.org/wiki/Macvin_du_Jura",
+     "phrase": "Il accompagne le melon, le jambon fumé du Haut-Doubs, les cubes de comté, les gougères au comté, les cakes au fromage."
+    },
+    {
+     "article": "fr_Alsace_grand_cru",
+     "url": "https://fr.wikipedia.org/wiki/Alsace_grand_cru",
+     "phrase": "Il se mariera bien avec le foie gras, la poularde, l'oie rôtie, le gratin de langoustines, les plats asiatiques sucrés-salés, du comté ou du beaufort."
+    },
+    {
+     "article": "fr_Bouzeron_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bouzeron_(AOC)",
+     "phrase": "Il s'accorde bien avec des gougères, des escargots à la bourguignonne, des huîtres, des crustacés, une andouillette grillée, de la volaille, du jambon persillé, du fromage comme le fromage de chèvre ou le comté."
+    },
+    {
+     "article": "fr_Gigondas_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Gigondas_(AOC)",
+     "phrase": "Ils s'accordent parfaitement avec des plats comme la volaille de Bresse, les poissons et crustacés ou encore des fromages à pâte dure comme le comté ou le beaufort."
+    }
+   ]
+  },
+  {
+   "id": "pate_molle_lavee",
+   "plat_fr": "Époisses, munster, maroilles (croûte lavée)",
+   "styles": [
+    "rouge_pinot_garde",
+    "moelleux",
+    "blanc_mineral_garde"
+   ],
+   "exemples_fr": "gewurztraminer, marsannay",
+   "pourquoi_fr": "Fromages puissants : en Bourgogne, les rouges (Marsannay) avec l'Époisses ou l'Ami du Chambertin ; ailleurs, un blanc aromatique ou moelleux tient tête à la croûte lavée. Dans l'étude de Dijon, l'Époisses comme les autres fromages réduisait l'astringence et l'acidité perçues d'un Madiran.",
+   "sources": [
+    "CORPUS",
+    "GALMARINI2016"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Marsannay_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Marsannay_(AOC)",
+     "phrase": "Les tanins du marsannay rouge se marieront avec une viande rouge grillée ou accompagneront des fromages puissants (époisses, ou Ami du Chambertin)."
+    },
+    {
+     "article": "fr_Vignoble_de_Bourgogne",
+     "url": "https://fr.wikipedia.org/wiki/Vignoble_de_Bourgogne",
+     "phrase": "=== Gastronomie === Les vins rouges s'accordent bien avec la viande (gibier à poils ou à plumes, bœuf…) et certains fromages (époisses, brie) ; les vins blancs s'accordent bien avec la volaille, le poisson, les crustacés et certains fromages (emmental, comté) et les vins rosés s'accordent bien avec les grillades au barbecue ou des salades."
+    }
+   ]
+  },
+  {
+   "id": "pate_persillee",
+   "plat_fr": "Roquefort, bleus, stilton",
+   "styles": [
+    "liquoreux",
+    "porto_vintage",
+    "mute_fruite",
+    "mute_oxydatif"
+   ],
+   "exemples_fr": "Sauternes, porto, banyuls",
+   "pourquoi_fr": "Sel contre sucre : Sauternes et roquefort, porto et stilton.",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Banyuls_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Banyuls_(AOC)",
+     "phrase": "=== Gastronomie === Les VDN banyuls sont d'abord des vins de dessert qui se marient bien avec le chocolat ou les fromages bleus."
+    },
+    {
+     "article": "fr_Barsac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barsac_(AOC)",
+     "phrase": "C'est un vin liquoreux, donc souvent considéré comme un vin de dessert (accompagnant une salade de fruits, une charlotte, une tarte à l'ananas ou une crème brûlée), mais il peut très bien accompagner en entrée un foie gras, pour poursuivre avec un poulet rôti, de la lotte safranée à l'orange, un fromage à pâte persillée (comme du roquefort) ou, tout simplement, quelques noix et du pain."
+    },
+    {
+     "article": "en_Wine_and_food_pairing",
+     "url": "https://en.wikipedia.org/wiki/Wine_and_food_pairing",
+     "phrase": "It can accentuate the mild sweetness in some foods and can also contrast with salt such as the European custom of pairing salty Stilton cheese with a sweet Port."
+    },
+    {
+     "article": "fr_Bouzeron_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Bouzeron_(AOC)",
+     "phrase": "Il s'accorde bien avec des gougères, des escargots à la bourguignonne, des huîtres, des crustacés, une andouillette grillée, de la volaille, du jambon persillé, du fromage comme le fromage de chèvre ou le comté."
+    }
+   ]
+  },
+  {
+   "id": "dessert_fruits",
+   "plat_fr": "Desserts aux fruits, tartes",
+   "styles": [
+    "moelleux",
+    "liquoreux",
+    "eff_aromatique"
+   ],
+   "exemples_fr": "Coteaux du Layon, moscato d'Asti, Sauternes",
+   "pourquoi_fr": "Le vin doit être au moins aussi sucré que le dessert.",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Barsac_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Barsac_(AOC)",
+     "phrase": "C'est un vin liquoreux, donc souvent considéré comme un vin de dessert (accompagnant une salade de fruits, une charlotte, une tarte à l'ananas ou une crème brûlée), mais il peut très bien accompagner en entrée un foie gras, pour poursuivre avec un poulet rôti, de la lotte safranée à l'orange, un fromage à pâte persillée (comme du roquefort) ou, tout simplement, quelques noix et du pain."
+    },
+    {
+     "article": "en_Wine_and_food_pairing",
+     "url": "https://en.wikipedia.org/wiki/Wine_and_food_pairing",
+     "phrase": "Winemakers started to emphasize the kind of food dishes that their wines would go well with, some even printing pairing suggestions on back wine labels."
+    },
+    {
+     "article": "en_Wine_and_food_pairing",
+     "url": "https://en.wikipedia.org/wiki/Wine_and_food_pairing",
+     "phrase": "In the 1980s, as more people started to discover and experiment with pairings, the idea of using contrast started to gain more favor."
+    },
+    {
+     "article": "fr_Blanquette_de_Limoux",
+     "url": "https://fr.wikipedia.org/wiki/Blanquette_de_Limoux",
+     "phrase": "Ce vin effervescent peut accompagner tout un repas, et en particulier les plats du terroir, dans sa version « brut » ainsi que les desserts (tartes aux pommes, gaufre, galette des rois, etc.) dans sa version douce dite « méthode ancestrale »."
+    }
+   ]
+  },
+  {
+   "id": "chocolat",
+   "plat_fr": "Chocolat",
+   "styles": [
+    "mute_fruite",
+    "porto_vintage",
+    "mute_oxydatif"
+   ],
+   "exemples_fr": "Banyuls, Maury, porto ruby ou LBV",
+   "pourquoi_fr": "Amertume, sucre et gras du chocolat : vins mutés rouges (banyuls, maury, porto) ; les vins secs y deviennent amers.",
+   "sources": [
+    "CORPUS",
+    "WIKI_PAIRING"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Banyuls_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Banyuls_(AOC)",
+     "phrase": "=== Gastronomie === Les VDN banyuls sont d'abord des vins de dessert qui se marient bien avec le chocolat ou les fromages bleus."
+    },
+    {
+     "article": "en_Cabernet_Sauvignon",
+     "url": "https://en.wikipedia.org/wiki/Cabernet_Sauvignon",
+     "phrase": "While Cabernet Sauvignon has the potential to pair well with bitter dark chocolate, it will not pair well with sweeter styles such as milk chocolate."
+    },
+    {
+     "article": "fr_Cerdon_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Cerdon_(AOC)",
+     "phrase": "Comme c'est un vin effervescent frais et léger, il est souvent servi en apéritif ou pour accompagner des desserts tels les gâteaux au chocolat ou aux fruits."
+    },
+    {
+     "article": "fr_Commandaria",
+     "url": "https://fr.wikipedia.org/wiki/Commandaria",
+     "phrase": "C'est un vin de dessert qui s'accorde principalement sur des mets chocolatés."
+    }
+   ]
+  },
+  {
+   "id": "aperitif",
+   "plat_fr": "Apéritif",
+   "styles": [
+    "eff_sans_annee",
+    "blanc_frais",
+    "xeres_fino",
+    "rose"
+   ],
+   "exemples_fr": "champagne, crémant, fino",
+   "pourquoi_fr": "Vins vifs qui ouvrent l'appétit (l'acidité fait saliver).",
+   "sources": [
+    "WIKI_PAIRING",
+    "CORPUS"
+   ],
+   "preuves_corpus": [
+    {
+     "article": "fr_Champagne_AOC_",
+     "url": "https://fr.wikipedia.org/wiki/Champagne_(AOC)",
+     "phrase": "Les bruts non millésimés et les champagnes « blancs de Blancs » se boivent en apéritif et peuvent accompagner les entrées et les plats de poissons et de fruits de mer."
+    },
+    {
+     "article": "fr_Crémant_de_Bourgogne",
+     "url": "https://fr.wikipedia.org/wiki/Cr%C3%A9mant_de_Bourgogne",
+     "phrase": "Sa fraîcheur et sa vivacité en font le compagnon idéal de l'apéritif ou accompagne certains poissons et entremets."
+    },
+    {
+     "article": "fr_Xérès_vin_",
+     "url": "https://fr.wikipedia.org/wiki/X%C3%A9r%C3%A8s_(vin)",
+     "phrase": "Ils peuvent aussi parfaitement accompagner nombre de mets :  Le fino et le manzanilla, en apéritif, se servent avec tapas, olives, fromages à pâte molle, coquillages, etc., ou sur des poissons blancs."
+    },
+    {
+     "article": "fr_Aromatisation_du_vin",
+     "url": "https://fr.wikipedia.org/wiki/Aromatisation_du_vin",
+     "phrase": "Actuellement il est consommé en apéritif, avec une entrée, dans les préparations culinaires ou en accompagnement des desserts."
+    }
+   ]
+  }
+ ],
+ "accords_difficiles": [
+  {
+   "id": "imp.artichaut",
+   "fr": "Artichaut",
+   "pourquoi_fr": "La cynarine de l'artichaut agit sur les papilles : l'amertume augmente et même l'eau paraît ensuite sucrée ; un vin sec semble fade et étrange. Repli : un blanc très sec et vif.",
+   "sources": [
+    "WIKI_CYNARINE"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "imp.vinaigrette",
+   "fr": "Vinaigrette, plats très vinaigrés",
+   "pourquoi_fr": "Le vinaigre écrase l'acidité du vin, qui paraît plat. Repli : blanc très vif, ou adoucir la vinaigrette.",
+   "sources": [
+    "WIKI_PAIRING"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "imp.piment_tanin",
+   "fr": "Piment fort et grand rouge tannique",
+   "pourquoi_fr": "Le piment exalte l'alcool et l'amertume ; l'alcool exalte le piment.",
+   "sources": [
+    "WIKI_PAIRING",
+    "NASRAWI1990"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "imp.poisson_huileux_rouge",
+   "fr": "Poisson gras (sardine, maquereau) et rouge tannique",
+   "pourquoi_fr": "Goût métallique, arrière-goût de poisson lié au fer du vin.",
+   "sources": [
+    "WIKI_PAIRING",
+    "TSUJI2012"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "imp.dessert_brut",
+   "fr": "Gâteau sucré et champagne brut",
+   "pourquoi_fr": "Un vin moins sucré que le dessert paraît aigre et maigre.",
+   "sources": [
+    "WIKI_PAIRING"
+   ],
+   "confiance": "haute"
+  }
+ ],
+ "vin_vers_plat": "dériver de « plats » : pour un style, les plats qui le citent (même source, même pourquoi)"
+}

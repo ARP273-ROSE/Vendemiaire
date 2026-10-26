@@ -1,0 +1,779 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "explication_fr": "Familles de vins : un vin de la cave est classé dans le style de plus petite priorité dont tous les critères renseignés correspondent (les listes vides ne filtrent pas ; appellations, régions, mots et cépages : au moins un doit correspondre si la liste n'est pas vide — sauf pour les styles « par défaut » de priorité ≥ 90, qui n'ont que couleur et type).",
+ "styles": [
+  {
+   "id": "eff_millesime",
+   "nom_fr": "Effervescent millésimé ou de prestige",
+   "nom_en": "Vintage or prestige sparkling",
+   "exemples": "Champagne millésimé, Dom Pérignon, Cristal, Krug, Franciacorta riserva",
+   "priorite": 10,
+   "criteres": {
+    "couleur": [
+     "blanc",
+     "rose"
+    ],
+    "type": [
+     "effervescent"
+    ],
+    "appellations": [
+     "champagne",
+     "franciacorta"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "millesim",
+     "vintage",
+     "prestige",
+     "cuvee de prestige",
+     "grand cru"
+    ]
+   }
+  },
+  {
+   "id": "eff_aromatique",
+   "nom_fr": "Effervescent aromatique ou doux",
+   "nom_en": "Aromatic or sweet sparkling",
+   "exemples": "Asti, Moscato d'Asti, clairette de Die tradition",
+   "priorite": 11,
+   "criteres": {
+    "couleur": [
+     "blanc",
+     "rose"
+    ],
+    "type": [
+     "effervescent"
+    ],
+    "appellations": [
+     "asti",
+     "moscato",
+     "clairette de die"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "eff_sans_annee",
+   "nom_fr": "Effervescent sans année",
+   "nom_en": "Non-vintage sparkling",
+   "exemples": "Champagne brut sans année, crémants, cava, prosecco, sekt",
+   "priorite": 90,
+   "criteres": {
+    "couleur": [
+     "blanc",
+     "rose"
+    ],
+    "type": [
+     "effervescent"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "liquoreux",
+   "nom_fr": "Liquoreux (pourriture noble, passerillage)",
+   "nom_en": "Botrytised and late-harvest sweet",
+   "exemples": "Sauternes, Barsac, Tokaji aszú, Beerenauslese, Trockenbeerenauslese, Quarts de Chaume, Sélection de grains nobles",
+   "priorite": 20,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "doux"
+    ],
+    "appellations": [
+     "sauternes",
+     "barsac",
+     "tokaj",
+     "quarts de chaume",
+     "bonnezeaux",
+     "coteaux du layon",
+     "loupiac",
+     "cadillac",
+     "monbazillac",
+     "cerons"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "aszu",
+     "beerenauslese",
+     "trockenbeerenauslese",
+     "grains nobles",
+     "sgn",
+     "botryt"
+    ]
+   }
+  },
+  {
+   "id": "vin_de_glace",
+   "nom_fr": "Vin de glace et vin de paille",
+   "nom_en": "Icewine and straw wine",
+   "exemples": "Eiswein, icewine du Canada, vin de paille du Jura, vinsanto",
+   "priorite": 21,
+   "criteres": {
+    "couleur": [
+     "blanc",
+     "rouge"
+    ],
+    "type": [
+     "doux"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "eiswein",
+     "icewine",
+     "ice wine",
+     "vin de paille",
+     "vinsanto",
+     "vin santo",
+     "passito"
+    ]
+   }
+  },
+  {
+   "id": "moelleux",
+   "nom_fr": "Blanc demi-sec ou moelleux",
+   "nom_en": "Off-dry and medium-sweet white",
+   "exemples": "Vouvray demi-sec, riesling Kabinett/Spätlese, Alsace vendanges tardives, Jurançon moelleux",
+   "priorite": 92,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "doux"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "xeres_fino",
+   "nom_fr": "Xérès fino et manzanilla",
+   "nom_en": "Fino and manzanilla sherry",
+   "exemples": "Fino, manzanilla",
+   "priorite": 30,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "mute"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "fino",
+     "manzanilla"
+    ]
+   }
+  },
+  {
+   "id": "porto_vintage",
+   "nom_fr": "Porto vintage",
+   "nom_en": "Vintage port",
+   "exemples": "Porto vintage, single quinta vintage",
+   "priorite": 31,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "mute"
+    ],
+    "appellations": [
+     "porto",
+     "port"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "vintage"
+    ]
+   }
+  },
+  {
+   "id": "mute_oxydatif",
+   "nom_fr": "Muté oxydatif (tawny, madère, xérès oxydatif, VDN tuilé)",
+   "nom_en": "Oxidative fortified",
+   "exemples": "Porto tawny et colheita, madère, amontillado, oloroso, Pedro Ximénez, banyuls et rivesaltes tuilés, rancios",
+   "priorite": 32,
+   "criteres": {
+    "couleur": [
+     "blanc",
+     "rouge"
+    ],
+    "type": [
+     "mute"
+    ],
+    "appellations": [
+     "madere",
+     "madeira",
+     "xeres",
+     "jerez",
+     "sherry",
+     "banyuls",
+     "maury",
+     "rivesaltes",
+     "rasteau"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "tawny",
+     "colheita",
+     "amontillado",
+     "oloroso",
+     "palo cortado",
+     "pedro ximenez",
+     "\\bpx\\b",
+     "rancio",
+     "hors d'age",
+     "tuile"
+    ]
+   }
+  },
+  {
+   "id": "mute_fruite",
+   "nom_fr": "Muté jeune et fruité (ruby, LBV, VDN grenat, muscats)",
+   "nom_en": "Young fruity fortified",
+   "exemples": "Porto ruby et LBV, banyuls rimage, maury grenat, muscats de Beaumes-de-Venise, de Rivesaltes, de Frontignan",
+   "priorite": 93,
+   "criteres": {
+    "couleur": [
+     "rouge",
+     "blanc"
+    ],
+    "type": [
+     "mute"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "vin_jaune",
+   "nom_fr": "Vin jaune et vins de voile",
+   "nom_en": "Vin jaune (flor-aged Jura)",
+   "exemples": "Vin jaune, Château-Chalon",
+   "priorite": 33,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "tranquille",
+     "autre"
+    ],
+    "appellations": [
+     "chateau-chalon",
+     "chateau chalon"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": [
+     "vin jaune"
+    ]
+   }
+  },
+  {
+   "id": "rose",
+   "nom_fr": "Rosé",
+   "nom_en": "Rosé",
+   "exemples": "Côtes de Provence, Tavel, Bandol rosé, rosés du monde",
+   "priorite": 94,
+   "criteres": {
+    "couleur": [
+     "rose"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "orange",
+   "nom_fr": "Vin orange (blanc de macération)",
+   "nom_en": "Orange (skin-contact white)",
+   "exemples": "Vins de macération du Frioul, qvevri de Géorgie",
+   "priorite": 95,
+   "criteres": {
+    "couleur": [
+     "orange"
+    ],
+    "type": [
+     "tranquille",
+     "autre"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "blanc_mineral_garde",
+   "nom_fr": "Blanc sec de garde, vif (riesling, chenin, Chablis)",
+   "nom_en": "Age-worthy crisp dry white",
+   "exemples": "Chablis premier et grand cru, riesling sec d'Alsace, d'Allemagne ou d'Autriche, Savennières, Vouvray sec, sémillon de la Hunter, assyrtiko de Santorin",
+   "priorite": 40,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "chablis",
+     "savennieres",
+     "vouvray",
+     "montlouis",
+     "santorin",
+     "santorini",
+     "wachau",
+     "hunter"
+    ],
+    "regions": [],
+    "cepages": [
+     "riesling",
+     "chenin",
+     "assyrtiko",
+     "furmint",
+     "semillon"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "blanc_ample",
+   "nom_fr": "Blanc sec ample, souvent élevé en fût",
+   "nom_en": "Full-bodied, often oaked dry white",
+   "exemples": "Meursault, Puligny- et Chassagne-Montrachet, Corton-Charlemagne, Pessac-Léognan blanc, Hermitage et Châteauneuf blancs, chardonnays boisés du Nouveau Monde",
+   "priorite": 41,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "meursault",
+     "montrachet",
+     "corton-charlemagne",
+     "pessac",
+     "graves",
+     "hermitage",
+     "condrieu",
+     "chateauneuf",
+     "saint-joseph",
+     "pouilly-fuisse"
+    ],
+    "regions": [],
+    "cepages": [
+     "chardonnay",
+     "viognier",
+     "marsanne",
+     "roussanne"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "blanc_frais",
+   "nom_fr": "Blanc sec frais et aromatique, à boire jeune",
+   "nom_en": "Fresh, aromatic dry white",
+   "exemples": "Muscadet, Sancerre, sauvignon de Marlborough, picpoul, albariño, vinho verde, pinot grigio, Mâcon, Soave",
+   "priorite": 96,
+   "criteres": {
+    "couleur": [
+     "blanc"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_leger",
+   "nom_fr": "Rouge léger et fruité",
+   "nom_en": "Light, fruity red",
+   "exemples": "Beaujolais et ses crus, gamay de Loire et de Savoie, pinot d'Alsace, Valpolicella, dolcetto, Bourgogne générique",
+   "priorite": 50,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "beaujolais",
+     "brouilly",
+     "fleurie",
+     "morgon",
+     "chiroubles",
+     "regnie",
+     "juliénas",
+     "saint-amour",
+     "chenas",
+     "cote de brouilly",
+     "moulin-a-vent",
+     "valpolicella",
+     "bardolino",
+     "dolcetto"
+    ],
+    "regions": [],
+    "cepages": [
+     "gamay",
+     "dolcetto",
+     "trousseau",
+     "poulsard"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_pinot_garde",
+   "nom_fr": "Pinot noir de garde",
+   "nom_en": "Age-worthy pinot noir",
+   "exemples": "Bourgogne villages, premiers et grands crus (Côte de Nuits, Côte de Beaune), Central Otago, Oregon, Martinborough",
+   "priorite": 51,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [],
+    "regions": [
+     "bourgogne",
+     "burgundy",
+     "central otago",
+     "oregon",
+     "martinborough"
+    ],
+    "cepages": [
+     "pinot noir"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_nebbiolo",
+   "nom_fr": "Nebbiolo (Barolo, Barbaresco)",
+   "nom_en": "Nebbiolo",
+   "exemples": "Barolo, Barbaresco, Gattinara, Valtellina",
+   "priorite": 52,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "barolo",
+     "barbaresco",
+     "gattinara",
+     "ghemme",
+     "valtellina"
+    ],
+    "regions": [],
+    "cepages": [
+     "nebbiolo"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_sangiovese",
+   "nom_fr": "Sangiovese de garde (Toscane)",
+   "nom_en": "Age-worthy sangiovese",
+   "exemples": "Brunello di Montalcino, Chianti Classico riserva et gran selezione, Vino Nobile",
+   "priorite": 53,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "brunello",
+     "chianti",
+     "vino nobile",
+     "montalcino"
+    ],
+    "regions": [],
+    "cepages": [
+     "sangiovese"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_tempranillo",
+   "nom_fr": "Tempranillo de garde (Rioja, Ribera)",
+   "nom_en": "Age-worthy tempranillo",
+   "exemples": "Rioja reserva et gran reserva, Ribera del Duero, Toro",
+   "priorite": 54,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "rioja",
+     "ribera del duero",
+     "toro"
+    ],
+    "regions": [],
+    "cepages": [
+     "tempranillo",
+     "tinto fino"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_bordeaux",
+   "nom_fr": "Rouge de Bordeaux classé (cabernet, merlot)",
+   "nom_en": "Classed-growth Bordeaux",
+   "exemples": "Médoc (Pauillac, Margaux, Saint-Julien, Saint-Estèphe), Pessac-Léognan, Pomerol, Saint-Émilion grand cru",
+   "priorite": 55,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "pauillac",
+     "margaux",
+     "saint-julien",
+     "saint-estephe",
+     "pessac",
+     "pomerol",
+     "saint-emilion",
+     "listrac",
+     "moulis",
+     "haut-medoc",
+     "fronsac"
+    ],
+    "regions": [
+     "bordeaux"
+    ],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_syrah_nord",
+   "nom_fr": "Syrah du Rhône nord",
+   "nom_en": "Northern Rhône syrah",
+   "exemples": "Côte-Rôtie, Hermitage, Cornas, Saint-Joseph, Crozes-Hermitage",
+   "priorite": 56,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "cote-rotie",
+     "hermitage",
+     "cornas",
+     "saint-joseph",
+     "crozes"
+    ],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_grenache_sud",
+   "nom_fr": "Rouge méditerranéen (grenache, assemblages du Sud)",
+   "nom_en": "Southern Rhône and Mediterranean blends",
+   "exemples": "Châteauneuf-du-Pape, Gigondas, Vacqueyras, Côtes-du-Rhône villages, Languedoc, Roussillon, Priorat, Bandol",
+   "priorite": 57,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "chateauneuf",
+     "gigondas",
+     "vacqueyras",
+     "rasteau",
+     "cotes-du-rhone",
+     "languedoc",
+     "pic saint-loup",
+     "faugeres",
+     "minervois",
+     "corbieres",
+     "priorat",
+     "bandol"
+    ],
+    "regions": [],
+    "cepages": [
+     "grenache",
+     "garnacha",
+     "mourvedre",
+     "carignan"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_cabernet_monde",
+   "nom_fr": "Cabernet et assemblages bordelais du monde",
+   "nom_en": "New World and Italian cabernet blends",
+   "exemples": "Napa, Coonawarra, Margaret River, Washington, Chili (Maipo), Hawke's Bay, Bolgheri",
+   "priorite": 58,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [],
+    "regions": [
+     "napa",
+     "coonawarra",
+     "margaret river",
+     "washington",
+     "maipo",
+     "hawke",
+     "bolgheri",
+     "sonoma"
+    ],
+    "cepages": [
+     "cabernet sauvignon",
+     "cabernet franc",
+     "merlot",
+     "carmenere"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_puissant_soleil",
+   "nom_fr": "Rouge solaire et généreux (shiraz, malbec, zinfandel)",
+   "nom_en": "Ripe, sunny red",
+   "exemples": "Barossa et McLaren Vale, Mendoza, Paso Robles, zinfandel de Californie, Amarone",
+   "priorite": 59,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "amarone"
+    ],
+    "regions": [
+     "barossa",
+     "mclaren",
+     "mendoza",
+     "paso robles"
+    ],
+    "cepages": [
+     "shiraz",
+     "malbec",
+     "zinfandel",
+     "primitivo"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_tannique",
+   "nom_fr": "Rouge tannique de caractère",
+   "nom_en": "Tannic, structured red",
+   "exemples": "Madiran, Cahors, Bandol, Taurasi et aglianico, Douro rouge, saperavi, xinomavro, tannat d'Uruguay",
+   "priorite": 60,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [
+     "madiran",
+     "cahors",
+     "taurasi",
+     "aglianico",
+     "douro",
+     "naoussa"
+    ],
+    "regions": [],
+    "cepages": [
+     "tannat",
+     "aglianico",
+     "saperavi",
+     "xinomavro",
+     "touriga nacional"
+    ],
+    "mots": []
+   }
+  },
+  {
+   "id": "rouge_courant",
+   "nom_fr": "Rouge courant (à boire dans les cinq ans)",
+   "nom_en": "Everyday red",
+   "exemples": "Bordeaux et Bordeaux supérieur, Côtes-du-Rhône, vins de pays et IGP, cépages du Nouveau Monde d'entrée de gamme",
+   "priorite": 99,
+   "criteres": {
+    "couleur": [
+     "rouge"
+    ],
+    "type": [
+     "tranquille"
+    ],
+    "appellations": [],
+    "regions": [],
+    "cepages": [],
+    "mots": []
+   }
+  }
+ ]
+}

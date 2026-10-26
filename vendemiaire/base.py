@@ -607,6 +607,21 @@ CREATE INDEX journal_ligne ON journal_enrichissement(table_nom, ligne_id);
 """
 
 
+SCHEMA_V5 = """
+-- Phase 3 : règles du dossier « Le vin ». Style et niveau de garde imposés par
+-- l'utilisateur (NULL = classement automatique d'après styles.json / garde.json)
+ALTER TABLE vin ADD COLUMN style TEXT;
+ALTER TABLE vin ADD COLUMN niveau_garde TEXT;           -- garde, courant, primeur, nouveau_monde, tous
+CREATE INDEX fenetre_source ON fenetre_degustation(source);
+CREATE INDEX degustation_date ON degustation(date);
+"""
+
+
+def _v5(c: sqlite3.Connection) -> None:
+    """v5 (phase 3) : style et niveau de garde choisis par l'utilisateur."""
+    _script(c, SCHEMA_V5)
+
+
 #: migrations dans l'ordre : MIGRATIONS[i] fait passer de la version i à i+1.
 #: Ne JAMAIS modifier une migration publiée : en ajouter une nouvelle.
 MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
@@ -614,6 +629,7 @@ MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
     _v2,
     _v3,
     _v4,
+    _v5,
 ]
 VERSION_SCHEMA = len(MIGRATIONS)
 

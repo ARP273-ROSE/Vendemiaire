@@ -1,0 +1,88 @@
+{
+ "origine": "dossier « Le vin », data/regles (copie octet pour octet)",
+ "date_audit": "2026-10-26",
+ "fichiers": {
+  "LISEZMOI.md": {
+   "sha256": "d21e21cc48cf1e7440b3b02ffe672bc8a260ed7086348a639e139e9452cb0f51",
+   "octets": 7104
+  },
+  "sources.json": {
+   "sha256": "d3c5afff9ad7bc495258993dad53a1fc7b78ea6f44275e3badcef85f2f26d99a",
+   "octets": 12473,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "styles.json": {
+   "sha256": "9602ffea3b7223edec6f623f993ebeb7b679c03a52b9134ca504b539fde18ac5",
+   "octets": 15951,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "service.json": {
+   "sha256": "d8b4e7783b382c27966a2bca437f8b69e988ee1c48a556cdad1ef06e9e1bc53a",
+   "octets": 22024,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "garde.json": {
+   "sha256": "f01f8671103fa5f356b515e2985c822b70aae47d2825a880fba5a03167a1f603",
+   "octets": 43622,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "millesimes.json": {
+   "sha256": "8330e2dc88b424fa6ea3ab7c61b767c64e6f4e51ba81138acf8f752830d552be",
+   "octets": 342891,
+   "version": null,
+   "date": null
+  },
+  "conservation.json": {
+   "sha256": "39b7cbf3f06d213c18b1e8db6f8a9019188c4e6c1d8871a14559870e28d3980a",
+   "octets": 5043,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "bouteille_ouverte.json": {
+   "sha256": "1ca8e8d8b281ddb0c3552f6ca20ed27fb39b57fe61d81fe4b39d616986435571",
+   "octets": 7404,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "niveaux.json": {
+   "sha256": "dc1cd33e5f3c670b8a027da1048f77de07063c331019dd621779ae7bd0c2eee8",
+   "octets": 4358,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "notes.json": {
+   "sha256": "eafe5bfa13d4d8abcb70089854a47f23a55dbee019599c256d25789b278f588c",
+   "octets": 5108,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "defauts.json": {
+   "sha256": "71f0bc42d1d7e501845550fe362b7bbdfd70f86057c370e98e0992d0488159ef",
+   "octets": 6159,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "aromes.json": {
+   "sha256": "725b28ce24923797fdee081a3720d0b910d4a0ad6c0ac47174a268fa0f6432ae",
+   "octets": 5642,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "accords.json": {
+   "sha256": "a87760cf5b20f83ba783adbf9849681e73f961383eb581577bdd4323395d4ce1",
+   "octets": 51555,
+   "version": "1.0",
+   "date": "2026-10-26"
+  },
+  "accords_corpus.json": {
+   "sha256": "64650a136f6c94e6ee19942449ede0222534d03a784e3203c71a3b7a4526fe94",
+   "octets": 81112,
+   "version": null,
+   "date": null
+  }
+ }
+}

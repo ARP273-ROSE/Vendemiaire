@@ -8,8 +8,8 @@ permet d'importer sans perte une donnée que l'application ne connaît pas
 encore.
 
 Ce module ne contient AUCUNE règle d'œnologie (apogée, signification d'un
-niveau selon l'âge, service, accords) : elles viendront du dossier « Le vin »,
-avec leurs sources, par l'interface `vendemiaire.regles`.
+niveau selon l'âge, service, accords) : elles viennent du dossier « Le vin »,
+avec leurs sources, par `vendemiaire.regles` ; ici, seulement le vocabulaire.
 """
 from __future__ import annotations
 
@@ -160,6 +160,47 @@ ENUMS: dict[str, dict[str, tuple[str, str]]] = {
         "gaz": ("Gaz inerte", "Inert gas"),
         "coravin": ("Coravin", "Coravin"),
         "vide": ("Pompe à vide", "Vacuum pump"),
+    },
+    # --- phase 3 : vocabulaire des règles du dossier « Le vin » (les règles
+    # elles-mêmes sont dans vendemiaire/regles/donnees)
+    "phase": {
+        "trop_jeune": ("Trop jeune", "Too young"),
+        "buvable": ("Buvable, pas encore à l'apogée", "Drinkable, not yet at its peak"),
+        "apogee": ("À l'apogée", "At its peak"),
+        "apogee_passee": ("Apogée passée (fin non chiffrée)", "Past its peak (no end given)"),
+        "declin": ("En déclin", "Declining"),
+        "passe": ("Au-delà de la fin de la fenêtre", "Beyond the end of the window"),
+    },
+    "alerte": {
+        "a_boire": ("À boire cette année", "Drink this year"),
+        "declin": ("En déclin", "Declining"),
+        "trop_jeune": ("Trop jeune", "Too young"),
+    },
+    "niveau_garde": {
+        "garde": ("De garde", "For keeping"),
+        "courant": ("Courant (entrée de gamme)", "Everyday (entry level)"),
+        "primeur": ("Primeur, nouveau", "Primeur, nouveau"),
+        "nouveau_monde": ("Nouveau Monde", "New World"),
+        "tous": ("Tous", "All"),
+    },
+    "occasion": {
+        "aperitif": ("Apéritif", "Aperitif"),
+        "quotidien": ("Tous les jours", "Everyday"),
+        "grande": ("Grande occasion", "Special occasion"),
+    },
+    "verdict_niveau": {
+        "excellent": ("Excellent pour son âge", "Excellent for its age"),
+        "normal": ("Normal pour son âge", "Normal for its age"),
+        "bas_pour_age": ("Bas pour son âge : bouchon ou conservation à vérifier",
+                         "Low for its age: check the cork and storage"),
+        "risque": ("Risqué à tout âge", "Risky at any age"),
+        "inconnu": ("Âge inconnu (pas de millésime)", "Unknown age (no vintage)"),
+        "hors_echelle": ("Au-delà de l'échelle du dossier", "Beyond the dossier's scale"),
+    },
+    "confiance": {
+        "haute": ("Confiance haute (sources concordantes)", "High confidence (sources agree)"),
+        "moyenne": ("Confiance moyenne", "Medium confidence"),
+        "faible": ("Confiance faible", "Low confidence"),
     },
 }
 

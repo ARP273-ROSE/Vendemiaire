@@ -1,0 +1,157 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "defauts": [
+  {
+   "id": "tca",
+   "nom_fr": "Goût de bouchon",
+   "molecule": "2,4,6-trichloroanisole (TCA), parfois TBA",
+   "seuil": "rejet vers 3,1-3,7 ng/L dans les blancs (une étude) ; même des traces de 1-2 ng/L peuvent s'additionner",
+   "perception_fr": "carton mouillé, cave humide, champignon ; surtout un vin éteint, sans fruit : le TCA bloque les récepteurs de l'odorat (étude PNAS 2013) plus qu'il ne sent lui-même",
+   "cause_fr": "contamination du liège, parfois de la cave entière (bois, produits chlorés)",
+   "que_faire_fr": "Rapporter la bouteille au caviste ou la signaler au restaurant ; aucun remède fiable (le film de polyéthylène absorbe une partie du TCA).",
+   "sources": [
+    "WIKI_CORK",
+    "TCA2013",
+    "WIKI_FAULT"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "oxydation",
+   "nom_fr": "Oxydation",
+   "molecule": "éthanal (acétaldéhyde)",
+   "seuil": "non chiffré ici",
+   "perception_fr": "pomme blette, noix, xérès dans un vin qui ne devrait pas l'être ; robe qui brunit",
+   "cause_fr": "trop d'oxygène : bouchon défaillant, bouteille mal conservée, vin ouvert depuis longtemps",
+   "que_faire_fr": "Rien à faire ; vérifier le niveau des autres bouteilles du même lot.",
+   "sources": [
+    "WIKI_FAULT",
+    "HOPFER2013"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "reduction",
+   "nom_fr": "Réduction",
+   "molecule": "sulfure d'hydrogène (H2S), mercaptans, disulfures",
+   "seuil": "seuils très bas (mercaptans)",
+   "perception_fr": "œuf pourri, allumette, caoutchouc, chou, égout",
+   "cause_fr": "levures en manque d'azote pendant la fermentation ; mercaptans formés quand le vin reste longtemps sur ses lies",
+   "que_faire_fr": "Aérer, carafer : l'odeur disparaît souvent en quelques minutes.",
+   "sources": [
+    "WIKI_FAULT",
+    "WINEFOLLY_DEC"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "brett",
+   "nom_fr": "Brett (Brettanomyces)",
+   "molecule": "4-éthylphénol, 4-éthylgaïacol, acide isovalérique",
+   "seuil": "4-éthylphénol au-delà d'environ 140 µg/L ; 4-éthylgaïacol au-delà d'environ 600 µg/L",
+   "perception_fr": "écurie, sueur de cheval, pansement, clou de girofle, fumé",
+   "cause_fr": "levure Brettanomyces dans les barriques ou le matériel mal entretenus ; à faible dose certains y voient de la complexité",
+   "que_faire_fr": "Question de goût jusqu'à un certain point ; ne se corrige pas en bouteille.",
+   "sources": [
+    "WIKI_FAULT",
+    "WIKI_BRETT"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "acidite_volatile",
+   "nom_fr": "Acidité volatile, piqûre acétique",
+   "molecule": "acide acétique, acétate d'éthyle",
+   "seuil": "fermentation normale : 0,2-0,3 g/L (équivalent H2SO4) ; plafond légal européen : 20 meq/L pour les rouges (0,98 g/L en équivalent H2SO4), 18 meq/L pour les blancs et rosés (0,88 g/L), avec des dérogations",
+   "perception_fr": "vinaigre, dissolvant, vernis à ongles ; une pointe peut « porter » les arômes",
+   "cause_fr": "bactéries acétiques, fermentation mal maîtrisée",
+   "que_faire_fr": "Au-delà du seuil, le vin est impropre à la vente.",
+   "sources": [
+    "WIKI_AV",
+    "WIKI_FAULT",
+    "UE_2019_934_AV"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "so2",
+   "nom_fr": "Excès de soufre",
+   "molecule": "dioxyde de soufre (SO2)",
+   "seuil": "voir les teneurs légales (chapitre « La vigne soignée »)",
+   "perception_fr": "allumette craquée, picotement du nez",
+   "cause_fr": "sulfitage excessif, souvent dans les blancs et les liquoreux",
+   "que_faire_fr": "Aérer : le SO2 libre s'évapore en partie.",
+   "sources": [
+    "WIKI_FAULT"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "geosmine",
+   "nom_fr": "Goût de terre",
+   "molecule": "géosmine",
+   "seuil": "jusqu'à 10 ng/L environ",
+   "perception_fr": "terre, betterave, navet",
+   "cause_fr": "métabolite de micro-organismes (actinomycètes filamenteux) ; trouvée dans des rouges récents du Beaujolais, de Bordeaux, de Bourgogne et de la Loire",
+   "que_faire_fr": "Ne se corrige pas.",
+   "sources": [
+    "WIKI_FAULT"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "geranium",
+   "nom_fr": "Goût de géranium",
+   "molecule": "2-éthoxyhexa-3,5-diène",
+   "seuil": "1 ng/L",
+   "perception_fr": "feuille de géranium écrasée",
+   "cause_fr": "bactéries lactiques qui dégradent le sorbate de potassium ajouté comme conservateur",
+   "que_faire_fr": "Ne se corrige pas.",
+   "sources": [
+    "WIKI_FAULT"
+   ],
+   "confiance": "haute"
+  },
+  {
+   "id": "fumee",
+   "nom_fr": "Goût de fumée (incendies)",
+   "molecule": "phénols volatils (gaïacol, crésols) et leurs glycosides",
+   "seuil": "variable",
+   "perception_fr": "fumé, médicinal, cendrier en fin de bouche",
+   "cause_fr": "fumée d'incendie absorbée par les raisins (Californie 2020, Australie 2019-2020)",
+   "que_faire_fr": "L'élevage en barrique neuve atténue la perception (étude UC Davis 2026), sans l'effacer.",
+   "sources": [
+    "SMOKE2026"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "cuit",
+   "nom_fr": "Vin cuit (chaleur)",
+   "molecule": "—",
+   "seuil": "plus de 25 °C pendant longtemps",
+   "perception_fr": "fruits cuits, confiture, raisin sec ; bouchon parfois poussé, traces de coulure",
+   "cause_fr": "stockage ou transport trop chauds",
+   "que_faire_fr": "Vérifier le haut de la capsule à l'achat (coulure, bouchon remonté).",
+   "sources": [
+    "WIKI_STORAGE"
+   ],
+   "confiance": "moyenne"
+  },
+  {
+   "id": "tartre",
+   "nom_fr": "Cristaux de tartre (pas un défaut)",
+   "molecule": "bitartrate de potassium (« crème de tartre »)",
+   "seuil": "—",
+   "perception_fr": "petits cristaux (« diamants du vin ») au fond ou sous le bouchon, sans goût",
+   "cause_fr": "le bitartrate précipite quand la bouteille est gardée sous 10 °C environ ; il se redissout rarement",
+   "que_faire_fr": "Sans danger : c'est la crème de tartre de la pâtisserie ; on carafe ou on laisse au fond.",
+   "sources": [
+    "WIKI_TARTRE"
+   ],
+   "confiance": "haute"
+  }
+ ]
+}

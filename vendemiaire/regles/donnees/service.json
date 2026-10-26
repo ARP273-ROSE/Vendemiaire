@@ -1,0 +1,773 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "temperature": [
+  {
+   "id": "temp.eff_sans_annee",
+   "styles": [
+    "eff_sans_annee"
+   ],
+   "valeur": {
+    "min_c": 8,
+    "max_c": 10
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "haute",
+   "explication_fr": "8 à 10 °C : assez frais pour que la mousse reste fine et vive, pas assez froid pour éteindre les arômes. Le Comité Champagne et le Bureau du Champagne donnent 8-10 °C ; le WSET va jusqu'à 6 °C pour les effervescents simples.",
+   "explication_en": "8-10 °C keeps the mousse fine without numbing the aromas (Comité Champagne; WSET goes down to 6 °C).",
+   "sources": [
+    "CHAMP_FICHE",
+    "BUREAU_CHAMP",
+    "WSET_TEMP",
+    "ELEPHORM",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.eff_millesime",
+   "styles": [
+    "eff_millesime"
+   ],
+   "valeur": {
+    "min_c": 10,
+    "max_c": 12
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Un peu moins froid (10-12 °C) pour laisser parler un vin complexe. Les sources divergent : le Comité Champagne dit 8-10 °C pour tous les champagnes, la maison Mumm 12-14 °C pour ses millésimés, rosés, vieux flacons et grandes cuvées.",
+   "explication_en": "Slightly warmer (10-12 °C) for complex vintage wines; Comité Champagne says 8-10 °C, Mumm 12-14 °C.",
+   "sources": [
+    "CHAMP_FICHE",
+    "MUMM"
+   ]
+  },
+  {
+   "id": "temp.blanc_frais",
+   "styles": [
+    "blanc_frais"
+   ],
+   "valeur": {
+    "min_c": 8,
+    "max_c": 10
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "haute",
+   "explication_fr": "Frais (8-10 °C) : l'acidité et le fruit restent nets. En dessous de 5 °C, le froid engourdit les papilles et masque le vin (et parfois ses défauts).",
+   "explication_en": "Chilled (8-10 °C); below 5 °C the cold numbs the palate and hides the wine.",
+   "sources": [
+    "WSET_TEMP",
+    "IDEALWINE_T",
+    "ELEPHORM",
+    "VERSAILLES"
+   ]
+  },
+  {
+   "id": "temp.rose",
+   "styles": [
+    "rose"
+   ],
+   "valeur": {
+    "min_c": 8,
+    "max_c": 10
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Comme un blanc frais. Le tableau portugais donne 7-10 °C ; le WSET range les rosés avec les blancs légers.",
+   "explication_en": "Like a fresh white (7-10 °C in the Portuguese table).",
+   "sources": [
+    "CVP",
+    "WSET_TEMP"
+   ]
+  },
+  {
+   "id": "temp.blanc_mineral_garde",
+   "styles": [
+    "blanc_mineral_garde"
+   ],
+   "valeur": {
+    "min_c": 10,
+    "max_c": 12
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "10-12 °C : assez frais pour la tension, assez tempéré pour la complexité. Une étude sur le riesling montre qu'à 11 °C on reconnaît mieux la note « pétrole » qu'à température ambiante.",
+   "explication_en": "10-12 °C; a study found the petrol note of riesling is better recognised at about 11 °C than at room temperature.",
+   "sources": [
+    "ELEPHORM",
+    "IDEALWINE_T",
+    "TDN2020"
+   ]
+  },
+  {
+   "id": "temp.blanc_ample",
+   "styles": [
+    "blanc_ample",
+    "orange"
+   ],
+   "valeur": {
+    "min_c": 11,
+    "max_c": 13
+   },
+   "marge": {
+    "c": 1.5
+   },
+   "confiance": "haute",
+   "explication_fr": "Légèrement rafraîchi (10-13 °C selon les sources) : trop froid, un grand blanc boisé paraît dur et fermé ; trop chaud, lourd et alcooleux. Pour les vins orange, aucune source chiffrée : le dossier applique la même règle (convention).",
+   "explication_en": "Lightly chilled (10-13 °C). No published figure for orange wines: same rule by convention.",
+   "sources": [
+    "WSET_TEMP",
+    "ELEPHORM",
+    "IDEALWINE_T",
+    "DOSSIER"
+   ]
+  },
+  {
+   "id": "temp.moelleux",
+   "styles": [
+    "moelleux",
+    "eff_aromatique"
+   ],
+   "valeur": {
+    "min_c": 7,
+    "max_c": 9
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Bien frais (6-8 °C pour le WSET, vers 8 °C pour iDealwine) : le froid tempère la sensation sucrée.",
+   "explication_en": "Well chilled (6-8 °C WSET); cold tempers sweetness.",
+   "sources": [
+    "WSET_TEMP",
+    "IDEALWINE_T",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.liquoreux",
+   "styles": [
+    "liquoreux",
+    "vin_de_glace"
+   ],
+   "valeur": {
+    "min_c": 8,
+    "max_c": 11
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Frais mais pas glacé : vers 8 °C, un peu plus (jusqu'à 12 °C au plus) pour un grand liquoreux complexe ou âgé. Le WSET dit 6-8 °C pour les vins doux en général.",
+   "explication_en": "Cool, not icy: about 8 °C, up to 12 °C for great or old sweet wines (WSET: 6-8 °C for sweet wines).",
+   "sources": [
+    "IDEALWINE_T",
+    "WSET_TEMP",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.rouge_leger",
+   "styles": [
+    "rouge_leger"
+   ],
+   "valeur": {
+    "min_c": 12,
+    "max_c": 14
+   },
+   "marge": {
+    "c": 1.5
+   },
+   "confiance": "haute",
+   "explication_fr": "Légèrement frais (13 °C pour le WSET, 12-14 °C ailleurs) : le fruit croquant ressort, l'alcool se fait oublier.",
+   "explication_en": "Lightly chilled (13 °C WSET, 12-14 °C elsewhere).",
+   "sources": [
+    "WSET_TEMP",
+    "ELEPHORM",
+    "IDEALWINE_T"
+   ]
+  },
+  {
+   "id": "temp.rouge_moyen",
+   "styles": [
+    "rouge_courant",
+    "rouge_pinot_garde",
+    "rouge_sangiovese",
+    "rouge_tempranillo"
+   ],
+   "valeur": {
+    "min_c": 14,
+    "max_c": 16
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Vers 15 °C (iDealwine), dans le bas de la fourchette 15-18 °C du WSET : un rouge de corps moyen garde sa fraîcheur. Un vieux bourgogne se sert un peu plus chaud (17 °C pour iDealwine).",
+   "explication_en": "About 15 °C, at the low end of WSET's 15-18 °C; an old Burgundy a little warmer (17 °C).",
+   "sources": [
+    "IDEALWINE_T",
+    "WSET_TEMP",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.rouge_puissant",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_syrah_nord",
+    "rouge_grenache_sud",
+    "rouge_cabernet_monde",
+    "rouge_puissant_soleil",
+    "rouge_tannique",
+    "rouge_nebbiolo"
+   ],
+   "valeur": {
+    "min_c": 16,
+    "max_c": 18
+   },
+   "marge": {
+    "c": 1
+   },
+   "confiance": "haute",
+   "explication_fr": "16-18 °C, jamais plus : servi trop froid, un rouge tannique paraît dur et amer ; trop chaud (22 °C), il ne montre plus que la brûlure de l'alcool. La « température ambiante » des anciens traités, c'est celle d'une maison sans chauffage central.",
+   "explication_en": "16-18 °C, never warmer: too cold the tannins turn hard, too warm (22 °C) only alcohol shows.",
+   "sources": [
+    "WSET_TEMP",
+    "ELEPHORM",
+    "IDEALWINE_T",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.xeres_fino",
+   "styles": [
+    "xeres_fino"
+   ],
+   "valeur": {
+    "min_c": 7,
+    "max_c": 9
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Très frais, comme un blanc léger (7-9 °C chez Catavino, 7-10 °C pour le WSET).",
+   "explication_en": "Well chilled (7-9 °C).",
+   "sources": [
+    "CATAVINO",
+    "WSET_TEMP"
+   ]
+  },
+  {
+   "id": "temp.mute_oxydatif",
+   "styles": [
+    "mute_oxydatif"
+   ],
+   "valeur": {
+    "min_c": 12,
+    "max_c": 14
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Tempéré-frais : amontillado et oloroso vers 13 °C, Pedro Ximénez 13-14 °C (Catavino) ; tawny 12-16 °C et madère 10-14 °C (tableau portugais).",
+   "explication_en": "Cool: amontillado and oloroso about 13 °C, PX 13-14 °C; tawny 12-16 °C, Madeira 10-14 °C.",
+   "sources": [
+    "CATAVINO",
+    "CVP"
+   ]
+  },
+  {
+   "id": "temp.mute_fruite",
+   "styles": [
+    "mute_fruite"
+   ],
+   "valeur": {
+    "min_c": 14,
+    "max_c": 16
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "faible",
+   "explication_fr": "Pas de chiffre officiel : le tableau portugais met le tawny à 12-16 °C et le vintage à 16-18 °C ; un ruby ou un VDN grenat se place entre les deux (convention du dossier). Les muscats doux se servent frais, comme les moelleux.",
+   "explication_en": "No official figure; between tawny (12-16 °C) and vintage port (16-18 °C), by convention. Sweet muscats chilled like sweet whites.",
+   "sources": [
+    "CVP",
+    "DOSSIER"
+   ]
+  },
+  {
+   "id": "temp.porto_vintage",
+   "styles": [
+    "porto_vintage"
+   ],
+   "valeur": {
+    "min_c": 16,
+    "max_c": 18
+   },
+   "marge": {
+    "c": 1
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Comme un grand rouge : 16-18 °C (tableau portugais ; le WSET cite le porto vintage parmi les rouges à servir à 15-18 °C).",
+   "explication_en": "Like a fine red: 16-18 °C.",
+   "sources": [
+    "CVP",
+    "WSET_TEMP"
+   ]
+  },
+  {
+   "id": "temp.vin_jaune",
+   "styles": [
+    "vin_jaune"
+   ],
+   "valeur": {
+    "min_c": 14,
+    "max_c": 16
+   },
+   "marge": {
+    "c": 2
+   },
+   "confiance": "faible",
+   "explication_fr": "Aucune recommandation officielle : les guides vont de 12-15 °C (Vinatis) à 16-18 °C (Guide Hachette) ; des amateurs expérimentés le servent entre 14 et 16 °C, au milieu de cette fourchette, ni froid ni chambré. À prendre comme un repère.",
+   "explication_en": "No official guidance; guides range from 12-15 °C (Vinatis) to 16-18 °C (Guide Hachette); experienced amateurs serve it at 14-16 °C, mid-range.",
+   "sources": [
+    "LAPASSION_VJ",
+    "VINATIS_SRV_VJ",
+    "HACHETTE_VJ"
+   ]
+  }
+ ],
+ "ajustements_temperature": [
+  {
+   "id": "temp.ajust.servir_plus_frais",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "delta_c": -1.5
+   },
+   "marge": {
+    "c": 0.5
+   },
+   "confiance": "haute",
+   "explication_fr": "Servir 1 à 2 °C sous la cible : le vin se réchauffe vite dans le verre (environ 2 °C en 10 minutes, et 2 à 3 °C une fois servi selon Mumm).",
+   "explication_en": "Serve 1-2 °C below target: wine warms quickly in the glass (about 2 °C in 10 minutes).",
+   "sources": [
+    "VERSAILLES",
+    "ELEPHORM",
+    "MUMM"
+   ]
+  },
+  {
+   "id": "temp.ajust.vieux_vin",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_pinot_garde",
+    "rouge_syrah_nord",
+    "rouge_grenache_sud",
+    "rouge_nebbiolo",
+    "rouge_sangiovese",
+    "rouge_tempranillo",
+    "rouge_cabernet_monde"
+   ],
+   "valeur": {
+    "delta_c": 1,
+    "age_min_ans": 15
+   },
+   "marge": {
+    "c": 1
+   },
+   "confiance": "faible",
+   "explication_fr": "Un vieux vin (plus de 15 ans environ) se sert un ou deux degrés plus haut pour ouvrir son bouquet (iDealwine : un vieux bourgogne à 17 °C), sans dépasser 18 °C. Le seuil de 15 ans est une convention du dossier.",
+   "explication_en": "Old wines one or two degrees warmer (old Burgundy 17 °C), never above 18 °C; 15-year threshold is a convention.",
+   "sources": [
+    "IDEALWINE_T",
+    "DOSSIER"
+   ]
+  },
+  {
+   "id": "temp.plafond",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "max_c": 18
+   },
+   "marge": {
+    "c": 0
+   },
+   "confiance": "haute",
+   "explication_fr": "Jamais au-dessus de 18 °C : au-delà, les tanins durcissent et l'alcool domine.",
+   "explication_en": "Never above 18 °C.",
+   "sources": [
+    "IDEALWINE_T",
+    "ELEPHORM"
+   ]
+  }
+ ],
+ "sortie_de_cave": {
+  "id": "service.sortie_de_cave",
+  "styles": [
+   "*"
+  ],
+  "valeur": {
+   "cave_c": 12,
+   "piece_c": 20,
+   "minutes_pour_atteindre": {
+    "14": 45,
+    "15": 73,
+    "16": 107,
+    "17": 152,
+    "18": 215
+   },
+   "refroidir_minutes": {
+    "6": {
+     "frigo_depuis_cave_min": 215,
+     "seau_depuis_cave_min": 26,
+     "frigo_depuis_20C_min": 322,
+     "seau_depuis_20C_min": 45
+    },
+    "7": {
+     "frigo_depuis_cave_min": 152,
+     "seau_depuis_cave_min": 20,
+     "frigo_depuis_20C_min": 259,
+     "seau_depuis_20C_min": 39
+    },
+    "8": {
+     "frigo_depuis_cave_min": 107,
+     "seau_depuis_cave_min": 15,
+     "frigo_depuis_20C_min": 215,
+     "seau_depuis_20C_min": 34
+    },
+    "9": {
+     "frigo_depuis_cave_min": 73,
+     "seau_depuis_cave_min": 11,
+     "frigo_depuis_20C_min": 180,
+     "seau_depuis_20C_min": 30
+    },
+    "10": {
+     "frigo_depuis_cave_min": 45,
+     "seau_depuis_cave_min": 7,
+     "frigo_depuis_20C_min": 152,
+     "seau_depuis_20C_min": 26
+    },
+    "11": {
+     "frigo_depuis_cave_min": 21,
+     "seau_depuis_cave_min": 3,
+     "frigo_depuis_20C_min": 128,
+     "seau_depuis_20C_min": 22
+    }
+   },
+   "tau_air_h": 2.58,
+   "tau_seau_min": 37.6,
+   "tau_physique_h": [
+    1.6,
+    3.2
+   ]
+  },
+  "marge": {
+   "relative": 0.3
+  },
+  "confiance": "moyenne",
+  "explication_fr": "Combien de temps avant de servir ? Une bouteille suit la loi de refroidissement de Newton. Calibrée sur les durées publiées par la Champagne (3 h au réfrigérateur ou 30 min en seau d'eau glacée pour passer de 20 à 9 °C environ), elle donne : sortir un rouge d'une cave à 12 °C environ 1 h 45 avant de le servir à 16 °C dans une pièce à 20 °C, 2 h 30 pour 17 °C ; un blanc pris en cave gagne 10 °C après 45 min de réfrigérateur ; un seau d'eau glacée va environ dix fois plus vite que le réfrigérateur. Hypothèses : pièce 20 °C, réfrigérateur 4 °C ; marge ±30 %.",
+  "explication_en": "Newton's cooling law calibrated on Champagne timings (3 h fridge, 30 min ice bucket): take a red out of a 12 °C cellar about 1 h 45 before serving at 16 °C in a 20 °C room.",
+  "sources": [
+   "CALC5",
+   "CHAMP_FICHE",
+   "BUREAU_CHAMP"
+  ]
+ },
+ "carafe": [
+  {
+   "id": "carafe.rouge_tannique_jeune",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_nebbiolo",
+    "rouge_syrah_nord",
+    "rouge_cabernet_monde",
+    "rouge_puissant_soleil",
+    "rouge_tannique",
+    "rouge_sangiovese",
+    "rouge_grenache_sud"
+   ],
+   "valeur": {
+    "action": "carafer",
+    "minutes_min": 30,
+    "minutes_max": 120,
+    "age_max_ans": 10
+   },
+   "marge": {
+    "minutes": 60
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Un jeune rouge tannique gagne à passer en carafe 30 min à 2 h : le contact avec l'air libère les arômes et dissipe les odeurs de réduction. Wine Folly conseille jusqu'à 2 h pour une syrah ou un Barolo ; Karen MacNeil recommande la carafe pour Barolo, Bordeaux, cabernet, porto et Rhône. Débat réel : selon Émile Peynaud, une aération prolongée disperse plus d'arômes qu'elle n'en révèle ; et une carafe de quelques heures n'assouplit pas les tanins eux-mêmes (leur polymérisation prend des jours), elle change surtout la perception.",
+   "explication_en": "Young tannic reds: decant 30 min to 2 h (Wine Folly, MacNeil). Debated: Peynaud held that long aeration dissipates aromas; decanting does not chemically soften tannins.",
+   "sources": [
+    "WINEFOLLY_DEC",
+    "WIKI_DECANTER",
+    "ELEPHORM",
+    "VERSAILLES"
+   ]
+  },
+  {
+   "id": "carafe.vieux_rouge_depot",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_nebbiolo",
+    "rouge_syrah_nord",
+    "rouge_cabernet_monde",
+    "rouge_tannique",
+    "rouge_pinot_garde",
+    "rouge_grenache_sud",
+    "rouge_sangiovese",
+    "rouge_tempranillo",
+    "porto_vintage"
+   ],
+   "valeur": {
+    "action": "decanter",
+    "minutes_min": 0,
+    "minutes_max": 15,
+    "age_min_ans": 15,
+    "debout_heures_avant": 24
+   },
+   "marge": {
+    "minutes": 15
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Un vieux vin (ou un porto vintage) a souvent un dépôt : on le décante juste avant de servir, pour séparer le vin clair du dépôt, en versant lentement devant une lumière. La veille, on redresse la bouteille pour que le dépôt descende ; au restaurant, un panier verseur évite de la remuer. Pas d'aération longue : un vieux vin est fragile.",
+   "explication_en": "Old wines and vintage port: decant just before serving to leave the sediment; stand the bottle upright the day before; no long aeration.",
+   "sources": [
+    "WIKI_DECANTER",
+    "ELEPHORM",
+    "WIKI_STORAGE"
+   ]
+  },
+  {
+   "id": "carafe.pinot_leger",
+   "styles": [
+    "rouge_pinot_garde",
+    "rouge_leger",
+    "rouge_courant"
+   ],
+   "valeur": {
+    "action": "facultatif",
+    "minutes_min": 0,
+    "minutes_max": 30
+   },
+   "marge": {
+    "minutes": 30
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Pinot noir et rouges légers n'en ont en général pas besoin ; MacNeil juge la carafe parfois nuisible aux vins délicats. On peut ouvrir la bouteille un peu à l'avance ou aérer un vin jeune et un peu acide.",
+   "explication_en": "Pinot noir and light reds rarely need it; may harm delicate wines.",
+   "sources": [
+    "WINEFOLLY_DEC",
+    "WIKI_DECANTER"
+   ]
+  },
+  {
+   "id": "carafe.grand_blanc",
+   "styles": [
+    "blanc_ample",
+    "blanc_mineral_garde",
+    "orange"
+   ],
+   "valeur": {
+    "action": "facultatif",
+    "minutes_min": 0,
+    "minutes_max": 30
+   },
+   "marge": {
+    "minutes": 30
+   },
+   "confiance": "faible",
+   "explication_fr": "Un grand blanc jeune, surtout élevé en fût neuf, peut passer brièvement en carafe pour gommer un boisé envahissant ; carafe étroite, car les arômes des blancs sont volatils. Les sources ne donnent pas de durée : 30 min au plus est une convention du dossier.",
+   "explication_en": "Young great whites, especially new-oaked, may be briefly decanted in a narrow carafe; no published duration.",
+   "sources": [
+    "VERSAILLES",
+    "WINEFOLLY_DEC",
+    "DOSSIER"
+   ]
+  },
+  {
+   "id": "carafe.reduction",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "action": "aerer_si_odeur",
+    "minutes_min": 5,
+    "minutes_max": 30
+   },
+   "marge": {
+    "minutes": 15
+   },
+   "confiance": "moyenne",
+   "explication_fr": "Odeur d'œuf pourri ou d'allumette à l'ouverture (réduction, fréquente sous capsule à vis) : l'aération la dissipe souvent en quelques minutes.",
+   "explication_en": "Rotten-egg or struck-match smell on opening (reduction): aeration often clears it in minutes.",
+   "sources": [
+    "WINEFOLLY_DEC",
+    "WIKI_DECANTER"
+   ]
+  },
+  {
+   "id": "carafe.effervescent",
+   "styles": [
+    "eff_sans_annee",
+    "eff_millesime",
+    "eff_aromatique"
+   ],
+   "valeur": {
+    "action": "non"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "On sert le champagne directement de la bouteille, en deux temps, lentement, pour former une collerette de mousse.",
+   "explication_en": "Champagne is poured straight from the bottle, in two stages.",
+   "sources": [
+    "CHAMP_FICHE"
+   ]
+  },
+  {
+   "id": "carafe.vin_jaune",
+   "styles": [
+    "vin_jaune"
+   ],
+   "valeur": {
+    "action": "ouvrir_a_l_avance",
+    "heures_min": 2,
+    "heures_max": 24
+   },
+   "marge": {
+    "heures": 12
+   },
+   "confiance": "faible",
+   "explication_fr": "Des amateurs jugent qu'une longue aération (jusqu'à 24 h) ne lui fait pas peur ; aucune règle officielle.",
+   "explication_en": "Amateurs find long aeration (up to 24 h) fine; no official rule.",
+   "sources": [
+    "LAPASSION_VJ"
+   ]
+  }
+ ],
+ "verre": [
+  {
+   "id": "verre.universel",
+   "styles": [
+    "*"
+   ],
+   "valeur": {
+    "forme": "tulipe",
+    "remplissage": "un quart à un tiers"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Un verre en tulipe (plus large en bas qu'au bord) concentre les arômes ; une étude japonaise a filmé la vapeur d'éthanol qui, dans un verre à vin, forme un anneau et laisse le centre plus pauvre en alcool, ce qui laisse mieux sentir le reste. Le verre de dégustation de référence est le verre INAO (norme ISO 3591).",
+   "explication_en": "A tulip glass concentrates aromas; ethanol vapour forms a ring (sniffer-camera study). Reference: INAO/ISO 3591 glass.",
+   "sources": [
+    "WIKI_GLASS",
+    "ARAKAWA2015",
+    "WIKI_VERRE"
+   ]
+  },
+  {
+   "id": "verre.effervescent",
+   "styles": [
+    "eff_sans_annee",
+    "eff_millesime",
+    "eff_aromatique"
+   ],
+   "valeur": {
+    "forme": "tulipe haute"
+   },
+   "marge": {},
+   "confiance": "haute",
+   "explication_fr": "Le Comité Champagne recommande un verre « haut, ventru et resserré en haut », lavé à l'eau chaude sans détergent et séché à l'air (les résidus de détergent tuent les bulles).",
+   "explication_en": "Tall, bulging glass narrowing at the top; wash without detergent.",
+   "sources": [
+    "CHAMP_FICHE",
+    "WIKI_GLASS"
+   ]
+  },
+  {
+   "id": "verre.rouge_ample",
+   "styles": [
+    "rouge_pinot_garde",
+    "rouge_leger"
+   ],
+   "valeur": {
+    "forme": "ballon large (type Bourgogne)"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Un grand ballon pour les rouges délicats (pinot noir) : plus de surface, des arômes qui s'accumulent.",
+   "explication_en": "Wide Burgundy bowl for delicate reds.",
+   "sources": [
+    "WIKI_GLASS"
+   ]
+  },
+  {
+   "id": "verre.rouge_structure",
+   "styles": [
+    "rouge_bordeaux",
+    "rouge_cabernet_monde",
+    "rouge_syrah_nord",
+    "rouge_nebbiolo",
+    "rouge_tannique",
+    "rouge_puissant_soleil",
+    "rouge_grenache_sud",
+    "rouge_sangiovese",
+    "rouge_tempranillo",
+    "rouge_courant"
+   ],
+   "valeur": {
+    "forme": "verre haut à large ouverture (type Bordeaux)"
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Un verre haut et large pour les rouges charpentés. Attention : l'effet de la forme du verre sur les saveurs de base (sucré, acide, amer) n'a jamais été démontré ; seul l'effet sur les arômes l'est.",
+   "explication_en": "Tall Bordeaux glass for structured reds; the effect of shape on basic tastes is unproven.",
+   "sources": [
+    "WIKI_GLASS"
+   ]
+  },
+  {
+   "id": "verre.mute",
+   "styles": [
+    "xeres_fino",
+    "mute_oxydatif",
+    "mute_fruite",
+    "porto_vintage",
+    "liquoreux",
+    "vin_de_glace"
+   ],
+   "valeur": {
+    "forme": "petit verre étroit (copita)",
+    "dose_cl": [
+     5,
+     8
+    ]
+   },
+   "marge": {},
+   "confiance": "moyenne",
+   "explication_fr": "Petit verre étroit (copita) pour les vins puissants ou doux : on en sert peu, l'arôme est concentré.",
+   "explication_en": "Small narrow glass (copita) for fortified and sweet wines.",
+   "sources": [
+    "WIKI_GLASS"
+   ]
+  }
+ ]
+}

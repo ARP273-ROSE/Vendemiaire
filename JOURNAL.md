@@ -1,5 +1,35 @@
 # Vendémiaire — journal
 
+## 0.3.0 — 2026-10-26 — phase 3 : règles du dossier « Le vin » (non publiée)
+
+- **Moteur de règles** `vendemiaire/regles/` : les 194 règles et 62 sources du
+  dossier « Le vin » (`data/regles/*.json`) copiées octet pour octet avec leur
+  empreinte et la date d'audit (`MANIFESTE.json`, `outils/synchroniser_regles.py
+  --verifier`) ; jeu vérifié au chargement (empreintes, identifiants, sources,
+  styles) ; chaque résultat porte son explication, ses sources, sa confiance
+  et le signalement des conventions du dossier.
+- **Style** d'un vin (28 familles, méthode du dossier), imposable à la main ;
+  **niveau de garde** (garde, courant, primeur, Nouveau Monde) au choix.
+- **Fenêtre calculée** : prêt, apogée, fin, pic (modèle cloche), ajustée au
+  millésime (0,44 an par point sur 100, 1,76 sur 10, moyenne de la région dans
+  le même tableau) et à la température MESURÉE de la cave (2^((T−12)/10)),
+  marges séparées ; format signalé sans chiffre inventé ; rangée dans la base
+  (source « calcul ») sans jamais toucher la vôtre ni celles des critiques.
+- **Alertes** « à boire cette année », « en déclin », « trop jeune » et
+  **courbe d'apogée** de la cave au tableau de bord.
+- **Servir** : température (vieux vin, plafond), heure de sortie de cave (loi de
+  Newton du dossier, à la minute près), carafe, verre ; **fiche « ce soir »**
+  en HTML et en PDF.
+- **Conserver** : plages de la cave et mesures hors plage, bouchons à contrôler
+  (plus de 15 ans), **bouteille entamée** (jours selon le style et le mode).
+- **Niveaux** : sens selon l'âge (bordelais et bourguignon), échelle illustrée.
+- **Accords** dans les deux sens, recherche de plat tolérante, accords
+  difficiles signalés ; onglet **« Ce soir »** (plat, budget, couleur,
+  occasion ; urgences d'abord).
+- **Dégustation** avec la roue des arômes ; **diagnostic** des défauts.
+- Libellés anglais des règles (`regles/anglais.py`) sans changer une valeur.
+- Schéma v5 (`vin.style`, `vin.niveau_garde`).
+
 ## 0.2.0 — 2026-10-26 — phase 2 : bases mondiales et étiquettes (non publiée)
 
 - Copie locale de **LWIN** (Liv-ex, CC BY 4.0) : import du fichier XLSX/CSV

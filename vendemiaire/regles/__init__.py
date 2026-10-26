@@ -7,9 +7,15 @@ sources), pour que l'application et le dossier disent la même chose. Tant
 qu'aucun fournisseur ne sait répondre, l'interface affiche « règles à venir »
 au lieu d'inventer une estimation.
 
-Phase 2 : un seul fichier branché, `donnees/notes.json` (conversion des notes
-des critiques, table publiée par Decanter) — fournisseur `notes.FournisseurNotes`.
-Phase 3 : les autres fichiers du dossier (garde, service, accords…).
+Phase 2 : `donnees/notes.json` (conversion des notes des critiques, table
+publiée par Decanter) — fournisseur `notes.FournisseurNotes`.
+Phase 3 : tout le jeu du dossier (`donnees/*.json`, 194 règles, 62 sources),
+copié par `outils/synchroniser_regles.py` et vérifié au chargement
+(`jeu.py` : empreintes, identifiants, sources, styles) ; un module par sujet :
+`styles` (classer un vin), `garde` (fenêtre, alertes, courbe d'apogée),
+`service` (température, sortie de cave, carafe, verre, fiche « ce soir »),
+`conservation` (cave, bouchons, bouteille ouverte), `niveaux`, `accords`,
+`degustation` (défauts, roue des arômes). Libellés anglais : `anglais.py`.
 
 Contrat d'un fournisseur de règles (phase 3) :
 
@@ -37,6 +43,22 @@ class Estimation:
     sources: list[str] = field(default_factory=list)
     regle: str = ""                   # identifiant stable de la règle appliquée
     modele: str | None = None         # « cloche », « plateau »… pour une fenêtre
+    confiance: str | None = None      # haute, moyenne, faible (dossier)
+    marge: dict = field(default_factory=dict)
+    details_fr: list[str] = field(default_factory=list)   # étapes du calcul, lisibles
+    details_en: list[str] = field(default_factory=list)
+
+    @property
+    def convention(self) -> bool:
+        """Règle posée par le dossier faute de chiffre publié (source DOSSIER) :
+        l'interface le dit et laisse l'utilisateur la changer."""
+        return "DOSSIER" in (self.sources or [])
+
+    def explication(self, langue: str = "fr") -> str:
+        return self.explication_fr if langue == "fr" else (self.explication_en or self.explication_fr)
+
+    def details(self, langue: str = "fr") -> list[str]:
+        return self.details_fr if langue == "fr" else (self.details_en or self.details_fr)
 
 
 class FournisseurRegles(Protocol):
@@ -74,10 +96,21 @@ def disponibles(methode: str | None = None) -> bool:
 
 
 def charger_livres() -> None:
-    """Inscrit les fournisseurs livrés avec l'application (une seule fois)."""
+    """Inscrit les fournisseurs livrés avec l'application (une seule fois) :
+    les règles du dossier « Le vin », puis la conversion des notes."""
+    from .dossier import FournisseurDossier
     from .notes import FournisseurNotes
+    if not any(isinstance(f, FournisseurDossier) for f in _fournisseurs):
+        inscrire(FournisseurDossier())
     if not any(isinstance(f, FournisseurNotes) for f in _fournisseurs):
         inscrire(FournisseurNotes())
+
+
+def fournisseur_dossier():
+    """Le fournisseur des règles du dossier (inscrit au besoin)."""
+    from .dossier import FournisseurDossier
+    charger_livres()
+    return next(f for f in _fournisseurs if isinstance(f, FournisseurDossier))
 
 
 def demander(methode: str, *args, **kwargs):
