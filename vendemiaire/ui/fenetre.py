@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Fenêtre principale : tableau de bord, cave, plan des casiers, livre de cave."""
+"""Fenêtre principale : tableau de bord, cave, mur d'étiquettes, plan des
+casiers, livre de cave, liste d'envies, conditions de cave."""
 from __future__ import annotations
 
 import logging
@@ -11,11 +12,14 @@ from PyQt6.QtGui import QAction, QActionGroup, QDesktopServices, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QDialog, QFileDialog, QMainWindow, QMessageBox,
                              QTabWidget)
 
-from .. import __version__, chemins, echanges, i18n, logo, sauvegarde
+from .. import __version__, chemins, echanges, i18n, logo, ocr, regles, reseau, sauvegarde
 from ..i18n import tr
-from . import pochette
+from . import pochette, travail
+from .conditions import VueConditions
+from .envies import DialogueEnvie, VueEnvies
 from .liste import VueCave
 from .livre import VueLivre
+from .mur import VueMur
 from .plan import VuePlan
 from .saisie import DialogueAjoutBouteilles, DialogueBouteille, DialogueSortie, DialogueVin
 from .tableau import TableauDeBord
@@ -37,6 +41,11 @@ class FenetrePrincipale(QMainWindow):
         self.resize(1360, 860)
         self.aide = None
         self._avec_aide = aide_kit
+        self._travaux = []
+        reglages = QSettings()
+        reseau.autoriser(reglages.value("reseau/autorise", False, type=bool))
+        ocr.definir_chemin(reglages.value("ocr/tesseract", "") or None)
+        regles.charger_livres()
         self.construire()
         etat = QSettings().value("fenetre/geometrie")
         if etat:
@@ -44,6 +53,7 @@ class FenetrePrincipale(QMainWindow):
         self.minuteur = QTimer(self)
         self.minuteur.timeout.connect(self.sauvegarde_auto)
         self.minuteur.start(PERIODE_SAUVEGARDE_MS)
+        QTimer.singleShot(8000, self._mise_a_jour_lwin_periodique)
 
     # ------------------------------------------------------------------ interface
     def construire(self) -> None:
@@ -61,12 +71,18 @@ class FenetrePrincipale(QMainWindow):
         self.onglets = QTabWidget()
         self.tableau = TableauDeBord(self.cave)
         self.vue_cave = VueCave(self.cave)
+        self.mur = VueMur(self.cave)
         self.plan = VuePlan(self.cave)
         self.livre = VueLivre(self.cave)
+        self.envies = VueEnvies(self.cave)
+        self.conditions = VueConditions(self.cave)
         self.onglets.addTab(self.tableau, tr("onglet.tableau"))
         self.onglets.addTab(self.vue_cave, tr("onglet.cave"))
+        self.onglets.addTab(self.mur, tr("onglet.mur"))
         self.onglets.addTab(self.plan, tr("onglet.plan"))
         self.onglets.addTab(self.livre, tr("onglet.livre"))
+        self.onglets.addTab(self.envies, tr("onglet.envies"))
+        self.onglets.addTab(self.conditions, tr("onglet.conditions"))
         ancien = self.centralWidget()
         self.setCentralWidget(self.onglets)
         if ancien is not None:
@@ -84,6 +100,13 @@ class FenetrePrincipale(QMainWindow):
         f.modifier_bouteille.connect(self.modifier_bouteille)
         f.recevoir.connect(self.recevoir_bouteille)
         f.voir_plan.connect(self.voir_au_plan)
+        f.identifier.connect(self.identifier_vin)
+        f.photos.connect(self.photos_vin)
+        f.envie.connect(self.envie_depuis_vin)
+        f.photo_deposee.connect(self.photo_deposee)
+        f.modifie.connect(self.tout_rafraichir)
+        self.mur.vin_choisi.connect(self.montrer_vin)
+        self.mur.photo_deposee.connect(self.photo_deposee)
         self.plan.modifie.connect(self.tout_rafraichir)
         self.plan.vin_choisi.connect(lambda vid: self.vue_cave.fiche.afficher(vid))
         self.livre.modifie.connect(self.tout_rafraichir)
@@ -112,7 +135,16 @@ class FenetrePrincipale(QMainWindow):
         self._action(m, "menu.ajouter_bouteilles", lambda: self._vin_courant(self.ajouter_bouteilles))
         self._action(m, "menu.sortir", self._sortir_courante)
         m.addSeparator()
+        self._action(m, "menu.inventaire", self.inventaire)
+        m.addSeparator()
         self._action(m, "menu.supprimer_vin", lambda: self._vin_courant(self.supprimer_vin))
+
+        m = self.menuBar().addMenu(tr("menu.references"))
+        self._action(m, "menu.identifier_vin", lambda: self._vin_courant(self.identifier_vin))
+        self._action(m, "menu.identifier_photo", self.identifier_par_photo)
+        self._action(m, "menu.code_barres", self.identifier_par_code)
+        m.addSeparator()
+        self._action(m, "menu.bases_reference", self.bases_reference)
 
         m = self.menuBar().addMenu(tr("menu.langue"))
         groupe = QActionGroup(self)
@@ -157,6 +189,8 @@ class FenetrePrincipale(QMainWindow):
         w = self.onglets.widget(i)
         if w is self.tableau:
             self.tableau.rafraichir()
+        elif w is self.mur:
+            self.mur.rafraichir()
 
     def changer_langue(self, code: str) -> None:
         i18n.definir_langue(code)
@@ -175,6 +209,9 @@ class FenetrePrincipale(QMainWindow):
         self.plan.rafraichir()
         self.livre.rafraichir()
         self.tableau.rafraichir()
+        self.envies.rafraichir()
+        if self.onglets.currentWidget() is self.mur:
+            self.mur.rafraichir()
 
     # ------------------------------------------------------------------ vins
     def _vin_courant(self, fonction) -> None:
@@ -213,13 +250,122 @@ class FenetrePrincipale(QMainWindow):
             self.tout_rafraichir(vin_id)
 
     def choisir_photo(self, vin_id: int) -> None:
+        """Photo de l'étiquette depuis un fichier : recadrée et redressée
+        (réglable), la photo d'origine est gardée."""
         chemin, _ = QFileDialog.getOpenFileName(self, tr("dialogue.photo"), str(Path.home()),
                                                 tr("filtre.images") + " " + MOTIF_IMAGES)
         if not chemin:
             return
-        self.cave.ajouter_image(chemin, vin_id=vin_id, type_image="etiquette", origine="perso")
-        pochette.vider_cache()
-        self.tout_rafraichir(vin_id)
+        self.photo_deposee((vin_id, chemin))
+
+    def photo_deposee(self, quoi) -> None:
+        """(vin, fichier) : photo choisie, glissée sur la fiche ou sur le mur."""
+        from .photos import DialoguePhotos
+        vin_id, chemin = quoi
+        d = DialoguePhotos(self.cave, vin_id, self)
+        d.identifier_demande.connect(self._identifier_depuis_photo)
+        if d.ajouter_fichier(chemin) is not None:
+            pochette.vider_cache()
+            self.tout_rafraichir(vin_id)
+        d.deleteLater()
+
+    def photos_vin(self, vin_id: int) -> None:
+        from .photos import DialoguePhotos
+        d = DialoguePhotos(self.cave, vin_id, self)
+        d.identifier_demande.connect(self._identifier_depuis_photo)
+        d.exec()
+        if d.modifie:
+            pochette.vider_cache()
+            self.tout_rafraichir(vin_id)
+
+    def _identifier_depuis_photo(self, quoi) -> None:
+        vin_id, texte = quoi
+        self.identifier_vin(vin_id, texte)
+
+    def identifier_vin(self, vin_id: int, texte: str = "") -> None:
+        from .identifier import DialogueIdentifier
+        d = DialogueIdentifier(self.cave, vin_id, texte_etiquette=texte, parent=self)
+        if d.exec() == QDialog.DialogCode.Accepted:
+            pochette.vider_cache()
+            self.tout_rafraichir(vin_id)
+
+    def identifier_par_photo(self) -> None:
+        """Une bouteille inconnue : sa photo → texte lu (OCR) → candidats → vin créé."""
+        from . import photos
+        from .identifier import DialogueIdentifier
+        from .. import images
+        chemin, _ = QFileDialog.getOpenFileName(self, tr("dialogue.photo"), str(Path.home()),
+                                                tr("filtre.images") + " " + MOTIF_IMAGES)
+        if not chemin:
+            return
+        r = photos.DialogueRetouche(images.charger(chemin), parent=self)
+        if r.exec() != QDialog.DialogCode.Accepted:
+            return
+        from ..ocr import indices, requete_depuis_indices
+        ind = indices(r.texte_ocr or "", r.lignes_principales, self.cave.references)
+        requete = requete_depuis_indices(ind)
+        if ind.eans:
+            requete["ean"] = ind.eans[0]
+        d = DialogueIdentifier(self.cave, None, requete, texte_etiquette="\n".join(ind.lignes) or
+                               (r.texte_ocr or ""), parent=self)
+        if self.cave.references.nb_lwin():
+            d.chercher_lwin()
+        if d.exec() == QDialog.DialogCode.Accepted and d.vin_id:
+            photos.enregistrer_retouche(self.cave, r, chemin, d.vin_id)
+            pochette.vider_cache()
+            self.onglets.setCurrentWidget(self.vue_cave)
+            self.vue_cave.statut.setCurrentIndex(1)
+            self.tout_rafraichir(d.vin_id)
+
+    def identifier_par_code(self) -> None:
+        from PyQt6.QtWidgets import QInputDialog
+        from .identifier import DialogueIdentifier
+        code, ok = QInputDialog.getText(self, tr("menu.code_barres"), tr("ident.ean_saisie"))
+        if not ok or not code.strip():
+            return
+        vin_id = self.vue_cave.vin_courant()
+        d = DialogueIdentifier(self.cave, None, {"ean": code.strip()}, parent=self)
+        d.chercher_off()
+        if d.exec() == QDialog.DialogCode.Accepted and d.vin_id:
+            self.onglets.setCurrentWidget(self.vue_cave)
+            self.vue_cave.statut.setCurrentIndex(1)
+            self.tout_rafraichir(d.vin_id)
+        elif vin_id:
+            self.tout_rafraichir(vin_id)
+
+    def bases_reference(self) -> None:
+        from .references import DialogueReferences
+        DialogueReferences(self.cave, self).exec()
+
+    def _mise_a_jour_lwin_periodique(self) -> None:
+        """Mise à jour périodique de LWIN (si l'utilisateur l'a demandée), en fond."""
+        from .references import mise_a_jour_lwin_due, telecharger_lwin
+        url = mise_a_jour_lwin_due()
+        if not url:
+            return
+
+        def fini(n):
+            from datetime import datetime
+            QSettings().setValue("lwin/derniere_verif", datetime.now().isoformat(timespec="seconds"))
+            self.statusBar().showMessage(tr("ref.lwin_fini", n=n), 8000)
+        self._travaux.append(travail.lancer(telecharger_lwin, self.cave.references, url, fini=fini,
+                                            echec=lambda e: log.info("MAJ LWIN : %s", e), parent=self))
+
+    def envie_depuis_vin(self, vin_id: int) -> None:
+        if DialogueEnvie(self.cave, None, self, vin_id=vin_id).exec() == QDialog.DialogCode.Accepted:
+            self.envies.rafraichir()
+            self.onglets.setCurrentWidget(self.envies)
+
+    def montrer_vin(self, vin_id: int) -> None:
+        self.onglets.setCurrentWidget(self.vue_cave)
+        if not self.vue_cave.selectionner(vin_id):
+            self.vue_cave.statut.setCurrentIndex(1)
+            self.vue_cave.selectionner(vin_id)
+
+    def inventaire(self) -> None:
+        from .inventaire import DialogueInventaire
+        DialogueInventaire(self.cave, None, self).exec()
+        self.tout_rafraichir()
 
     # ------------------------------------------------------------------ bouteilles
     def _sortir_courante(self) -> None:
@@ -366,6 +512,7 @@ class FenetrePrincipale(QMainWindow):
             QSettings().sync()
             self.sauvegarde_auto()
             self.cave.base.fermer()
+            self.cave.fermer_references()
         except Exception:
             log.exception("fermeture")
         for w in QApplication.topLevelWidgets():

@@ -9,13 +9,86 @@ import sys
 import tempfile
 from pathlib import Path
 
+from PyQt6 import QtCore  # noqa: E402
+
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE))
 SORTIE = RACINE / "docs" / "captures"
 
 
+def phase2(app, w, cave, langue, attendre):
+    """Captures de la phase 2 : mur, identification, photo, envies, conditions,
+    critiques, inventaire, bases de référence."""
+    from PyQt6 import QtWidgets
+    from vendemiaire import demo_photos, images
+    from vendemiaire.ui.critiques import DialogueCritique
+    from vendemiaire.ui.identifier import DialogueIdentifier
+    from vendemiaire.ui.inventaire import DialogueInventaire
+    from vendemiaire.ui.photos import DialogueRetouche
+    from vendemiaire.ui.references import DialogueReferences
+
+    def capture(widget, nom):
+        widget.show()
+        attendre()
+        widget.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
+
+    w.onglets.setCurrentWidget(w.mur)
+    w.mur.rafraichir()
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-mur.png"))
+    for vue, nom in ((w.envies, "envies"), (w.conditions, "conditions")):
+        w.onglets.setCurrentWidget(vue)
+        attendre()
+        w.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
+
+    vin = cave.base.valeur("SELECT v.id FROM vin v JOIN producteur p ON p.id=v.producteur_id "
+                           "WHERE p.nom='Château des Trois Chênes' ORDER BY millesime LIMIT 1")
+    # une photo prise de travers : détection des bords, redressement, OCR
+    photo, _ = demo_photos.generer(dict(cave.vin(vin)), SORTIE.parent / "_photo_demo.jpg", graine=5)
+    r = DialogueRetouche(images.charger(photo), parent=w)
+    r.resize(1180, 760)
+    capture(r, "retouche")
+    if r.b_ocr.isEnabled():
+        r.lire_texte()
+        from vendemiaire.ui import travail
+        travail.attendre(r._travail)
+        capture(r, "retouche-ocr")
+    r.close()
+    photo.unlink()
+    # identification : candidats, score expliqué, champs proposés
+    d = DialogueIdentifier(cave, vin, parent=w)
+    d.chercher_lwin()
+    capture(d, "identifier")
+    d.confirmer()
+    w.onglets.setCurrentWidget(w.vue_cave)
+    w.vue_cave.statut.setCurrentIndex(1)
+    w.tout_rafraichir(vin)
+    attendre()
+    fiche = w.vue_cave.fiche
+    fiche.verticalScrollBar().setValue(fiche.g_references.y() - 40)
+    attendre()
+    w.grab().save(str(SORTIE / f"{langue}-fiche-references.png"))
+    fiche.verticalScrollBar().setValue(0)
+    c = DialogueCritique(cave, vin, None, w)
+    c.critique.setCurrentIndex(c.critique.findData("DEC"))
+    c.note.setValue(93)
+    capture(c, "critique")
+    c.close()
+    casier = cave.base.valeur("SELECT id FROM emplacement WHERE nom='Clayette 1'")
+    inv = DialogueInventaire(cave, casier, w)
+    for i in range(max(0, inv.liste.count() - 1)):
+        inv.liste.item(i).setCheckState(QtCore.Qt.CheckState.Checked)
+    inv.enregistrer()
+    capture(inv, "inventaire")
+    inv.close()
+    ref = DialogueReferences(cave, w)
+    capture(ref, "references")
+    ref.close()
+    QtWidgets.QApplication.processEvents()
+
+
 def main() -> int:
-    from PyQt6 import QtCore, QtWidgets
+    from PyQt6 import QtWidgets
     temp = Path(tempfile.mkdtemp())
     QtCore.QSettings.setDefaultFormat(QtCore.QSettings.Format.IniFormat)
     QtCore.QSettings.setPath(QtCore.QSettings.Format.IniFormat,
@@ -36,6 +109,8 @@ def main() -> int:
     for langue in ("fr", "en"):
         i18n.definir_langue(langue)
         cave = demo.generer(temp / f"demo-{langue}.db")
+        demo.references_demo(cave)
+        demo.photos_demo(cave, 10)
         w = FenetrePrincipale(cave, aide_kit=False)
         w.statusBar().showMessage("")
         w.resize(1440, 900)
@@ -66,8 +141,10 @@ def main() -> int:
             attendre()
             d.grab().save(str(SORTIE / f"{langue}-{nom}.png"))
             d.close()
+        phase2(app, w, cave, langue, attendre)
         w.minuteur.stop()
         w.close()
+        cave.fermer_references()
         cave.base.fermer()
     print(f"captures écrites dans {SORTIE}")
     return 0

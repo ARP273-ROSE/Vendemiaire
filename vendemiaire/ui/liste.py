@@ -87,7 +87,7 @@ class ModeleVins(QAbstractTableModel):
             return "" if cle == "pochette" else self._texte(l, cle)
         if role == Qt.ItemDataRole.DecorationRole and cle == "pochette":
             return pochette(l, TAILLE_POCHETTE.width(), TAILLE_POCHETTE.height(),
-                            l.get("_image"))
+                            l.get("_image"), l.get("_cache"))
         if role == Qt.ItemDataRole.UserRole:              # tri
             v = l.get(cle)
             if cle in NUMERIQUES:
@@ -234,6 +234,7 @@ class VueCave(QWidget):
                                       self.statut.currentData() or "presents")
         for l in lignes:
             l["_image"] = self.cave.image_principale(l["id"])
+            l["_cache"] = self.cave.dossier_vignettes
         self.modele.charger(lignes)
         bouteilles = sum(l["en_cave"] or 0 for l in lignes)
         self.compte.setText(tr("cave.compte", vins=len(lignes), bouteilles=bouteilles))

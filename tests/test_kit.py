@@ -185,11 +185,25 @@ def test_une_seule_source_pour_le_logo(app):
 
 
 def test_regles_d_oenologie_pas_inventees():
-    """Phase 1 : aucune règle d'apogée, de service ni d'accord dans le code ;
-    l'interface l'annonce au lieu d'estimer."""
+    """Aucune règle d'apogée, de service ni d'accord dans le code ; l'interface
+    l'annonce au lieu d'estimer. Phase 2 : seule la conversion des notes est
+    branchée, et elle lit le fichier du dossier « Le vin » tel quel."""
+    import json
     from vendemiaire import regles
-    assert not regles.disponibles()
+    regles.charger_livres()
+    assert not regles.disponibles("fenetre_degustation")
     assert regles.demander("fenetre_degustation", {}) is None
+    assert regles.disponibles("convertir_note")
+    donnees = RACINE / "vendemiaire" / "regles" / "donnees"
+    notes = json.loads((donnees / "notes.json").read_text(encoding="utf-8"))
+    e = regles.demander("convertir_note", 90, "100", "20")
+    ligne = next(l for l in notes["decanter_100_20"] if l["sur_100"] == 90)
+    assert sorted(float(x) for x in ligne["sur_20"].split("/")) == [e.valeur["note"], e.valeur["note_max"]]
+    assert e.regle == notes["regle"]["id"] and e.sources == notes["regle"]["sources"]
+    sources = json.loads((donnees / "sources.json").read_text(encoding="utf-8"))["sources"]
+    assert all(s in sources for s in e.sources)
+    # pas de table publiée (étoiles sur 5) : pas de conversion inventée
+    assert regles.demander("convertir_note", 4, "5", "100") is None
 
 
 def test_verrou_d_instance_unique(tmp_path):

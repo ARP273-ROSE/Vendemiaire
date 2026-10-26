@@ -47,6 +47,7 @@ class Rapport:
     bouteilles: int = 0
     deja_presentes: int = 0
     lignes: int = 0
+    mesures: int = 0
     avertissements: list[str] = field(default_factory=list)
 
 
@@ -465,3 +466,85 @@ def importer_cellartracker(cave: Cave, chemin: str | Path) -> Rapport:
             _ajouter(cave, vin_id, b, None)
         rapport.bouteilles += quantite + en_attente
     return rapport
+
+
+# ---------------------------------------------------------------------------
+# Conditions de cave : import CSV d'une sonde (température, hygrométrie)
+# ---------------------------------------------------------------------------
+
+#: noms de colonnes reconnus (sans casse ni accents), dans l'ordre de préférence
+COL_DATE = ("date_heure", "datetime", "timestamp", "horodatage", "date", "time", "heure", "last_changed")
+COL_TEMP = ("temperature", "temp", "t", "temperature_c", "temp_c", "celsius")
+COL_HYGRO = ("hygrometrie", "humidite", "humidity", "rh", "hr", "humidite_relative", "hum")
+COL_ETAT = ("state", "valeur", "value")          # export Home Assistant : une ligne par mesure
+
+
+def _nom_colonne(texte: str) -> str:
+    import unicodedata
+    t = unicodedata.normalize("NFKD", texte or "")
+    t = "".join(c for c in t if not unicodedata.combining(c)).lower()
+    t = re.sub(r"\(.*?\)|°c|%", "", t)
+    return re.sub(r"[^a-z0-9]+", "_", t).strip("_")
+
+
+def _instant(texte: str) -> str | None:
+    """« 26/10/2026 14:05 », « 2026-10-26T14:05:00Z », « 2026-10-26 14:05 » -> ISO local."""
+    t = (texte or "").strip()
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})[T ](\d{1,2}):(\d{2})(?::(\d{2}))?", t)
+    if m:
+        a, mo, j, h, mi, s = m.groups()
+        return f"{a}-{mo}-{j} {int(h):02d}:{mi}:{s or '00'}"
+    m = re.match(r"(\d{1,2})/(\d{1,2})/(\d{4})[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?", t)
+    if m:
+        j, mo, a, h, mi, s = m.groups()
+        return f"{a}-{int(mo):02d}-{int(j):02d} {int(h):02d}:{mi}:{s or '00'}"
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})$", t) or re.match(r"(\d{1,2})/(\d{1,2})/(\d{4})$", t)
+    if m:
+        g = m.groups()
+        if len(g[0]) == 4:
+            return f"{g[0]}-{g[1]}-{g[2]} 00:00:00"
+        return f"{g[2]}-{int(g[1]):02d}-{int(g[0]):02d} 00:00:00"
+    return None
+
+
+def importer_conditions(cave: Cave, chemin: str | Path, emplacement_id: int | None) -> Rapport:
+    """Mesures de température et d'hygrométrie d'une sonde (CSV : date ; température ;
+    hygrométrie — séparateur et virgule décimale détectés ; export Home
+    Assistant « entity_id, state, last_changed » accepté). Une mesure déjà
+    présente au même instant n'est pas doublée."""
+    r = Rapport()
+    lignes = lire_csv(chemin)
+    if not lignes:
+        return r
+    noms = {_nom_colonne(k): k for k in lignes[0]}
+
+    def trouver(candidats):
+        return next((noms[c] for c in candidats if c in noms), None)
+    c_date, c_temp, c_hygro = trouver(COL_DATE), trouver(COL_TEMP), trouver(COL_HYGRO)
+    c_etat, c_entite = trouver(COL_ETAT), noms.get("entity_id")
+    if c_date is None:
+        r.avertissements.append("date ?")
+        return r
+    mesures: dict[str, list] = {}
+    for i, l in enumerate(lignes, 2):
+        r.lignes += 1
+        quand = _instant(l.get(c_date, ""))
+        if quand is None:
+            r.avertissements.append(f"{i} : {l.get(c_date, '')!r}")
+            continue
+        m = mesures.setdefault(quand, [None, None])
+        if c_temp or c_hygro:
+            m[0] = _reel(l.get(c_temp, "")) if c_temp else m[0]
+            m[1] = _reel(l.get(c_hygro, "")) if c_hygro else m[1]
+        elif c_etat and c_entite:
+            entite = (l.get(c_entite) or "").lower()
+            valeur = _reel(l.get(c_etat, ""))
+            if any(x in entite for x in ("humid", "hygro")):
+                m[1] = valeur
+            elif "temp" in entite:
+                m[0] = valeur
+    valides = [(emplacement_id, q, t, h) for q, (t, h) in sorted(mesures.items())
+               if (t is not None or h is not None) and (h is None or 0 <= h <= 100)]
+    r.mesures = cave.ajouter_conditions(valides, source="csv")
+    r.deja_presentes = len(valides) - r.mesures
+    return r

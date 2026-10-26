@@ -19,11 +19,17 @@ def vider_cache() -> None:
     _cache.clear()
 
 
-def pochette(vin: dict, largeur: int, hauteur: int, image=None) -> QPixmap:
+def pochette(vin: dict, largeur: int, hauteur: int, image=None, cache=None) -> QPixmap:
+    """`cache` : dossier des vignettes sur disque (une photo de 12 Mpx n'est
+    alors décodée qu'une fois, à la bonne taille)."""
     cle = (vin.get("id"), largeur, hauteur, str(image) if image else None,
            vin.get("producteur"), vin.get("cuvee"), vin.get("millesime"), vin.get("couleur"))
     if cle in _cache:
         return _cache[cle]
+    if image and cache:
+        from ..images import vignette
+        v = vignette(image, largeur * 2, hauteur * 2, cache)       # ×2 : écrans haute densité
+        image = v or image
     if image:
         pm = QPixmap(str(image))
         if not pm.isNull():

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """Interface des règles d'œnologie (apogée, service, conservation, accords, niveaux).
 
-PHASE 1 : seulement l'emplacement et le contrat. Aucune règle n'est écrite
-ici : elles viendront du dossier « Le vin » (parties « millésimes »,
-« conservation », V et VI), AVEC leurs sources, pour que l'application et le
-dossier disent la même chose. Tant qu'aucun fournisseur n'est inscrit,
-l'interface affiche « règles à venir » au lieu d'inventer une estimation.
+Aucune règle n'est écrite dans le code : elles viennent du dossier « Le vin »
+(données `donnees/*.json` copiées TELLES QUELLES depuis le dossier, avec leurs
+sources), pour que l'application et le dossier disent la même chose. Tant
+qu'aucun fournisseur ne sait répondre, l'interface affiche « règles à venir »
+au lieu d'inventer une estimation.
+
+Phase 2 : un seul fichier branché, `donnees/notes.json` (conversion des notes
+des critiques, table publiée par Decanter) — fournisseur `notes.FournisseurNotes`.
+Phase 3 : les autres fichiers du dossier (garde, service, accords…).
 
 Contrat d'un fournisseur de règles (phase 3) :
 
@@ -62,8 +66,18 @@ def retirer_tout() -> None:
     _fournisseurs.clear()
 
 
-def disponibles() -> bool:
-    return bool(_fournisseurs)
+def disponibles(methode: str | None = None) -> bool:
+    """Un fournisseur est-il inscrit (et sait-il répondre à `methode`) ?"""
+    if methode is None:
+        return bool(_fournisseurs)
+    return any(callable(getattr(f, methode, None)) for f in _fournisseurs)
+
+
+def charger_livres() -> None:
+    """Inscrit les fournisseurs livrés avec l'application (une seule fois)."""
+    from .notes import FournisseurNotes
+    if not any(isinstance(f, FournisseurNotes) for f in _fournisseurs):
+        inscrire(FournisseurNotes())
 
 
 def demander(methode: str, *args, **kwargs):

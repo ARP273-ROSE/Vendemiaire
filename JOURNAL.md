@@ -1,5 +1,27 @@
 # Vendémiaire — journal
 
+## 0.2.0 — 2026-10-26 — phase 2 : bases mondiales et étiquettes (non publiée)
+
+- Copie locale de **LWIN** (Liv-ex, CC BY 4.0) : import du fichier XLSX/CSV
+  (lecteur sans dépendance, tout ou rien, dans un fil de fond), recherche
+  plein texte hors ligne (FTS5), lien direct et mise à jour tous les 30 jours
+  en option. Base de référence séparée (`references.db`).
+- **Registres d'appellations** INAO et eAmbrosia embarqués (et mis à jour en
+  ligne sur demande) : complétion et orthographe officielle à la saisie.
+- **Wikidata** (domaines, appellations, cépages ; image Commons avec auteur et
+  licence) et **Open Food Facts** (code-barres) : client identifié, une
+  requête par seconde, accord de l'utilisateur.
+- **Appariement** : candidats classés, score expliqué critère par critère,
+  renoncement si deux candidats se valent, confirmation champ par champ,
+  jamais d'écrasement d'une saisie manuelle, journal de ce qui a été rempli.
+- **Photos d'étiquette** : recadrage et redressement automatiques, déroulage,
+  original gardé, vignettes en cache, mur d'étiquettes, webcam, OCR local
+  (Tesseract) et identification d'une bouteille d'après sa photo.
+- Liste d'envies, notes des critiques (conversion d'après la table Decanter
+  du dossier « Le vin »), valeurs datées et sourcées, conditions de cave
+  (saisie, import CSV / Home Assistant, courbe), inventaire de contrôle.
+- Schéma v4 (photos retouchées, fiches externes, statut « manquante »).
+
 ## 0.1.0 — 2026-10-26 — phase 1 : socle et cave (non publiée)
 
 - Kit commun posé (`poser_le_kit.py --multiplateforme --confidentialite`) :

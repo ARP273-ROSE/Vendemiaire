@@ -8,7 +8,7 @@ Bilingue français / anglais, Windows, macOS et Linux. Aucune donnée ne quitte 
 
 *English version: [README.en.md](README.en.md).*
 
-> **État : phase 1 (socle et cave), pas encore publiée.** Voir [PROGRESSION.md](PROGRESSION.md).
+> **État : phases 1 (socle et cave) et 2 (bases mondiales et étiquettes), pas encore publiées.** Voir [PROGRESSION.md](PROGRESSION.md).
 
 ![Tableau de bord](docs/captures/fr-tableau-de-bord.png)
 
@@ -38,6 +38,25 @@ Bilingue français / anglais, Windows, macOS et Linux. Aucune donnée ne quitte 
 ![Cave](docs/captures/fr-cave.png)
 ![Plan des casiers](docs/captures/fr-plan.png)
 
+## Ce qu'ajoute la phase 2
+
+- **Identifiant mondial** : copie locale de **LWIN** (Liv-ex, CC BY 4.0) cherchée hors ligne,
+  **Wikidata** (domaines, appellations, cépages), **Open Food Facts** (code-barres) ; candidats
+  classés avec un **score expliqué**, rien n'est écrit sans confirmation, une saisie à la main n'est
+  jamais remplacée, journal de ce qui a été rempli et d'où ([détails](docs/bases_mondiales.md)).
+- **Registres officiels des appellations** (INAO, eAmbrosia) embarqués : complétion et orthographe
+  officielle proposée à la saisie.
+- **Photos d'étiquette = pochettes** : recadrage et redressement automatiques, déroulage, original
+  gardé, **mur d'étiquettes**, contre-étiquette, capsule, caisse ; **OCR local** (Tesseract) pour
+  identifier une bouteille d'après sa photo ([détails](docs/photos_et_ocr.md)).
+- **Liste d'envies**, **notes des critiques** avec conversion sourcée (table Decanter du dossier
+  « Le vin »), **valeurs datées et sourcées**, **conditions de cave** (saisie, import CSV ou Home
+  Assistant, courbe), **inventaire de contrôle**.
+
+![Mur d'étiquettes](docs/captures/fr-mur.png)
+![Identifier un vin](docs/captures/fr-identifier.png)
+![Recadrer et lire une étiquette](docs/captures/fr-retouche-ocr.png)
+
 ## Lancer depuis les sources
 
 ```bash
@@ -65,3 +84,8 @@ dur), kit commun et confidentialité.
 ## Licence
 
 MIT — voir [LICENSE](LICENSE). Polices embarquées sous SIL Open Font License.
+
+Données de référence : LWIN © Liv-ex Ltd (CC BY 4.0, non redistribuée : importée par l'utilisateur) ;
+registres INAO (Licence Ouverte 2.0) et eAmbrosia (© Union européenne, réutilisation autorisée)
+embarqués dans `vendemiaire/donnees/` ; Wikidata (CC0) ; Open Food Facts (ODbL, photos CC BY-SA) ;
+règle de conversion des notes : dossier « Le vin » (`vendemiaire/regles/donnees/`).

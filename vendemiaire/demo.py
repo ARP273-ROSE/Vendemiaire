@@ -9,6 +9,7 @@ génération, donc des captures d'écran et des tests reproductibles.
 """
 from __future__ import annotations
 
+import math
 import random
 import sys
 from datetime import date, timedelta
@@ -210,8 +211,77 @@ def generer(chemin: str | Path, graine: int = 1792) -> Cave:
                                     ("Maison Aubertin & Fils", "Blanc de blancs", "Champagne grand cru", None)):
             c.execute("INSERT INTO envie(producteur, cuvee, appellation, millesime, quantite, cree_le) "
                       "VALUES(?,?,?,?,?,?)", (prod, cuv, app, mil, 6, aujourdhui.isoformat()))
+    # conditions de cave : quatre mois de mesures quotidiennes (inventées)
+    mesures = []
+    for j in range(120):
+        jour = aujourdhui - timedelta(days=120 - j)
+        saison = 1.6 * math.sin((jour.timetuple().tm_yday - 120) / 365 * 2 * math.pi)
+        mesures.append((maison, f"{jour.isoformat()} 08:00:00",
+                        round(12.5 + saison + hasard.uniform(-0.4, 0.4), 1),
+                        round(72 + hasard.uniform(-5, 5))))
+    cave.ajouter_conditions(mesures, source="démonstration")
     base.definir_meta("demonstration", "1")
     return cave
+
+
+def references_demo(cave) -> int:
+    """Une petite copie « LWIN » de DÉMONSTRATION pour les producteurs inventés
+    du catalogue (codes 99xxxxx, fictifs) et quelques voisins trompeurs : de
+    quoi essayer l'appariement sans le vrai fichier de Liv-ex."""
+    from .mondial.lwin import convertir
+    lignes = []
+    vus = set()
+    code = 9900001
+    couleurs = {"rouge": "Red", "blanc": "White", "rose": "Rose"}
+    types = {"effervescent": "Sparkling", "doux": "Sweet", "mute": "Fortified"}
+    for prod, cuvee, appel, region, pays, couleur, typ, *_ in CATALOGUE:
+        if (prod, cuvee) in vus:
+            continue
+        vus.add((prod, cuvee))
+        titre, _, nom = prod.partition(" ") if prod.split(" ")[0] in ("Château", "Domaine", "Maison",
+                                                                       "Clos", "Tenuta", "Bodegas",
+                                                                       "Weingut", "Quinta", "Mas") \
+            else ("", "", prod)
+        lignes.append(convertir({"lwin": str(code), "statut": "Live", "titre_producteur": titre,
+                                 "producteur": nom, "vin": cuvee, "pays": pays, "region": region,
+                                 "sous_region": appel, "couleur": couleurs.get(couleur, ""),
+                                 "type": "Wine", "sous_type": types.get(typ, "Still"),
+                                 "premier_millesime": "1990", "nom": " ".join(x for x in (prod, cuvee) if x)}))
+        code += 1
+    for prod, vin, appel, couleur in (("Château des Trois Ormes", "", "Pauillac", "Red"),
+                                      ("Château des Trois Chênes", "Blanc des Chênes", "Bordeaux", "White"),
+                                      ("Domaine Marchand", "Les Combes", "Gevrey-Chambertin", "Red"),
+                                      ("Maison Aubertin", "Brut", "Champagne", "White")):
+        titre, _, nom = prod.partition(" ")
+        lignes.append(convertir({"lwin": str(code), "statut": "Live", "titre_producteur": titre,
+                                 "producteur": nom, "vin": vin, "pays": "France", "region": "",
+                                 "sous_region": appel, "couleur": couleur, "type": "Wine",
+                                 "sous_type": "Still", "nom": " ".join(x for x in (prod, vin) if x)}))
+        code += 1
+    return cave.references.remplacer_lwin(lignes, source="Vendémiaire (demo)")
+
+
+def photos_demo(cave, nombre: int = 8) -> int:
+    """Photos d'étiquette DESSINÉES (libres) pour quelques vins, redressées
+    automatiquement comme le ferait l'utilisateur. Demande une QGuiApplication."""
+    import tempfile
+    from . import demo_photos, images
+    vins = cave.base.lire("SELECT v.id FROM vin v JOIN bouteille b ON b.vin_id=v.id "
+                          "WHERE b.statut='en_cave' GROUP BY v.id ORDER BY v.id")
+    pas = max(1, len(vins) // nombre)
+    n = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        for i, r in enumerate(vins[::pas][:nombre]):
+            v = dict(cave.vin(r["id"]))
+            photo, _coins = demo_photos.generer(v, Path(tmp) / f"photo{i}.jpg", graine=i + 3)
+            img = images.charger(photo)
+            d = images.detecter_etiquette(img)
+            retouche = images.Retouche(coins=d.coins if d else None, auto=bool(d))
+            traite = images.enregistrer(images.appliquer(img, retouche), Path(tmp) / f"etiquette{i}.jpg")
+            cave.ajouter_image(traite, vin_id=r["id"], original=photo, retouche=retouche.json(),
+                               credit="Vendémiaire (démonstration)", licence="CC0 1.0")
+            n += 1
+    return n
 
 
 if __name__ == "__main__":

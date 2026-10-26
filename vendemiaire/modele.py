@@ -50,6 +50,33 @@ class Cave:
         self.base = base
         self.dossier_images = Path(dossier_images) if dossier_images else \
             base.chemin.parent / "images"
+        self._references = None
+
+    @property
+    def references(self):
+        """Base de référence (LWIN, registres d'appellations), fichier à côté de
+        la cave ; créée et garnie des registres embarqués au premier usage."""
+        if self._references is None:
+            from .mondial.appellations import charger_embarques
+            from .references import References
+            self._references = References(self.base.chemin.parent / "references.db")
+            try:
+                charger_embarques(self._references)
+            except Exception:                           # registre illisible : la cave marche sans
+                import logging
+                logging.getLogger(__name__).exception("registres d'appellations embarqués")
+        return self._references
+
+    @property
+    def dossier_vignettes(self) -> Path:
+        return self.base.chemin.parent / "vignettes"
+
+    def fermer_references(self) -> None:
+        if self._references is not None:
+            self._references.fermer()
+
+    def bouteille_par_code(self, code: str):
+        return self.base.un("SELECT * FROM bouteille WHERE code_interne=?", ((code or "").strip(),))
 
     # =====================================================================
     # Producteurs et vins
@@ -599,14 +626,9 @@ class Cave:
         return self.base.lire("SELECT * FROM valeur WHERE vin_id=? ORDER BY date DESC, id DESC",
                               (vin_id,))
 
-    def ajouter_image(self, fichier: str | Path, vin_id: int | None = None,
-                      bouteille_id: int | None = None, type_image: str = "etiquette",
-                      origine: str = "perso", credit: str | None = None,
-                      licence: str | None = None, url_source: str | None = None,
-                      principale: bool = True) -> int:
-        """Copie l'image dans le dossier des données (nom = empreinte) puis
-        l'inscrit. La copie et l'empreinte se font AVANT la transaction."""
-        source = Path(fichier)
+    def _copier_image(self, source: Path) -> tuple[str, str, int | None, int | None]:
+        """Copie une image dans le dossier des données (nom = empreinte) : (relatif,
+        empreinte, largeur, hauteur). Hors transaction : c'est lent."""
         h = hashlib.sha256(source.read_bytes()).hexdigest()
         cible = self.dossier_images / h[:2] / f"{h}{source.suffix.lower() or '.jpg'}"
         cible.parent.mkdir(parents=True, exist_ok=True)
@@ -620,17 +642,107 @@ class Cave:
                 largeur, hauteur = taille.width(), taille.height()
         except Exception:
             pass
-        relatif = cible.relative_to(self.dossier_images).as_posix()
+        return cible.relative_to(self.dossier_images).as_posix(), h, largeur, hauteur
+
+    def ajouter_image(self, fichier: str | Path, vin_id: int | None = None,
+                      bouteille_id: int | None = None, type_image: str = "etiquette",
+                      origine: str = "perso", credit: str | None = None,
+                      licence: str | None = None, url_source: str | None = None,
+                      principale: bool = True, original: str | Path | None = None,
+                      retouche: str | None = None, texte_ocr: str | None = None,
+                      mouvement_id: int | None = None) -> int:
+        """Copie l'image (et la photo d'origine si `fichier` en est la version
+        redressée) dans le dossier des données puis l'inscrit. Copies et
+        empreintes AVANT la transaction."""
+        relatif, h, largeur, hauteur = self._copier_image(Path(fichier))
+        rel_original = self._copier_image(Path(original))[0] if original else None
         with self.base.ecriture() as c:
             if principale and vin_id is not None:
                 c.execute("UPDATE image SET principale=0 WHERE vin_id=? AND type=?",
                           (vin_id, type_image))
             return c.execute(
-                "INSERT INTO image(vin_id, bouteille_id, type, fichier, sha256, largeur, hauteur, "
-                "origine, credit, licence, url_source, principale, cree_le) "
-                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (vin_id, bouteille_id, type_image, relatif, h, largeur, hauteur, origine, credit,
-                 licence, url_source, 1 if principale else 0, maintenant())).lastrowid
+                "INSERT INTO image(vin_id, bouteille_id, mouvement_id, type, fichier, sha256, largeur, "
+                "hauteur, origine, credit, licence, url_source, principale, cree_le, "
+                "fichier_original, retouche, texte_ocr) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (vin_id, bouteille_id, mouvement_id, type_image, relatif, h, largeur, hauteur,
+                 origine, credit, licence, url_source, 1 if principale else 0, maintenant(),
+                 rel_original, retouche, texte_ocr)).lastrowid
+
+    def retoucher_image(self, image_id: int, fichier: str | Path, retouche: str | None,
+                        texte_ocr: str | None = None) -> None:
+        """Nouvelle version redressée d'une image ; la photo d'origine est gardée
+        (elle devient `fichier_original` si elle ne l'était pas déjà)."""
+        avant = self.base.un("SELECT * FROM image WHERE id=?", (image_id,))
+        if avant is None:
+            raise KeyError(image_id)
+        relatif, h, largeur, hauteur = self._copier_image(Path(fichier))
+        with self.base.ecriture() as c:
+            c.execute("UPDATE image SET fichier=?, sha256=?, largeur=?, hauteur=?, retouche=?, "
+                      "texte_ocr=COALESCE(?, texte_ocr), "
+                      "fichier_original=COALESCE(fichier_original, ?) WHERE id=?",
+                      (relatif, h, largeur, hauteur, retouche, texte_ocr, avant["fichier"], image_id))
+        self._nettoyer_fichier(avant["fichier"])
+
+    def noter_texte_image(self, image_id: int, texte: str) -> None:
+        with self.base.ecriture() as c:
+            c.execute("UPDATE image SET texte_ocr=? WHERE id=?", (texte, image_id))
+
+    def images(self, vin_id: int):
+        return self.base.lire("SELECT * FROM image WHERE vin_id=? ORDER BY type<>'etiquette', "
+                              "principale DESC, id", (vin_id,))
+
+    def image(self, image_id: int):
+        return self.base.un("SELECT * FROM image WHERE id=?", (image_id,))
+
+    def chemin_image(self, relatif: str | None) -> Path | None:
+        if not relatif:
+            return None
+        p = self.dossier_images / relatif
+        return p if p.exists() else None
+
+    def definir_principale(self, image_id: int) -> None:
+        im = self.image(image_id)
+        if im is None:
+            return
+        with self.base.ecriture() as c:
+            c.execute("UPDATE image SET principale=0 WHERE vin_id=? AND type=?",
+                      (im["vin_id"], im["type"]))
+            c.execute("UPDATE image SET principale=1 WHERE id=?", (image_id,))
+
+    def changer_type_image(self, image_id: int, type_image: str) -> None:
+        with self.base.ecriture() as c:
+            c.execute("UPDATE image SET type=?, principale=0 WHERE id=?", (type_image, image_id))
+
+    def supprimer_image(self, image_id: int) -> None:
+        im = self.image(image_id)
+        if im is None:
+            return
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM image WHERE id=?", (image_id,))
+        for f in (im["fichier"], im["fichier_original"]):
+            self._nettoyer_fichier(f)
+
+    def _nettoyer_fichier(self, relatif: str | None) -> None:
+        """Efface un fichier d'image que plus aucune ligne ne cite."""
+        if not relatif:
+            return
+        if self.base.valeur("SELECT COUNT(*) FROM image WHERE fichier=? OR fichier_original=?",
+                            (relatif, relatif)):
+            return
+        try:
+            (self.dossier_images / relatif).unlink(missing_ok=True)
+        except OSError:
+            pass
+
+    def mur(self, texte: str = "", statut: str = "presents") -> list[dict]:
+        """Le « mur d'étiquettes » : une case par vin, avec sa pochette."""
+        vins = self.liste_vins(texte=texte, statut=statut)
+        photos = {r["vin_id"]: r["fichier"] for r in self.base.lire(
+            "SELECT vin_id, fichier FROM image WHERE type='etiquette' AND vin_id IS NOT NULL "
+            "ORDER BY principale, id")}             # la dernière lue gagne : principale, puis la plus récente
+        for v in vins:
+            v["photo"] = self.chemin_image(photos.get(v["id"]))
+        return vins
 
     def image_principale(self, vin_id: int) -> Path | None:
         r = self.base.un("SELECT fichier FROM image WHERE vin_id=? AND type='etiquette' "
@@ -639,6 +751,254 @@ class Cave:
             return None
         p = self.dossier_images / r["fichier"]
         return p if p.exists() else None
+
+    # =====================================================================
+    # Bases mondiales : identifiants confirmés, fiches, journal
+    # =====================================================================
+    def retenir_identifiant(self, vin_id: int, source: str, valeur: str, score: float | None,
+                            explication: str | None, confirme: bool = True) -> None:
+        """Un vin n'a qu'un identifiant par source : le nouveau remplace l'ancien."""
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM identifiant_externe WHERE vin_id=? AND source=?", (vin_id, source))
+            c.execute("INSERT INTO identifiant_externe(vin_id, source, valeur, confirme, score, "
+                      "explication, date) VALUES(?,?,?,?,?,?,?)",
+                      (vin_id, source, str(valeur), 1 if confirme else 0, score, explication,
+                       maintenant()))
+
+    def identifiants(self, vin_id: int):
+        return self.base.lire("SELECT * FROM identifiant_externe WHERE vin_id=? ORDER BY source",
+                              (vin_id,))
+
+    def journal(self, vin_id: int):
+        """Ce qui a été rempli automatiquement pour ce vin (et son producteur), et d'où."""
+        pid = self.base.valeur("SELECT producteur_id FROM vin WHERE id=?", (vin_id,))
+        return self.base.lire(
+            "SELECT * FROM journal_enrichissement WHERE (table_nom='vin' AND ligne_id=?) "
+            "OR (table_nom='producteur' AND ligne_id=?) ORDER BY id DESC", (vin_id, pid or -1))
+
+    def producteur(self, pid: int):
+        return self.base.un("SELECT * FROM producteur WHERE id=?", (pid,))
+
+    def completer_producteur(self, pid: int, donnees: dict, source: str, detail: str = "") -> list[str]:
+        """Même règle que completer_vin : champs vides et non manuels seulement."""
+        actuel = self.producteur(pid)
+        if actuel is None:
+            raise KeyError(pid)
+        manuels = {r[0] for r in self.base.lire(
+            "SELECT champ FROM origine_champ WHERE table_nom='producteur' AND ligne_id=? "
+            "AND origine='manuel'", (pid,))}
+        a_remplir = {k: v for k, v in donnees.items()
+                     if k in ("pays", "region", "adresse", "site_web") and not _vide(v)
+                     and k not in manuels and _vide(actuel[k])}
+        if not a_remplir:
+            return []
+        t = maintenant()
+        with self.base.ecriture() as c:
+            sets = ", ".join(f"{k}=COALESCE(NULLIF({k}, ''), ?)" for k in a_remplir)
+            c.execute(f"UPDATE producteur SET {sets}, modifie_le=? WHERE id=?",
+                      list(a_remplir.values()) + [t, pid])
+            self._marquer(c, "producteur", pid, a_remplir, source)
+            for k, v in a_remplir.items():
+                c.execute("INSERT INTO journal_enrichissement(date, table_nom, ligne_id, champ, "
+                          "valeur, source, detail) VALUES(?,?,?,?,?,?,?)",
+                          (t, "producteur", pid, k, str(v), source, detail))
+        return list(a_remplir)
+
+    def enregistrer_fiche(self, source: str, identifiant: str, objet: str, donnees: dict,
+                          nom: str | None = None, producteur_id: int | None = None,
+                          vin_id: int | None = None, licence: str | None = None,
+                          url: str | None = None) -> int:
+        """Fiche d'une base mondiale (confirmée) rattachée à un producteur ou un vin.
+        Une seule fiche par (source, objet, rattachement) : la nouvelle remplace l'ancienne."""
+        import json
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM fiche_externe WHERE source=? AND objet=? AND "
+                      "COALESCE(producteur_id,0)=? AND COALESCE(vin_id,0)=?",
+                      (source, objet, producteur_id or 0, vin_id or 0))
+            return c.execute(
+                "INSERT INTO fiche_externe(source, identifiant, objet, producteur_id, vin_id, nom, "
+                "donnees, licence, url, date) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                (source, identifiant, objet, producteur_id, vin_id, nom,
+                 json.dumps(donnees, ensure_ascii=False), licence, url, maintenant())).lastrowid
+
+    def fiches(self, vin_id: int) -> list[dict]:
+        """Fiches du vin et de son producteur (JSON décodé)."""
+        import json
+        pid = self.base.valeur("SELECT producteur_id FROM vin WHERE id=?", (vin_id,))
+        sortie = []
+        for r in self.base.lire("SELECT * FROM fiche_externe WHERE vin_id=? OR producteur_id=? "
+                                "ORDER BY objet, source", (vin_id, pid or -1)):
+            d = dict(r)
+            try:
+                d["donnees"] = json.loads(d["donnees"])
+            except ValueError:
+                d["donnees"] = {}
+            sortie.append(d)
+        return sortie
+
+    # =====================================================================
+    # Critiques et valeurs (modifier, supprimer)
+    # =====================================================================
+    def modifier_note_critique(self, nid: int, critique: str, note: float | None, echelle: str,
+                               note_max: float | None = None, texte: str = "",
+                               date_note: str | None = None, source: str = "") -> None:
+        with self.base.ecriture() as c:
+            c.execute("UPDATE note_critique SET critique=?, note=?, note_max=?, echelle=?, texte=?, "
+                      "date=?, source=? WHERE id=?",
+                      (critique, note, note_max, echelle, texte or None, date_note, source or None,
+                       nid))
+
+    def supprimer_note_critique(self, nid: int) -> None:
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM note_critique WHERE id=?", (nid,))
+
+    def supprimer_valeur(self, valeur_id: int) -> None:
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM valeur WHERE id=?", (valeur_id,))
+
+    def ajouter_valeur_complete(self, vin_id: int, montant: float, source: str, date_valeur: str,
+                                format_code: str = "bouteille", devise: str = "EUR",
+                                url: str | None = None, note: str | None = None) -> int:
+        with self.base.ecriture() as c:
+            return c.execute("INSERT INTO valeur(vin_id, format, montant, devise, date, source, url, "
+                             "note) VALUES(?,?,?,?,?,?,?,?)",
+                             (vin_id, format_code, montant, devise, date_valeur, source,
+                              url or None, note or None)).lastrowid
+
+    # =====================================================================
+    # Liste d'envies
+    # =====================================================================
+    CHAMPS_ENVIE = ("vin_id", "producteur", "cuvee", "appellation", "millesime", "quantite",
+                    "prix_max", "priorite", "notes")
+
+    def ajouter_envie(self, donnees: dict) -> int:
+        d = {k: (donnees[k].strip() or None if isinstance(donnees[k], str) else donnees[k])
+             for k in self.CHAMPS_ENVIE if k in donnees}
+        cols = list(d) + ["cree_le"]
+        with self.base.ecriture() as c:
+            return c.execute(f"INSERT INTO envie({','.join(cols)}) VALUES({','.join('?' * len(cols))})",
+                             list(d.values()) + [maintenant()]).lastrowid
+
+    def modifier_envie(self, eid: int, donnees: dict) -> None:
+        d = {k: (donnees[k].strip() or None if isinstance(donnees[k], str) else donnees[k])
+             for k in self.CHAMPS_ENVIE if k in donnees}
+        if d:
+            with self.base.ecriture() as c:
+                c.execute(f"UPDATE envie SET {', '.join(f'{k}=?' for k in d)} WHERE id=?",
+                          list(d.values()) + [eid])
+
+    def supprimer_envie(self, eid: int) -> None:
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM envie WHERE id=?", (eid,))
+
+    def satisfaire_envie(self, eid: int, jour: str | None = None) -> None:
+        with self.base.ecriture() as c:
+            c.execute("UPDATE envie SET satisfaite_le=? WHERE id=?",
+                      (jour or date.today().isoformat(), eid))
+
+    def envies(self, avec_satisfaites: bool = False) -> list[dict]:
+        sql = ("SELECT e.*, (SELECT COUNT(*) FROM bouteille b WHERE b.vin_id=e.vin_id "
+               "AND b.statut='en_cave') AS en_cave FROM envie e")
+        if not avec_satisfaites:
+            sql += " WHERE e.satisfaite_le IS NULL"
+        return [dict(r) for r in self.base.lire(sql + " ORDER BY e.satisfaite_le IS NOT NULL, "
+                                                "e.priorite, e.id")]
+
+    # =====================================================================
+    # Conditions de cave (température, hygrométrie)
+    # =====================================================================
+    def ajouter_conditions(self, mesures: Iterable[tuple], source: str = "saisie") -> int:
+        """`mesures` : (emplacement, date_heure ISO, température, hygrométrie). Une
+        mesure déjà présente (même lieu, même instant) n'est pas doublée."""
+        mesures = list(mesures)
+        n = 0
+        with self.base.ecriture() as c:
+            for eid, quand, temp, hygro in mesures:
+                if c.execute("SELECT 1 FROM condition_cave WHERE emplacement_id IS ? AND date_heure=?",
+                             (eid, quand)).fetchone():
+                    continue
+                c.execute("INSERT INTO condition_cave(emplacement_id, date_heure, temperature, "
+                          "hygrometrie, source) VALUES(?,?,?,?,?)", (eid, quand, temp, hygro, source))
+                n += 1
+        return n
+
+    def conditions(self, emplacement_id: int | None = None, limite: int | None = None):
+        sql = "SELECT * FROM condition_cave"
+        params: list = []
+        if emplacement_id is not None:
+            sql += " WHERE emplacement_id=?"
+            params.append(emplacement_id)
+        sql += " ORDER BY date_heure DESC"
+        if limite:
+            sql += f" LIMIT {int(limite)}"
+        return self.base.lire(sql, params)
+
+    def resume_conditions(self, emplacement_id: int | None = None) -> dict:
+        where, params = ("WHERE emplacement_id=?", [emplacement_id]) if emplacement_id else ("", [])
+        r = self.base.un(f"SELECT COUNT(*) n, MIN(temperature) tmin, MAX(temperature) tmax, "
+                         f"AVG(temperature) tmoy, MIN(hygrometrie) hmin, MAX(hygrometrie) hmax, "
+                         f"AVG(hygrometrie) hmoy, MIN(date_heure) debut, MAX(date_heure) fin "
+                         f"FROM condition_cave {where}", params)
+        return dict(r) if r else {}
+
+    def supprimer_condition(self, cid: int) -> None:
+        with self.base.ecriture() as c:
+            c.execute("DELETE FROM condition_cave WHERE id=?", (cid,))
+
+    # =====================================================================
+    # Inventaire de contrôle
+    # =====================================================================
+    def attendues(self, casier_id: int) -> list[dict]:
+        """Bouteilles que la base place dans ce casier (ou ce meuble, cette cave)."""
+        ids = self._descendants(casier_id)
+        return [dict(r) for r in self.base.lire(
+            f"SELECT b.id, b.code_interne, b.rangee, b.colonne, b.emplacement_id, b.format, b.vin_id "
+            f"FROM bouteille b WHERE b.statut='en_cave' AND b.emplacement_id IN "
+            f"({','.join('?' * len(ids))}) ORDER BY b.emplacement_id, b.rangee, b.colonne, b.id", ids)]
+
+    def _descendants(self, eid: int) -> list[int]:
+        tous = {r["id"]: r["parent_id"] for r in self.emplacements()}
+        sortie, file = [], [eid]
+        while file:
+            e = file.pop()
+            sortie.append(e)
+            file += [k for k, p in tous.items() if p == e]
+        return sortie
+
+    def enregistrer_inventaire(self, casier_id: int, trouvees: Iterable[int],
+                               en_trop: Iterable[str] = (), jour: str | None = None) -> dict:
+        """Compte d'un casier : attendues, trouvées, manquantes, en trop. Rien
+        n'est modifié dans la cave : l'utilisateur décide ensuite (`marquer_manquantes`)."""
+        import json
+        attendues = {b["id"] for b in self.attendues(casier_id)}
+        trouvees = set(trouvees)
+        ecarts = {"manquantes": sorted(attendues - trouvees),
+                  "ailleurs": sorted(trouvees - attendues),
+                  "en_trop": [x for x in en_trop if x]}
+        with self.base.ecriture() as c:
+            c.execute("INSERT INTO inventaire(emplacement_id, date, attendu, compte, ecarts) "
+                      "VALUES(?,?,?,?,?)", (casier_id, jour or date.today().isoformat(),
+                                            len(attendues), len(trouvees) + len(ecarts["en_trop"]),
+                                            json.dumps(ecarts)))
+        return ecarts
+
+    def inventaires(self, casier_id: int | None = None):
+        sql = "SELECT * FROM inventaire"
+        params = []
+        if casier_id is not None:
+            sql += " WHERE emplacement_id=?"
+            params.append(casier_id)
+        return self.base.lire(sql + " ORDER BY date DESC, id DESC", params)
+
+    def marquer_manquantes(self, bouteilles: Iterable[int], jour: str | None = None) -> int:
+        """Bouteilles introuvables : sortie « écart d'inventaire » au livre de cave."""
+        n = 0
+        for bid in bouteilles:
+            b = self.bouteille(bid)
+            if b is not None and b["statut"] == "en_cave":
+                self.sortir(bid, "sortie_inventaire", jour)
+                n += 1
+        return n
 
     # =====================================================================
     # Tableau de bord

@@ -1,0 +1,18 @@
+{
+ "inao": {
+  "titre": "INAO — Référentiel des produits sous SIQO (vins)",
+  "page": "https://www.data.gouv.fr/datasets/referentiel-des-produits-sous-signe-officiel-didentification-de-la-qualite-et-de-lorigine-siqo",
+  "fichier": "2025-12-31-inao-ref-produit-siqo.csv",
+  "licence": "Licence Ouverte 2.0 (Etalab)",
+  "date_extraction": "2026-10-26",
+  "lignes": 1505
+ },
+ "eambrosia": {
+  "titre": "eAmbrosia — registre des indications géographiques de l'UE (vins)",
+  "page": "https://ec.europa.eu/agriculture/eambrosia/geographical-indications-register/",
+  "api": "https://webgate.ec.europa.eu/eambrosia-api/api/v1/geographical-indications?productType=WINE",
+  "licence": "© Union européenne — réutilisation autorisée (décision 2011/833/UE)",
+  "date_extraction": "2026-10-26",
+  "lignes": 1858
+ }
+}

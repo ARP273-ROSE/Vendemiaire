@@ -35,14 +35,16 @@
     "images",
     "sauvegardes",
     "emplacement.json",
-    "vendemiaire.verrou"
+    "vendemiaire.verrou",
+    "references.db",
+    "vignettes"
   ],
   "icone_png": "docs/logo_256.png",
   "icone_grande": "docs/logo_512.png",
   "nom_affiche_fr": "Vendémiaire",
   "nom_affiche_en": "Vendémiaire",
-  "description_fr": "Gestion de cave à vin : bouteilles, plan des casiers, livre de cave",
-  "description_en": "Wine cellar manager: bottles, rack plan, cellar book",
+  "description_fr": "Gestion de cave à vin : bouteilles, plan des casiers, livre de cave, étiquettes, bases mondiales",
+  "description_en": "Wine cellar manager: bottles, rack plan, cellar book, labels, world databases",
   "categories_linux": "Office;Database;",
   "icone_icns": "docs/logo.icns",
   "verification_import": [
@@ -50,6 +52,17 @@
     "vendemiaire.base",
     "vendemiaire.modele",
     "vendemiaire.echanges",
+    "vendemiaire.references",
+    "vendemiaire.reseau",
+    "vendemiaire.images",
+    "vendemiaire.ocr",
+    "vendemiaire.mondial.appariement",
+    "vendemiaire.mondial.lwin",
+    "vendemiaire.mondial.wikidata",
+    "vendemiaire.mondial.off",
+    "vendemiaire.mondial.appellations",
+    "vendemiaire.regles.notes",
+    "PyQt6.QtMultimedia",
     "vendemiaire.ui.fenetre",
     "vendemiaire.style",
     "vendemiaire.logo",
@@ -65,7 +78,11 @@
     "tests/test_migrations.py",
     "tests/test_echanges.py",
     "tests/test_i18n_textes.py",
-    "tests/test_interface.py"
+    "tests/test_interface.py",
+    "tests/test_mondial.py",
+    "tests/test_images_ocr.py",
+    "tests/test_phase2_modele.py",
+    "tests/test_interface_phase2.py"
   ],
   "copies": [
     {

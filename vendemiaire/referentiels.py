@@ -61,6 +61,7 @@ ENUMS: dict[str, dict[str, tuple[str, str]]] = {
         "vendue": ("Vendue", "Sold"),
         "cassee": ("Cassée", "Broken"),
         "bouchonnee": ("Bouchonnée", "Corked"),
+        "manquante": ("Manquante (inventaire)", "Missing (stock-take)"),
     },
     "couleur": {
         "rouge": ("Rouge", "Red"),
@@ -178,7 +179,7 @@ CRITIQUES: dict[str, tuple[str, str]] = {
 #: statuts qui comptent comme « en cave » / « à venir » / « sortie »
 STATUTS_EN_CAVE = ("en_cave",)
 STATUTS_A_VENIR = ("en_attente", "primeur")
-STATUTS_SORTIS = ("bue", "offerte", "vendue", "cassee", "bouchonnee")
+STATUTS_SORTIS = ("bue", "offerte", "vendue", "cassee", "bouchonnee", "manquante")
 
 #: type de mouvement de sortie -> statut de la bouteille
 SORTIE_VERS_STATUT = {
@@ -187,6 +188,7 @@ SORTIE_VERS_STATUT = {
     "sortie_vendue": "vendue",
     "sortie_cassee": "cassee",
     "sortie_bouchonnee": "bouchonnee",
+    "sortie_inventaire": "manquante",
 }
 
 

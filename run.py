@@ -69,6 +69,15 @@ def _verifier() -> int:
         with tempfile.TemporaryDirectory() as d:
             b = Base(Path(d) / "essai.db")
             assert b.version() == VERSION_SCHEMA
+            # phase 2 : registres d'appellations livrés, base de référence, règles livrées
+            from vendemiaire import images, ocr, regles, reseau  # noqa: F401
+            from vendemiaire.mondial import appariement, lwin, off, wikidata  # noqa: F401
+            from vendemiaire.modele import Cave
+            cave = Cave(b)
+            assert cave.references.nb_appellations() > 1000, "registres d'appellations"
+            regles.charger_livres()
+            assert regles.demander("convertir_note", 90, "100", "20") is not None, "notes.json"
+            cave.fermer_references()
             b.fermer()
     except Exception as exc:
         print(f"{NOM} : ECHEC / FAILED -- {type(exc).__name__}: {exc}")
@@ -190,7 +199,11 @@ def main() -> int:
     chemin_base = Path(dossier) / "cave.db"
     if args.demo and not chemin_base.exists():
         from vendemiaire import demo
-        demo.generer(chemin_base)
+        c = demo.generer(chemin_base)
+        demo.references_demo(c)
+        demo.photos_demo(c)
+        c.fermer_references()
+        c.base.fermer()
     if chemin_base.exists():
         sauvegarde.sauvegarder(chemin_base, chemins.dossier_sauvegardes(), "auto",
                                seulement_si_modifiee=True)

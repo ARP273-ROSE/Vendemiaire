@@ -170,7 +170,15 @@ class DialogueVin(QDialog):
         dist = cave.valeurs_distinctes
         self.producteur = _ligne(g("producteur"), dist("producteur"))
         self.cuvee = _ligne(g("cuvee"))
-        self.appellation = _ligne(g("appellation"), dist("appellation"))
+        officielles = cave.references.noms_appellations()
+        self.appellation = _ligne(g("appellation"),
+                                  sorted(set(dist("appellation")) | set(officielles), key=str.lower))
+        self.appellation_officielle = QLabel()
+        self.appellation_officielle.setObjectName("legende")
+        self.appellation_officielle.setWordWrap(True)
+        self.appellation_officielle.linkActivated.connect(self._corriger_appellation)
+        self.appellation.editingFinished.connect(self._verifier_appellation)
+        self._verifier_appellation()
         self.region = _ligne(g("region"), dist("region"))
         self.sous_region = _ligne(g("sous_region"), dist("sous_region"))
         self.pays = _ligne(g("pays"), dist("pays"))
@@ -201,11 +209,12 @@ class DialogueVin(QDialog):
         self.notes = QPlainTextEdit(g("notes") or "")
         self.notes.setMaximumHeight(80)
         for cle, w in (("vin.producteur", self.producteur), ("vin.cuvee", self.cuvee),
-                       ("vin.appellation", self.appellation), ("vin.region_seule", self.region),
+                       ("vin.appellation", self.appellation), ("", self.appellation_officielle),
+                       ("vin.region_seule", self.region),
                        ("vin.sous_region", self.sous_region), ("vin.pays", self.pays),
                        ("vin.classement", self.classement), ("vin.couleur", self.couleur),
                        ("vin.type", self.type)):
-            f.addRow(tr(cle), w)
+            f.addRow(tr(cle) if cle else "", w)
         f.addRow(tr("vin.millesime"), ligne_mil)
         for cle, w in (("vin.degre", self.degre), ("vin.cepages", self.cepages),
                        ("vin.lwin", self.lwin), ("vin.ean", self.ean),
@@ -224,6 +233,27 @@ class DialogueVin(QDialog):
         boutons.accepted.connect(self.accepter)
         boutons.rejected.connect(self.reject)
         racine.addWidget(boutons)
+
+    def _verifier_appellation(self) -> None:
+        """Orthographe officielle (registres INAO / eAmbrosia) proposée, jamais imposée."""
+        texte = self.appellation.text().strip()
+        off = self.cave.references.appellation_officielle(texte) if texte else None
+        if off and off["nom"] != texte:
+            self._officielle = off["nom"]
+            self.appellation_officielle.setText(tr("saisie.appellation_officielle", nom=off["nom"],
+                                                   signe=off["signe"] or "", registre=off["registre"]))
+        elif off:
+            self._officielle = None
+            self.appellation_officielle.setText(tr("saisie.appellation_reconnue", signe=off["signe"] or "",
+                                                   registre=off["registre"]))
+        else:
+            self._officielle = None
+            self.appellation_officielle.setText("")
+
+    def _corriger_appellation(self, _lien: str) -> None:
+        if getattr(self, "_officielle", None):
+            self.appellation.setText(self._officielle)
+            self._verifier_appellation()
 
     def donnees(self) -> dict:
         mil = self.millesime.value()
@@ -403,7 +433,8 @@ class DialogueSortie(QDialog):
         racine.addLayout(f)
         self.type = QComboBox()
         for code in referentiels.SORTIE_VERS_STATUT:
-            self.type.addItem(lib("mouvement", code), code)
+            if code != "sortie_inventaire":          # réservé à l'inventaire de contrôle
+                self.type.addItem(lib("mouvement", code), code)
         self.date = _date(date.today().isoformat(), vide_permis=False)
         self.occasion = _ligne(completions=[r[0] for r in cave.base.lire(
             "SELECT DISTINCT occasion FROM mouvement WHERE occasion IS NOT NULL")])

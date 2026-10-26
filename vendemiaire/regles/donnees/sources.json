@@ -1,0 +1,317 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "sources": {
+  "WSET_TEMP": {
+   "titre": "WSET, températures de service recommandées (reprises par Wikipédia EN « Wine tasting », section WSET recommendations)",
+   "fichier": "data/sources/wiki/en_Wine_tasting.txt",
+   "nature": "guide de formation"
+  },
+  "ELEPHORM": {
+   "titre": "Elephorm, formation « Connaître, apprécier et conseiller le vin » : les rituels de service et de conservation",
+   "fichier": "data/sources/web/srv_elephorm.txt",
+   "nature": "formation"
+  },
+  "IDEALWINE_T": {
+   "titre": "iDealwine, « Quelle est la température de service idéale pour les vins ? »",
+   "fichier": "data/sources/web/srv_idealwine_temperature.txt",
+   "nature": "guide marchand"
+  },
+  "CHAMP_FICHE": {
+   "titre": "Comité Champagne, fiche « Le service du Champagne » (2024)",
+   "fichier": "data/sources/web/srv_champagne_fiche_service.txt",
+   "nature": "interprofession"
+  },
+  "BUREAU_CHAMP": {
+   "titre": "Bureau du Champagne (D. Avolio) cité par Fine Dining Lovers, « How to serve Champagne »",
+   "fichier": "data/sources/web/srv_finedininglovers_champagne.txt",
+   "nature": "interprofession (citée)"
+  },
+  "MUMM": {
+   "titre": "Maison Mumm, « How to serve champagne at the ideal temperature »",
+   "fichier": "data/sources/web/srv_mumm.txt",
+   "nature": "producteur"
+  },
+  "CVP": {
+   "titre": "Clube de Vinhos Portugueses, « Serviço de vinhos » (tableau des températures)",
+   "fichier": "data/sources/web/srv_clubevinhos_servico.txt",
+   "nature": "guide"
+  },
+  "CATAVINO": {
+   "titre": "Catavino, « Top five mistakes in serving Sherry »",
+   "fichier": "data/sources/web/srv_catavino_sherry.txt",
+   "nature": "guide"
+  },
+  "LAPASSION_VJ": {
+   "titre": "La Passion du vin, forum « Le service du vin jaune » (avis d'amateurs)",
+   "fichier": "data/sources/web/srv_lapassion_vinjaune.txt",
+   "nature": "forum"
+  },
+  "VINATIS_SRV_VJ": {
+   "titre": "Vinatis, « Comment servir et déguster le vin jaune du Jura » et « Vin jaune, vin de paille, macvin » (blog)",
+   "fichier": "data/sources/web/srv_vinatis_servir_vinjaune.txt",
+   "nature": "guide marchand"
+  },
+  "HACHETTE_VJ": {
+   "titre": "Guide Hachette des vins 2026, fiche Caveau des Byards vin jaune 2018 (température conseillée)",
+   "fichier": "data/sources/web/srv_hachette_vinjaune_byards.txt",
+   "nature": "guide"
+  },
+  "VERSAILLES": {
+   "titre": "Académie (hôtellerie-restauration), fiche « Le service du vin blanc » (T. Frédéric, 2003)",
+   "fichier": "data/sources/web/srv_versailles_vin_blanc.txt",
+   "nature": "enseignement"
+  },
+  "TDN2020": {
+   "titre": "Tarasov et al., seuils sensoriels du TDN dans le riesling, Foods 2020 (PubMed 32397426)",
+   "fichier": "data/sources/pubmed/pubmed_32397426.txt",
+   "nature": "étude"
+  },
+  "WIKI_DECANTER": {
+   "titre": "Wikipédia EN « Decanter » (MacNeil, Peynaud, Robinson, O'Keefe)",
+   "fichier": "data/sources/wiki/en_Decanter.txt",
+   "nature": "encyclopédie"
+  },
+  "WINEFOLLY_DEC": {
+   "titre": "Wine Folly, « Beginners guide to decanting wine »",
+   "fichier": "data/sources/web/car_winefolly2.txt",
+   "nature": "guide"
+  },
+  "WIKI_GLASS": {
+   "titre": "Wikipédia EN « Wine glass » (verre ISO 3591 / INAO)",
+   "fichier": "data/sources/wiki/en_Wine_glass.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_VERRE": {
+   "titre": "Wikipédia FR « Verre à vin »",
+   "fichier": "data/sources/wiki/fr_Verre_à_vin.txt",
+   "nature": "encyclopédie"
+  },
+  "ARAKAWA2015": {
+   "titre": "Arakawa et al., « A sniffer-camera for imaging of ethanol vaporization from wine: the effect of wine glass shape », Analyst 2015 (PubMed 25756409)",
+   "fichier": "data/sources/pubmed/pubmed_25756409.txt",
+   "nature": "étude"
+  },
+  "JR_GARDE": {
+   "titre": "Jancis Robinson, repères de garde par type (repris par Wikipédia FR « Vieillissement du vin »)",
+   "fichier": "data/sources/wiki/fr_Vieillissement_du_vin.txt",
+   "nature": "experte (citée)"
+  },
+  "WIKI_AGING": {
+   "titre": "Wikipédia EN « Aging of wine »",
+   "fichier": "data/sources/wiki/en_Aging_of_wine.txt",
+   "nature": "encyclopédie"
+  },
+  "WE2018": {
+   "titre": "Wine Enthusiast, « 2018 Vintage Chart » (février 2018), mis en données",
+   "fichier": "data/millesimes/wine_enthusiast_2018.json",
+   "nature": "tableau de millésimes"
+  },
+  "WSOC2026": {
+   "titre": "The Wine Society, « Vintage Chart 2026 » (mars 2026), mis en données",
+   "fichier": "data/millesimes/wine_society_2026.json",
+   "nature": "tableau de millésimes"
+  },
+  "WS2026": {
+   "titre": "Wine Spectator, « 2026 Vintage Chart » (janvier 2026), mis en données",
+   "fichier": "data/millesimes/wine_spectator_2026.json",
+   "nature": "tableau de millésimes"
+  },
+  "BBR2026": {
+   "titre": "Berry Bros. & Rudd, « Vintage chart » (relevé du 26/10/2026), mis en données",
+   "fichier": "data/millesimes/bbr_2026.json",
+   "nature": "tableau de millésimes"
+  },
+  "GARDE_CALC": {
+   "titre": "Calcul SageMath scripts/garde_empirique.sage sur les tableaux Wine Enthusiast 2018 et Wine Society 2026",
+   "fichier": "data/millesimes/garde_empirique.json",
+   "nature": "calcul du dossier"
+  },
+  "CALC5": {
+   "titre": "Calcul SageMath scripts/calculs_partie5.sage (loi de Newton calibrée sur les durées de la Champagne)",
+   "fichier": "data/calculs_partie5.txt",
+   "nature": "calcul du dossier"
+  },
+  "WIKI_STORAGE": {
+   "titre": "Wikipédia EN « Storage of wine » (J. Robinson, T. Stevenson, K. MacNeil, C. Ough, CIVC)",
+   "fichier": "data/sources/wiki/en_Storage_of_wine.txt",
+   "nature": "encyclopédie"
+  },
+  "HOPFER2013": {
+   "titre": "Hopfer et al., stockage d'un cabernet sauvignon à 10, 20 et 40 °C selon l'emballage, J. Agric. Food Chem. 2013 (PubMed 23458342)",
+   "fichier": "data/sources/pubmed/pubmed_23458342.txt",
+   "nature": "étude"
+  },
+  "OXY2026": {
+   "titre": "Chanut et al. (Dijon), transfert d'oxygène dans une bouteille de vin, Sci. Adv. 2026 (PubMed 42319944)",
+   "fichier": "data/sources/pubmed/pubmed_42319944.txt",
+   "nature": "étude"
+  },
+  "WIKI_VINJAUNE": {
+   "titre": "Wikipédia FR « Vin jaune »",
+   "fichier": "data/sources/wiki/fr_Vin_jaune.txt",
+   "nature": "encyclopédie"
+  },
+  "PENFOLDS": {
+   "titre": "Service de rebouchage de Penfolds (rouges d'au moins 15 ans), voir audit/sources_05_bouteille.md",
+   "fichier": "audit/sources_05_bouteille.md",
+   "nature": "producteur (cité)"
+  },
+  "WINEFOLLY_OUV": {
+   "titre": "Wine Folly, « How long does an open bottle of wine last? »",
+   "fichier": "data/sources/web/ouv_winefolly.txt",
+   "nature": "guide"
+  },
+  "DECANTER_OUV": {
+   "titre": "Decanter, « How long does wine last after opening? »",
+   "fichier": "data/sources/web/ouv_decanter.txt",
+   "nature": "magazine"
+  },
+  "HEALTHLINE_OUV": {
+   "titre": "Healthline, « How long does wine last? »",
+   "fichier": "data/sources/web/ouv_healthline.txt",
+   "nature": "guide"
+  },
+  "WINEBID": {
+   "titre": "WineBid, « Auction terminology » (Ullage terms)",
+   "fichier": "data/sources/web/niv_winebid.txt",
+   "nature": "maison de ventes"
+  },
+  "TENNANTS": {
+   "titre": "Tennants (maison de ventes), « Condition and ullage »",
+   "fichier": "data/sources/web/niv_tennants.txt",
+   "nature": "maison de ventes"
+  },
+  "ABBEYS": {
+   "titre": "Abbey's Auctions, « Wine & spirits » (ullage levels)",
+   "fichier": "data/sources/web/niv_abbeys.txt",
+   "nature": "maison de ventes"
+  },
+  "DECANTER_CONV": {
+   "titre": "Decanter, « How to read Decanter wine scores: the 100 point scale » (tableau de conversion, image archivée)",
+   "fichier": "data/sources/web/note_decanter_conversion.jpg",
+   "nature": "magazine"
+  },
+  "WS_ECHELLE": {
+   "titre": "Wine Spectator, échelle des 100 points (carte des millésimes 2026)",
+   "fichier": "data/sources/web/mil_winespectator_2026.pdf",
+   "nature": "magazine"
+  },
+  "WE_ECHELLE": {
+   "titre": "Wine Enthusiast, échelle des 100 points (carte des millésimes 2018)",
+   "fichier": "data/sources/web/mil_winemag_2018.pdf",
+   "nature": "magazine"
+  },
+  "HACHETTE": {
+   "titre": "Guide Hachette des vins 2025 : notes de 0 à 5 et étoiles",
+   "fichier": "data/sources/web/note_hachette_2025.txt",
+   "nature": "guide"
+  },
+  "WIKI_FAULT": {
+   "titre": "Wikipédia EN « Wine fault »",
+   "fichier": "data/sources/wiki/en_Wine_fault.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_CORK": {
+   "titre": "Wikipédia EN « Cork taint »",
+   "fichier": "data/sources/wiki/en_Cork_taint.txt",
+   "nature": "encyclopédie"
+  },
+  "TCA2013": {
+   "titre": "Takeuchi et al., « 2,4,6-trichloroanisole is a potent suppressor of olfactory signal transduction », PNAS 2013 (PubMed 24043819)",
+   "fichier": "data/sources/pubmed/pubmed_24043819.txt",
+   "nature": "étude"
+  },
+  "WIKI_AV": {
+   "titre": "Wikipédia FR « Acidité volatile »",
+   "fichier": "data/sources/wiki/fr_Acidité_volatile.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_BRETT": {
+   "titre": "Wikipédia EN « Brettanomyces »",
+   "fichier": "data/sources/wiki/en_Brettanomyces.txt",
+   "nature": "encyclopédie"
+  },
+  "SMOKE2026": {
+   "titre": "Lim et al. (UC Davis), goût de fumée (incendies de Napa 2020), Sci. Rep. 2026 (PubMed 42380472)",
+   "fichier": "data/sources/pubmed/pubmed_42380472.txt",
+   "nature": "étude"
+  },
+  "WSET_SAT": {
+   "titre": "WSET Level 3 Systematic Approach to Tasting Wine et Wine-Lexicon (2022, issue 2)",
+   "fichier": "data/sources/web/som_wset_l3_sat_2022.txt",
+   "nature": "guide de formation"
+  },
+  "NOBLE": {
+   "titre": "Wikipédia EN « Ann C. Noble » (roue des arômes, UC Davis)",
+   "fichier": "data/sources/wiki/en_Ann_C_Noble.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_PAIRING": {
+   "titre": "Wikipédia EN « Wine and food pairing »",
+   "fichier": "data/sources/wiki/en_Wine_and_food_pairing.txt",
+   "nature": "encyclopédie"
+  },
+  "WSET_SPEC": {
+   "titre": "WSET Level 3 Award in Wines, Specification (2022) : principes des accords",
+   "fichier": "data/sources/web/acc_wset_l3_spec_2022.txt",
+   "nature": "guide de formation"
+  },
+  "GALMARINI2016": {
+   "titre": "Galmarini et al., effet du fromage sur la perception du vin (TDS), J. Food Sci. 2016 (PubMed 27669492)",
+   "fichier": "data/sources/pubmed/pubmed_27669492.txt",
+   "nature": "étude"
+  },
+  "TSUJI2012": {
+   "titre": "Tsuji et al. (Kirin), arrière-goût de poisson des accords vin-fruits de mer et fer du vin, J. Agric. Food Chem. 2012 (PubMed 22630330)",
+   "fichier": "data/sources/pubmed/pubmed_22630330.txt",
+   "nature": "étude"
+  },
+  "NASRAWI1990": {
+   "titre": "Nasrawi et Pangborn, rinçages et brûlure de la capsaïcine, Physiol. Behav. 1990 (PubMed 2385629)",
+   "fichier": "data/sources/pubmed/pubmed_2385629.txt",
+   "nature": "étude"
+  },
+  "CORPUS": {
+   "titre": "Phrases d'accords attestées dans les articles Wikipédia archivés (scripts/accords_corpus.py)",
+   "fichier": "data/regles/accords_corpus.json",
+   "nature": "encyclopédie (extraits)"
+  },
+  "WIKI_TARTRE": {
+   "titre": "Wikipédia EN « Potassium bitartrate »",
+   "fichier": "data/sources/wiki/en_Potassium_bitartrate.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_CYNARINE": {
+   "titre": "Wikipédia FR « Acide dicaféylquinique » (cynarine)",
+   "fichier": "data/sources/wiki/fr_Acide_dicaféylquinique.txt",
+   "nature": "encyclopédie"
+  },
+  "VINATIS_VJ": {
+   "titre": "Vinatis, « Que manger avec du vin jaune ? »",
+   "fichier": "data/sources/web/acc_vinatis_vinjaune.txt",
+   "nature": "guide marchand"
+  },
+  "IDEALWINE_POULET": {
+   "titre": "iDealwine, recette du poulet au vin du Jura et aux morilles",
+   "fichier": "data/sources/web/acc_idealwine_poulet.txt",
+   "nature": "guide marchand"
+  },
+  "LAPASSION_ACC_VJ": {
+   "titre": "La Passion du vin, forum « Accord vin jaune » (avis d'amateurs)",
+   "fichier": "data/sources/web/acc_lapassion_vinjaune.txt",
+   "nature": "forum"
+  },
+  "UE_2019_934_AV": {
+   "titre": "Règlement délégué (UE) 2019/934, annexe I, partie C (teneurs maximales en acidité volatile), texte relu sur legislation.gov.uk (audit phase 7)",
+   "fichier": "data/sources/web/ue2019_934_annexeIC_acidite_volatile.txt",
+   "nature": "texte officiel"
+  },
+  "DOSSIER": {
+   "titre": "Convention du dossier « Le vin » faute de source chiffrée : à ajuster par l'utilisateur",
+   "fichier": "data/regles/LISEZMOI.md",
+   "nature": "convention"
+  }
+ }
+}

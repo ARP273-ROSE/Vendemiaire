@@ -8,7 +8,7 @@ Windows, macOS and Linux. No data ever leaves the computer.
 
 *Version française : [README.md](README.md).*
 
-> **Status: phase 1 (foundations and cellar), not released yet.** See [PROGRESSION.md](PROGRESSION.md) (in French).
+> **Status: phases 1 (foundations and cellar) and 2 (world databases and labels), not released yet.** See [PROGRESSION.md](PROGRESSION.md) (in French).
 
 ![Dashboard](docs/captures/en-tableau-de-bord.png)
 
@@ -36,6 +36,22 @@ Windows, macOS and Linux. No data ever leaves the computer.
 
 ![Cellar](docs/captures/en-cave.png)
 
+## What phase 2 adds
+
+- **World identifier**: local copy of **LWIN** (Liv-ex, CC BY 4.0) searched offline, **Wikidata**
+  (producers, appellations, grapes), **Open Food Facts** (barcode); ranked candidates with an
+  **explained score**, nothing written without confirmation, manual entries never replaced, log of
+  what was filled in and from where.
+- **Official appellation registers** (INAO, eAmbrosia) built in: completion and official spelling.
+- **Label photos as covers**: automatic cropping and perspective correction, unwrapping, original
+  kept, **label wall**, back label, capsule, case; **local OCR** (Tesseract) to identify a bottle
+  from its photo.
+- **Wish list**, **critics' scores** with a sourced conversion (Decanter table), **dated, sourced
+  values**, **cellar conditions** (entry, CSV or Home Assistant import, curve), **stock-take**.
+
+![Label wall](docs/captures/en-mur.png)
+![Identify a wine](docs/captures/en-identifier.png)
+
 ## Run from source
 
 ```bash
@@ -54,3 +70,7 @@ xvfb-run -a python -m pytest -q tests/
 ## Licence
 
 MIT — see [LICENSE](LICENSE). Embedded fonts under the SIL Open Font License.
+
+Reference data: LWIN © Liv-ex Ltd (CC BY 4.0, not redistributed: imported by the user); INAO
+(Licence Ouverte 2.0) and eAmbrosia (© European Union, reuse authorised) registers built in;
+Wikidata (CC0); Open Food Facts (ODbL, photos CC BY-SA).

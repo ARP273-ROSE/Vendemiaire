@@ -1,0 +1,308 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "decanter_100_20": [
+  {
+   "sur_100": 100,
+   "mention": "Exceptional",
+   "medaille": "Gold",
+   "sur_20": "20"
+  },
+  {
+   "sur_100": 99,
+   "mention": "Exceptional",
+   "medaille": "Gold",
+   "sur_20": "19.75"
+  },
+  {
+   "sur_100": 98,
+   "mention": "Exceptional",
+   "medaille": "Gold",
+   "sur_20": "19.5"
+  },
+  {
+   "sur_100": 97,
+   "mention": "Outstanding",
+   "medaille": "Gold",
+   "sur_20": "19.25"
+  },
+  {
+   "sur_100": 96,
+   "mention": "Outstanding",
+   "medaille": "Gold",
+   "sur_20": "19"
+  },
+  {
+   "sur_100": 95,
+   "mention": "Outstanding",
+   "medaille": "Gold",
+   "sur_20": "18.5/18.75"
+  },
+  {
+   "sur_100": 94,
+   "mention": "Highly recommended",
+   "medaille": "Silver",
+   "sur_20": "18.25"
+  },
+  {
+   "sur_100": 93,
+   "mention": "Highly recommended",
+   "medaille": "Silver",
+   "sur_20": "18"
+  },
+  {
+   "sur_100": 92,
+   "mention": "Highly recommended",
+   "medaille": "Silver",
+   "sur_20": "17.75"
+  },
+  {
+   "sur_100": 91,
+   "mention": "Highly recommended",
+   "medaille": "Silver",
+   "sur_20": "17.5"
+  },
+  {
+   "sur_100": 90,
+   "mention": "Highly recommended",
+   "medaille": "Silver",
+   "sur_20": "17.25/17"
+  },
+  {
+   "sur_100": 89,
+   "mention": "Recommended",
+   "medaille": "Bronze",
+   "sur_20": "16.75"
+  },
+  {
+   "sur_100": 88,
+   "mention": "Recommended",
+   "medaille": "Bronze",
+   "sur_20": "16.5"
+  },
+  {
+   "sur_100": 87,
+   "mention": "Recommended",
+   "medaille": "Bronze",
+   "sur_20": "16.25"
+  },
+  {
+   "sur_100": 86,
+   "mention": "Recommended",
+   "medaille": "Bronze",
+   "sur_20": "16"
+  },
+  {
+   "sur_100": 85,
+   "mention": "Commended",
+   "medaille": "Commended",
+   "sur_20": "15.75/15.5"
+  },
+  {
+   "sur_100": 84,
+   "mention": "Commended",
+   "medaille": "Commended",
+   "sur_20": "15.25"
+  },
+  {
+   "sur_100": 83,
+   "mention": "Commended",
+   "medaille": "Commended",
+   "sur_20": "15"
+  },
+  {
+   "sur_100": 82,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "14.75"
+  },
+  {
+   "sur_100": 81,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "14.5"
+  },
+  {
+   "sur_100": 80,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "14.25/14"
+  },
+  {
+   "sur_100": 79,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "13.75"
+  },
+  {
+   "sur_100": 78,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "13.5"
+  },
+  {
+   "sur_100": 77,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "13.25"
+  },
+  {
+   "sur_100": 76,
+   "mention": "Fair",
+   "medaille": null,
+   "sur_20": "13"
+  },
+  {
+   "sur_100": 75,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "12.75/12.5"
+  },
+  {
+   "sur_100": 74,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "12.25"
+  },
+  {
+   "sur_100": 73,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "12"
+  },
+  {
+   "sur_100": 72,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "11.75"
+  },
+  {
+   "sur_100": 71,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "11.5"
+  },
+  {
+   "sur_100": 70,
+   "mention": "Poor",
+   "medaille": null,
+   "sur_20": "11.25/11"
+  },
+  {
+   "sur_100": "50-69",
+   "mention": "Faulty",
+   "medaille": null,
+   "sur_20": "10.75"
+  }
+ ],
+ "echelles_100": {
+  "Wine Spectator": [
+   [
+    95,
+    100,
+    "Classic"
+   ],
+   [
+    90,
+    94,
+    "Outstanding"
+   ],
+   [
+    85,
+    89,
+    "Very Good"
+   ],
+   [
+    80,
+    84,
+    "Good"
+   ],
+   [
+    75,
+    79,
+    "Mediocre"
+   ],
+   [
+    50,
+    74,
+    "Not Recommended"
+   ]
+  ],
+  "Wine Enthusiast": [
+   [
+    98,
+    100,
+    "Classic"
+   ],
+   [
+    94,
+    97,
+    "Superb"
+   ],
+   [
+    90,
+    93,
+    "Excellent"
+   ],
+   [
+    87,
+    89,
+    "Very Good"
+   ],
+   [
+    83,
+    86,
+    "Good"
+   ],
+   [
+    80,
+    82,
+    "Acceptable"
+   ]
+  ]
+ },
+ "hachette": [
+  {
+   "note_sur_5": 2,
+   "etoiles": 0,
+   "mention": "réussi (cité sans étoile)"
+  },
+  {
+   "note_sur_5": 3,
+   "etoiles": 1,
+   "mention": "très réussi"
+  },
+  {
+   "note_sur_5": 4,
+   "etoiles": 2,
+   "mention": "remarquable"
+  },
+  {
+   "note_sur_5": 5,
+   "etoiles": 3,
+   "mention": "exceptionnel"
+  }
+ ],
+ "regle": {
+  "id": "notes.conversion",
+  "styles": [
+   "*"
+  ],
+  "valeur": {
+   "methode": "table Decanter 100<->20 ; étoiles Hachette par mention ; pas de conversion linéaire"
+  },
+  "marge": {
+   "points_100": 2
+  },
+  "confiance": "moyenne",
+  "explication_fr": "Une note n'est pas une mesure : chaque critique a son échelle et ses habitudes. La seule table de correspondance publiée par un même éditeur est celle de Decanter (100 ↔ 20 points, avec mentions et médailles) ; on l'utilise telle quelle. Les étoiles du Guide Hachette (1 à 3) correspondent à des mentions (très réussi, remarquable, exceptionnel), pas à des points : la correspondance avec les 100 points est approximative (marge de ±2 points au moins).",
+  "explication_en": "Use Decanter's published 100<->20 table; Hachette stars are verbal grades, approximate.",
+  "sources": [
+   "DECANTER_CONV",
+   "WS_ECHELLE",
+   "WE_ECHELLE",
+   "HACHETTE"
+  ]
+ }
+}

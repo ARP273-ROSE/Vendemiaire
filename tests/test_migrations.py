@@ -67,7 +67,30 @@ def test_migrations_jamais_modifiees():
     import hashlib
     assert hashlib.sha256(module_base.SCHEMA_V1.encode()).hexdigest()[:12] == EMPREINTE_V1
     assert hashlib.sha256(module_base.VUES_DOSSIER.encode()).hexdigest()[:12] == EMPREINTE_V3
+    assert hashlib.sha256(module_base.SCHEMA_V4.encode()).hexdigest()[:12] == EMPREINTE_V4
+
+
+def test_migration_v3_vers_v4(tmp_path):
+    """v4 : colonnes des photos retouchées, fiches externes, formes normalisées
+    recalculées avec les abréviations (« St-Julien » = « Saint-Julien »)."""
+    chemin = tmp_path / "v3.db"
+    b = Base(chemin, jusqu_a=3)
+    with b.ecriture() as c:
+        c.execute("INSERT INTO producteur(nom, nom_normalise, cree_le, modifie_le) "
+                  "VALUES('Ch. St-Pierre', 'ancienne forme', 'x', 'x')")
+        c.execute("INSERT INTO vin(producteur_id, cuvee, cuvee_normalisee, cree_le, modifie_le) "
+                  "VALUES(1, '1er Cru', 'x', 'x', 'x')")
+        c.execute("INSERT INTO image(vin_id, fichier, sha256, cree_le) VALUES(1, 'a.jpg', 'h', 'x')")
+    b.fermer()
+    b = Base(chemin)
+    assert b.version() == VERSION_SCHEMA >= 4
+    assert b.valeur("SELECT nom_normalise FROM producteur") == "saint pierre"
+    assert b.valeur("SELECT cuvee_normalisee FROM vin") == "premier cru"
+    im = b.un("SELECT * FROM image")
+    assert im["fichier"] == "a.jpg" and im["fichier_original"] is None and im["retouche"] is None
+    assert b.lire("SELECT * FROM fiche_externe") == []
 
 
 EMPREINTE_V1 = "0d2c1269a646"
 EMPREINTE_V3 = "bd9bc28d3ee5"
+EMPREINTE_V4 = "eef3a6f1a29a"

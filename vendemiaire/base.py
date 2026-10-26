@@ -478,8 +478,20 @@ def normaliser(texte: str | None) -> str:
     t = "".join(ch for ch in t if not unicodedata.combining(ch)).lower()
     t = t.replace("œ", "oe").replace("æ", "ae").replace("&", " et ")
     t = re.sub(r"[^a-z0-9]+", " ", t)
-    mots = [m for m in t.split() if m not in _MOTS_GENERIQUES]
+    mots = [_ABREVIATIONS.get(m, m) for m in t.split()]
+    mots = [m for m in mots if m not in _MOTS_GENERIQUES]
     return " ".join(mots)
+
+
+#: abréviations courantes des étiquettes et des bases (LWIN écrit « St »,
+#: « Ste », « 1er Cru »…) : développées AVANT la comparaison, pour que
+#: « St-Julien » et « Saint-Julien » aient la même forme normalisée
+_ABREVIATIONS = {
+    "st": "saint", "ste": "sainte", "sts": "saints", "mt": "mont", "gd": "grand",
+    "gde": "grande", "gds": "grands", "1er": "premier", "1ere": "premiere",
+    "1ers": "premiers", "2eme": "deuxieme", "2nd": "second", "vv": "vieilles vignes",
+    "vve": "veuve", "cuv": "cuvee", "res": "reserve",
+}
 
 
 _MOTS_GENERIQUES = {
@@ -556,12 +568,52 @@ def _v3(c: sqlite3.Connection) -> None:
     _script(c, VUES_DOSSIER)
 
 
+def _v4(c: sqlite3.Connection) -> None:
+    """v4 (phase 2) : photos retouchées (l'original est gardé), texte lu par
+    l'OCR, fiches des bases mondiales (Wikidata…), formes normalisées
+    recalculées (abréviations « St », « 1er »… développées)."""
+    _script(c, SCHEMA_V4)
+    for pid, nom in c.execute("SELECT id, nom FROM producteur").fetchall():
+        c.execute("UPDATE producteur SET nom_normalise=? WHERE id=?", (normaliser(nom), pid))
+    for vid, cuvee in c.execute("SELECT id, cuvee FROM vin").fetchall():
+        c.execute("UPDATE vin SET cuvee_normalisee=? WHERE id=?", (normaliser(cuvee), vid))
+
+
+SCHEMA_V4 = """
+ALTER TABLE image ADD COLUMN fichier_original TEXT;   -- photo telle que prise (relatif à images/)
+ALTER TABLE image ADD COLUMN retouche TEXT;           -- JSON : coins, quarts de tour, déroulage
+ALTER TABLE image ADD COLUMN texte_ocr TEXT;          -- texte lu sur l'étiquette
+
+-- Fiches des bases mondiales (Wikidata, Open Food Facts…) rattachées à un
+-- producteur, une appellation, un cépage ou un vin ; données en JSON, avec
+-- licence et adresse de la source
+CREATE TABLE fiche_externe (
+    id              INTEGER PRIMARY KEY,
+    source          TEXT NOT NULL,             -- wikidata, off…
+    identifiant     TEXT NOT NULL,             -- Q1063236, code EAN…
+    objet           TEXT NOT NULL,             -- producteur, appellation, cepage, vin
+    producteur_id   INTEGER REFERENCES producteur(id) ON DELETE CASCADE,
+    vin_id          INTEGER REFERENCES vin(id) ON DELETE CASCADE,
+    nom             TEXT,
+    donnees         TEXT NOT NULL,             -- JSON
+    licence         TEXT,
+    url             TEXT,
+    date            TEXT NOT NULL
+);
+CREATE UNIQUE INDEX fiche_externe_unique ON fiche_externe(
+    source, identifiant, objet, COALESCE(producteur_id, 0), COALESCE(vin_id, 0));
+CREATE INDEX identifiant_source ON identifiant_externe(source, valeur);
+CREATE INDEX journal_ligne ON journal_enrichissement(table_nom, ligne_id);
+"""
+
+
 #: migrations dans l'ordre : MIGRATIONS[i] fait passer de la version i à i+1.
 #: Ne JAMAIS modifier une migration publiée : en ajouter une nouvelle.
 MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
     lambda c: _script(c, SCHEMA_V1),
     _v2,
     _v3,
+    _v4,
 ]
 VERSION_SCHEMA = len(MIGRATIONS)
 
