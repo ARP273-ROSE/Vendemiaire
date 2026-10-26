@@ -188,6 +188,13 @@ class VuePlan(QWidget):
         separation.addWidget(droite)
         separation.setSizes([300, 900])
 
+        # accessibilité au clavier : flèches = bouteille voisine, Ctrl+flèches = la déplacer
+        # d'une case (échange si la case est prise), Entrée = sa fiche
+        self.vue.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.vue.setAccessibleName(tr("plan.titre"))
+        self.vue.setToolTip(tr("plan.clavier"))
+        self.vue.installEventFilter(self)
+        self.arbre.setAccessibleName(tr("plan.emplacements"))
         self.arbre.currentItemChanged.connect(self._noeud_change)
         self.scene.relache.connect(self._fin_glisser)
         self.scene.selectionChanged.connect(self._selection)
@@ -355,6 +362,76 @@ class VuePlan(QWidget):
         self.b_deplacer.setEnabled(bool(choisies))
         if len(choisies) == 1:
             self.vin_choisi.emit(choisies[0].vin_id)
+
+    DIRECTIONS = {Qt.Key.Key_Left: (0, -1), Qt.Key.Key_Right: (0, 1), Qt.Key.Key_Up: (-1, 0),
+                  Qt.Key.Key_Down: (1, 0)}
+
+    def eventFilter(self, objet, ev):
+        from PyQt6.QtCore import QEvent
+        if objet is self.vue and ev.type() == QEvent.Type.KeyPress:
+            if ev.key() in self.DIRECTIONS:
+                dr, dc = self.DIRECTIONS[ev.key()]
+                if ev.modifiers() & Qt.KeyboardModifier.ControlModifier:
+                    self.deplacer_d_une_case(dr, dc)
+                else:
+                    self.choisir_voisine(dr, dc)
+                return True
+            if ev.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                choisies = self._choisies()
+                if len(choisies) == 1:
+                    self.vin_choisi.emit(choisies[0].vin_id)
+                return True
+        return super().eventFilter(objet, ev)
+
+    def _choisies(self) -> list:
+        try:
+            return [i for i in self.scene.selectedItems() if isinstance(i, PastilleBouteille)]
+        except RuntimeError:
+            return []
+
+    def choisir_voisine(self, dr: int, dc: int) -> None:
+        """Sélectionne la bouteille la plus proche dans la direction donnée."""
+        if not self.pastilles:
+            return
+        choisies = self._choisies()
+        if not choisies:
+            cible = min(self.pastilles.values(), key=lambda p: (p.rangee, p.colonne))
+        else:
+            p0 = choisies[-1]
+            candidates = [p for p in self.pastilles.values()
+                          if (p.rangee - p0.rangee) * dr + (p.colonne - p0.colonne) * dc > 0]
+            if not candidates:
+                return
+            cible = min(candidates, key=lambda p: (abs(p.rangee - p0.rangee) * (3 if dc else 1)
+                                                   + abs(p.colonne - p0.colonne) * (3 if dr else 1)))
+        self.scene.clearSelection()
+        cible.setSelected(True)
+        self.vue.ensureVisible(cible)
+
+    def deplacer_d_une_case(self, dr: int, dc: int) -> bool:
+        """La bouteille choisie va dans la case voisine (échange si elle est prise)."""
+        choisies = self._choisies()
+        e = self.cave.emplacement(self.casier_id) if self.casier_id else None
+        if len(choisies) != 1 or e is None:
+            return False
+        p = choisies[0]
+        r, c = p.rangee + dr, p.colonne + dc
+        if not (1 <= r <= (e["rangees"] or 0) and 1 <= c <= (e["colonnes"] or 0)):
+            return False
+        lot = [(p.bid, self.casier_id, r, c)]
+        autre = next((q for q in self.pastilles.values() if (q.rangee, q.colonne) == (r, c)), None)
+        if autre is not None:
+            lot.append((autre.bid, self.casier_id, p.rangee, p.colonne))
+        try:
+            self.cave.deplacer(lot, motif=tr("plan.motif_clavier"))
+        except (CaseOccupee, ValueError):
+            return False
+        bid = p.bid
+        self.afficher_casier(self.casier_id)
+        if bid in self.pastilles:
+            self.pastilles[bid].setSelected(True)
+        self.modifie.emit()
+        return True
 
     def _tout(self) -> None:
         for p in self.pastilles.values():

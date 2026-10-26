@@ -1,0 +1,197 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,top=14mm,bottom=16mm,left=14mm,right=14mm]{geometry}
+\usepackage{fontspec}
+\providecommand{\euro}{€}
+\usepackage[french]{babel}
+\usepackage{librebaskerville}
+\usepackage{josefin}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{fontawesome5}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{refcount}
+\usepackage[hidelinks]{hyperref}
+\makeatletter\newcommand{\pagesuniques}[1]{\def\pu@prec{}\def\pu@sep{}\@for\pu@l:=#1\do{\edef\pu@p{\getpagerefnumber{\pu@l}}\ifx\pu@p\pu@prec\else\pu@sep\pu@p\def\pu@sep{, }\let\pu@prec\pu@p\fi}}\makeatother
+\definecolor{titre}{HTML}{F7F1E3}
+\definecolor{accent}{HTML}{B5382B}
+\definecolor{texte}{HTML}{2B2622}
+\definecolor{doux}{HTML}{6A5D50}
+\definecolor{carte}{HTML}{E4D3AE}
+\definecolor{carteTrait}{HTML}{2F3A36}
+\definecolor{cartePoint}{HTML}{B5382B}
+\definecolor{fond}{HTML}{F1E6CF}
+\definecolor{ardoise}{HTML}{2F3A36}
+\colorlet{rubrique}{ardoise}
+\pagecolor{fond}
+\color{texte}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\footnotesize\color{doux}Carte des vins \quad\textperiodcentered\quad \thepage}
+\newcommand{\Section}[1]{\clearpage\noindent\colorbox{ardoise}{\parbox{\dimexpr\linewidth-2\fboxsep}{\centering\vspace{2mm}{\sffamily\fontsize{26}{30}\selectfont\bfseries\color{titre}\MakeUppercase{#1}}\vspace{2mm}}}\par\vspace{6mm}}
+\newcommand{\Pays}[1]{\Needspace{6\baselineskip}\vspace{4mm}{\sffamily\Large\bfseries\color{ardoise}\MakeUppercase{#1}}\par\vspace{1mm}}
+\newcommand{\Region}[1]{\Needspace{5\baselineskip}\vspace{2.5mm}{\sffamily\large\color{accent}#1}\par\vspace{1mm}}
+\newcommand{\Appellation}[1]{\Needspace{4\baselineskip}\vspace{1.8mm}{\sffamily\bfseries\color{ardoise}#1}\par\vspace{0.5mm}}
+\newcommand{\Bin}[1]{\makebox[2.6em][l]{\footnotesize\color{doux}#1}}
+\newcommand{\Vin}[7]{\Needspace{2\baselineskip}\noindent\Bin{#1}#7{\producteur{#2}}\ifx&#3&\else, {\itshape #3}\fi\ {\color{doux}\dotfill}\ #4\ifx&#5&\else\hspace{1.2em}\makebox[3.6em][r]{#5}\fi\par\ifx&#6&\else{\leftskip=2.6em\footnotesize\itshape\color{doux}#6\par}\fi\vspace{0.9mm}}
+\newcommand{\Verticale}[4]{\Needspace{3\baselineskip}\noindent\hspace*{2.6em}#4{\producteur{#1}}\ifx&#2&\else, {\itshape #2}\fi\ {\footnotesize\color{doux}(verticale)}\par\ifx&#3&\else{\leftskip=2.6em\footnotesize\itshape\color{doux}#3\par}\fi\vspace{0.3mm}}
+\newcommand{\Millesime}[3]{\noindent\Bin{#1}\hspace*{1.2em}#2\ifx&#3&\par\else\ {\color{doux}\dotfill}\ \makebox[3.6em][r]{#3}\par\fi\vspace{0.4mm}}
+\newcommand{\coeur}{{\color{accent}\faHeart}\ }
+\newcommand{\derniere}{{\footnotesize\color{accent}\faWineBottle}\ }
+\newcommand{\producteur}[1]{{\bfseries #1}}
+\begin{document}
+{\centering{\fontsize{26}{30}\selectfont\color{rubrique} Carte des vins}\\[2mm]{\color{doux} La maison des vendanges --- 26 octobre 2026}\par}\vspace{4mm}
+\renewcommand{\Section}[1]{\Needspace{6\baselineskip}\vspace{4mm}{\centering\Large\color{rubrique}#1\par}\vspace{2mm}}
+\begin{multicols}{2}
+\Section{Au verre et à la carafe}
+\Vin{101}{Maison Aubertin \& Fils}{Brut nature, Champagne}{sans année}{18~\euro{}}{Avec : Huîtres, coquillages crus, sushis, poisson cru}{}
+\Vin{209}{Domaine du Coteau Fleuri}{Les Silex, Sancerre}{2013}{13~\euro{}}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}
+\Section{Champagnes et effervescents}
+\Pays{France}
+\Region{Champagne}
+\Appellation{Champagne}
+\Vin{101}{Maison Aubertin \& Fils}{Brut nature}{sans année}{90~\euro{}}{Avec : Huîtres, coquillages crus, sushis, poisson cru}{\coeur}\label{l56bouteille}
+\Verticale{Maison Aubertin \& Fils}{Brut réserve}{Avec : Homard, langouste, crustacés, foie gras}{\coeur}
+\Millesime{102}{2010}{100~\euro{}}\label{l23bouteille}
+\Millesime{103}{2019}{85~\euro{}}\label{l24bouteille}
+\Verticale{Maison Aubertin \& Fils}{Rosé de saignée}{Avec : Homard, langouste, crustacés, foie gras}{}
+\Millesime{104}{2008}{180~\euro{}}\label{l27bouteille}
+\Millesime{105}{2024 \derniere}{135~\euro{}}\label{l28bouteille}
+\Appellation{Champagne grand cru}
+\Verticale{Maison Aubertin \& Fils}{Blanc de blancs}{Avec : Homard, langouste, crustacés, foie gras}{\coeur}
+\Millesime{106}{2010 \derniere}{155~\euro{}}\label{l25bouteille}
+\Millesime{107}{2022}{165~\euro{}}\label{l26bouteille}
+\Section{Vins blancs}
+\Pays{France}
+\Region{Alsace}
+\Appellation{Alsace grand cru}
+\Vin{201}{Domaine Weinberg-Hoff}{Grand cru Schlossberg}{2006}{80~\euro{}}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}\label{l38bouteille}
+\Region{Bordeaux}
+\Appellation{Pessac-Léognan}
+\Verticale{Clos du Vieux Puits}{}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}
+\Millesime{202}{2011}{80~\euro{}}\label{l8bouteille}
+\Millesime{203}{2012 \derniere}{80~\euro{}}\label{l9bouteille}
+\Millesime{204}{2022}{85~\euro{}}\label{l10bouteille}
+\Region{Bourgogne}
+\Appellation{Chablis premier cru}
+\Vin{205}{Domaine Petit-Roc}{Vieilles vignes}{2010}{65~\euro{}}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}\label{l21bouteille}
+\Appellation{Meursault}
+\Vin{206}{Domaine de la Combe Haute}{}{2022}{115~\euro{}}{Avec : Poisson en sauce, au beurre blanc, à la crème, homard, langouste, crustacés}{\coeur}\label{l19bouteille}
+\Appellation{Puligny-Montrachet premier cru}
+\Vin{207}{Domaine de la Combe Haute}{Les Perrières}{2009}{265~\euro{}}{Avec : Poisson en sauce, au beurre blanc, à la crème, homard, langouste, crustacés}{\derniere}\label{l20bouteille}
+\Region{Jura}
+\Appellation{Château-Chalon}
+\Vin{208}{Domaine des Lauzes}{}{2009}{135~\euro{}}{Avec : Volaille à la crème, aux morilles, comté, beaufort, gruyère (pâtes pressées cuites)}{}\label{l42bouteille}
+\Region{Val de Loire}
+\Appellation{Sancerre}
+\Vin{209}{Domaine du Coteau Fleuri}{Les Silex}{2013}{65~\euro{}}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}\label{l36bouteille}
+\Region{Vallée du Rhône}
+\Appellation{Condrieu}
+\Vin{210}{Domaine de la Serre Noire}{}{2006}{115~\euro{}}{Avec : Poisson en sauce, au beurre blanc, à la crème, homard, langouste, crustacés}{\coeur}\label{l32bouteille}
+\Pays{Allemagne}
+\Region{Moselle}
+\Appellation{Mosel}
+\Verticale{Weingut Sonnenhang}{Kabinett}{Avec : Huîtres, coquillages crus, poisson grillé, poisson blanc}{}
+\Millesime{211}{2016}{50~\euro{}}\label{l51bouteille}
+\Millesime{212}{2024}{60~\euro{}}\label{l52bouteille}
+\Section{Vins rosés}
+\Pays{France}
+\Region{Provence}
+\Appellation{Bandol}
+\Verticale{Domaine du Plateau de Lune}{}{Avec : Poisson grillé, poisson blanc, charcuterie, terrines}{}
+\Millesime{401}{2010}{50~\euro{}}\label{l39bouteille}
+\Millesime{402}{2011}{60~\euro{}}\label{l40bouteille}
+\Millesime{403}{2019}{50~\euro{}}\label{l41bouteille}
+\Section{Vins rouges}
+\Pays{France}
+\Region{Beaujolais}
+\Appellation{Morgon}
+\Vin{501}{Domaine du Grand Mûrier}{}{2024}{45~\euro{}}{Avec : Charcuterie, terrines, volaille rôtie}{}\label{l22bouteille}
+\Region{Bordeaux}
+\Appellation{Pauillac}
+\Verticale{Château des Trois Chênes}{Grand vin}{Avec : Viande rouge grillée, côte de b\oe{}uf, agneau}{}
+\Millesime{502}{2016}{225~\euro{}}\label{l1bouteille}
+\Millesime{503}{2019}{195~\euro{}}\label{l3bouteille}
+\Verticale{Château des Trois Chênes}{Second vin}{Avec : Viande rouge grillée, côte de b\oe{}uf, agneau}{}
+\Millesime{504}{2005}{90~\euro{}}\label{l4bouteille}
+\Millesime{505}{2010}{95~\euro{}}\label{l5bouteille}
+\Millesime{506}{2020}{90~\euro{}}\label{l6bouteille}
+\Appellation{Saint-Émilion grand cru}
+\Vin{507}{Château la Garenne}{}{2013}{130~\euro{}}{Avec : Viande rouge grillée, côte de b\oe{}uf, agneau}{}\label{l7bouteille}
+\Region{Bourgogne}
+\Appellation{Gevrey-Chambertin}
+\Verticale{Domaine Marchand-Lavaux}{Les Combes}{Avec : Volaille rôtie, plats mijotés (b\oe{}uf bourguignon, daube, civet)}{}
+\Millesime{508}{2013}{160~\euro{}}\label{l14bouteille}
+\Millesime{509}{2020 \derniere}{140~\euro{}}\label{l15bouteille}
+\Appellation{Vosne-Romanée premier cru}
+\Verticale{Domaine Marchand-Lavaux}{Clos de la Fontaine}{Avec : Volaille rôtie, plats mijotés (b\oe{}uf bourguignon, daube, civet)}{}
+\Millesime{510}{2005}{335~\euro{}}\label{l16bouteille}
+\Millesime{511}{2006}{370~\euro{}}\label{l17bouteille}
+\Millesime{512}{2018 \derniere}{275~\euro{}}\label{l18bouteille}
+\Region{Languedoc}
+\Appellation{Pic-Saint-Loup}
+\Verticale{Mas de l'Olivette}{}{Avec : Agneau, plats mijotés (b\oe{}uf bourguignon, daube, civet)}{}
+\Millesime{513}{2008 \derniere}{45~\euro{}}\label{l43bouteille}
+\Millesime{514}{2012}{45~\euro{}}\label{l44bouteille}
+\Millesime{515}{2015}{50~\euro{}}\label{l45bouteille}
+\Region{Val de Loire}
+\Appellation{Chinon}
+\Vin{516}{Domaine des Rochettes}{}{2010}{35~\euro{}}{Avec : Viande rouge grillée, côte de b\oe{}uf, barbecue}{}\label{l37bouteille}
+\Region{Vallée du Rhône}
+\Appellation{Châteauneuf-du-Pape}
+\Vin{517}{Domaine des Galets Roulés}{}{2020}{100~\euro{}}{Avec : Agneau, plats mijotés (b\oe{}uf bourguignon, daube, civet)}{\coeur}\label{l29bouteille}
+\Appellation{Côte-Rôtie}
+\Vin{518}{Domaine de la Serre Noire}{La Landonne du Bas}{2018}{190~\euro{}}{Avec : Viande rouge grillée, côte de b\oe{}uf, agneau}{\derniere}\label{l31bouteille}
+\Pays{Espagne}
+\Region{Rioja}
+\Appellation{Rioja}
+\Vin{519}{Bodegas Peña Alta}{Reserva}{2008}{60~\euro{}}{Avec : Agneau}{}\label{l49bouteille}
+\Pays{Italie}
+\Region{Piémont}
+\Appellation{Barolo}
+\Vin{520}{Tenuta Collealto}{}{2017}{165~\euro{}}{Avec : Gibier, champignons, truffe, risotto}{\coeur\derniere}\label{l46bouteille}
+\Pays{États-Unis}
+\Region{Californie}
+\Appellation{Napa Valley}
+\Verticale{Ridgeback Cellars}{Estate}{Avec : Viande rouge grillée, côte de b\oe{}uf, barbecue}{}
+\Millesime{521}{2013}{210~\euro{}}\label{l53bouteille}
+\Millesime{522}{2016 \derniere}{160~\euro{}}\label{l54bouteille}
+\Millesime{523}{2022 \derniere}{205~\euro{}}\label{l55bouteille}
+\Section{Vins doux et liquoreux}
+\Pays{France}
+\Region{Bordeaux}
+\Appellation{Sauternes}
+\Verticale{Château Bel-Orme du Sud}{}{Avec : Foie gras, roquefort, bleus, stilton}{}
+\Millesime{601}{2013}{140~\euro{}}\label{l11bouteille}
+\Millesime{602}{2017}{110~\euro{}}\label{l12bouteille}
+\Region{Val de Loire}
+\Appellation{Vouvray}
+\Verticale{Domaine du Coteau Fleuri}{}{Avec : Foie gras, cuisine épicée (thaïe, sichuan, indienne)}{}
+\Millesime{603}{2008}{70~\euro{}}\label{l33bouteille}
+\Millesime{604}{2017}{65~\euro{}}\label{l34bouteille}
+\Millesime{605}{2021}{70~\euro{}}\label{l35bouteille}
+\Section{Vins mutés}
+\Pays{Portugal}
+\Region{Douro}
+\Appellation{Porto}
+\Vin{701}{Quinta do Vale Escuro}{Vintage}{2010}{170~\euro{}}{Avec : Roquefort, bleus, stilton, chocolat}{}\label{l50bouteille}
+\Section{Demi-bouteilles}
+\Pays{Vins doux et liquoreux}
+\Region{Bordeaux}
+\Appellation{Sauternes}
+\Vin{801}{Château Bel-Orme du Sud}{}{2013}{}{Avec : Foie gras, roquefort, bleus, stilton}{}\label{l11demi}
+\Pays{Vins mutés}
+\Region{Roussillon}
+\Appellation{Banyuls}
+\Vin{802}{Mas des Vents Marins}{Rimage}{2021}{}{Avec : Roquefort, bleus, stilton, chocolat}{}\label{l57cinquante}
+\Section{Grands formats}
+\Pays{Vins rouges}
+\Region{Bordeaux}
+\Appellation{Pauillac}
+\Vin{901}{Château des Trois Chênes}{Grand vin, Magnum}{2017}{}{Avec : Viande rouge grillée, côte de b\oe{}uf, agneau}{}\label{l2magnum}
+\end{multicols}
+\vfill{\footnotesize\color{doux}\noindent\coeur coup de c\oe{}ur\quad\derniere dernière bouteille\quad BIN : numéro de la bouteille à donner au service.\par}
+\end{document}

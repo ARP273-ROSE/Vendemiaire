@@ -19,7 +19,7 @@ AXES = {"pays": "stats.axe_pays", "region": "stats.axe_region", "couleur": "stat
 
 
 class VueStatistiques(QScrollArea):
-    def __init__(self, cave, parent=None):
+    def __init__(self, cave, parent=None, charger: bool = True):
         super().__init__(parent)
         self.cave = cave
         self.setWidgetResizable(True)
@@ -74,7 +74,8 @@ class VueStatistiques(QScrollArea):
         racine.addStretch(1)
         self.axe.currentIndexChanged.connect(lambda _i: self.rafraichir_repartition())
         self.mesure.currentIndexChanged.connect(lambda _i: self.rafraichir_repartition())
-        self.rafraichir()
+        if charger:                      # la fenêtre le charge à la première ouverture
+            self.rafraichir()
 
     def rafraichir_repartition(self) -> None:
         axe, mesure = self.axe.currentData(), self.mesure.currentData()

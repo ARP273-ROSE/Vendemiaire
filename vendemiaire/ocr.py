@@ -12,8 +12,8 @@ externe. Pourquoi (mesures du 26/10/2026, détail dans docs/photos_et_ocr.md) :
   OpenCV « avec interface » qui entre en conflit avec le Qt de PyQt6.
 
 Tesseract est cherché : réglage de l'utilisateur (`definir_chemin`), variable
-TESSERACT_CMD, dossier `ocr/` de l'application installée (si un paquet
-l'embarque), PATH, puis emplacements usuels (Windows : Program Files ;
+TESSERACT_CMD, Tesseract du paquet (`outils/tesseract/`, avec ses modèles
+fra et eng : voir outils_embarques.py), PATH, puis emplacements usuels (Windows : Program Files ;
 macOS : Homebrew). Absent : l'interface le dit, explique comment l'installer,
 et la recherche par texte saisi à la main reste possible.
 """
@@ -92,10 +92,9 @@ def installation() -> str:
 
 def moteur() -> str | None:
     """Chemin de l'exécutable Tesseract, ou None."""
-    candidats = [_chemin_utilisateur, os.environ.get("TESSERACT_CMD")]
-    racine = Path(__file__).resolve().parent.parent
-    for d in (racine / "ocr", racine.parent / "ocr"):
-        candidats.append(str(d / ("tesseract.exe" if _systeme() == "win32" else "tesseract")))
+    from . import outils_embarques
+    candidats = [_chemin_utilisateur, os.environ.get("TESSERACT_CMD"),
+                 outils_embarques.executable("tesseract")]    # outils/tesseract/ du paquet
     candidats.append(shutil.which("tesseract"))
     candidats += EMPLACEMENTS[_systeme()]
     for c in candidats:
@@ -109,6 +108,14 @@ def _executer(args: list[str], delai: float = 60) -> subprocess.CompletedProcess
     if sys.platform == "win32":
         options["creationflags"] = 0x08000000          # CREATE_NO_WINDOW : pas de console qui clignote
     return subprocess.run(args, capture_output=True, timeout=delai, **options)
+
+
+def _commande(m: str) -> list[str]:
+    """[exécutable] + le dossier des modèles quand c'est le Tesseract du paquet
+    (ses modèles fra/eng vivent dans outils/tesseract/tessdata)."""
+    from . import outils_embarques
+    td = outils_embarques.tessdata() if outils_embarques.est_embarque(m) else None
+    return [m, "--tessdata-dir", td] if td else [m]
 
 
 def version() -> str | None:
@@ -128,7 +135,7 @@ def langues() -> list[str]:
     if not m:
         return []
     try:
-        r = _executer([m, "--list-langs"], 15)
+        r = _executer(_commande(m) + ["--list-langs"], 15)
     except (OSError, subprocess.SubprocessError):
         return []
     texte = (r.stdout or b"").decode("utf-8", "replace")
@@ -156,7 +163,7 @@ def lire(image, langue: str | None = None, delai: float = 90) -> ResultatOCR:
         else:
             source = str(Path(tmp) / "etiquette.png")
             image.save(source, "PNG")
-        args = [m, source, "stdout", "-l", langue or langues_etiquette(), "--psm", "3", "tsv"]
+        args = _commande(m) + [source, "stdout", "-l", langue or langues_etiquette(), "--psm", "3", "tsv"]
         r = _executer(args, delai)
     if r.returncode != 0:
         raise RuntimeError((r.stderr or b"").decode("utf-8", "replace")[-400:])

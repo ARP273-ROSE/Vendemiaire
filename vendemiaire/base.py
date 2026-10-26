@@ -661,6 +661,31 @@ def _v6(c: sqlite3.Connection) -> None:
     _script(c, SCHEMA_V6)
 
 
+SCHEMA_V7 = """
+-- Phase 5 : prix relevés pour la liste d'envies (saisis ou importés, jamais aspirés)
+-- et photos du livre de cave (image.mouvement_id existe depuis la v1)
+CREATE TABLE prix_observe (
+    id              INTEGER PRIMARY KEY,
+    envie_id        INTEGER NOT NULL REFERENCES envie(id) ON DELETE CASCADE,
+    montant         REAL NOT NULL,
+    devise          TEXT NOT NULL DEFAULT 'EUR',
+    date            TEXT NOT NULL,
+    source          TEXT NOT NULL,             -- marchand, salon, catalogue… (obligatoire)
+    url             TEXT,
+    note            TEXT,
+    cree_le         TEXT NOT NULL,
+    CHECK (montant >= 0)
+);
+CREATE INDEX prix_observe_envie ON prix_observe(envie_id, date);
+CREATE INDEX image_mouvement ON image(mouvement_id);
+"""
+
+
+def _v7(c: sqlite3.Connection) -> None:
+    """v7 (phase 5) : prix relevés des envies (alertes de prix), index des photos du livre."""
+    _script(c, SCHEMA_V7)
+
+
 #: migrations dans l'ordre : MIGRATIONS[i] fait passer de la version i à i+1.
 #: Ne JAMAIS modifier une migration publiée : en ajouter une nouvelle.
 MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
@@ -670,6 +695,7 @@ MIGRATIONS: list[Callable[[sqlite3.Connection], None]] = [
     _v4,
     _v5,
     _v6,
+    _v7,
 ]
 VERSION_SCHEMA = len(MIGRATIONS)
 
@@ -684,6 +710,7 @@ class Base:
         self.chemin.parent.mkdir(parents=True, exist_ok=True)
         self._local = threading.local()
         self._verrou = _VerrouEquitable()
+        self.generation = 0                        # +1 à chaque écriture validée (voir marque())
         if migrer:
             self.migrer(jusqu_a)
 
@@ -775,8 +802,15 @@ class Base:
                 raise
             else:
                 c.execute("COMMIT")
+                self.generation += 1
         finally:
             self._verrou.release()
+
+    def marque(self) -> tuple:
+        """Change dès que la base change (écriture par cette connexion, par un
+        autre fil ou un autre programme) : clé des résultats mis en cache."""
+        c = self.connexion()
+        return (self.generation, c.total_changes, c.execute("PRAGMA data_version").fetchone()[0])
 
     def ecrivain_disponible(self, patience: float = 4.0) -> bool:
         """Personne d'autre ne tient le verrou d'écriture ? Connexion jetable,

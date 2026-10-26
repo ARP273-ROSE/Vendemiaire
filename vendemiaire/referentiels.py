@@ -148,6 +148,7 @@ ENUMS: dict[str, dict[str, tuple[str, str]]] = {
         "caisse": ("Caisse", "Case"),
         "bouteille": ("Bouteille", "Bottle"),
         "facture": ("Facture", "Invoice"),
+        "moment": ("Photo du moment (livre de cave)", "Moment photo (cellar book)"),
         "autre": ("Autre", "Other"),
     },
     "source_fenetre": {

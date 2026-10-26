@@ -271,6 +271,10 @@ class TableauDeBord(QScrollArea):
         for r in s["reassort"]:
             self.alertes.addItem(tr("tableau.alerte_reassort", vin=self.cave.nom_vin(r["vin_id"]),
                                     n=r["n"], seuil=r["seuil"]))
+        from .. import achats
+        for a in achats.alertes_prix(self.cave):
+            self.alertes.addItem(tr("tableau.alerte_prix", vin=a["libelle"], prix=argent(a["prix"]),
+                                    max=argent(a["prix_max"]), source=a["source"]))
         self._alertes_regles()
         if not self.alertes.count():
             self.alertes.addItem(tr("tableau.aucune_alerte"))

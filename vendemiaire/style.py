@@ -71,6 +71,15 @@ QLabel#sous_titre {{ color: {GRIS}; }}
 QFrame#tuile {{ background: {CARTE}; border: 1px solid {BORD}; border-radius: 8px; }}
 QLabel#chiffre {{ font-size: 22pt; font-weight: 600; color: {BORDEAUX}; }}
 QLabel#legende {{ color: {GRIS}; }}
+QLabel#sous {{ color: {BORDEAUX}; font-weight: 600; }}
+/* accessibilité au clavier : l'élément qui a le focus se voit toujours */
+QPushButton:focus {{ border: 2px solid {OR}; }}
+QPushButton#principal:focus {{ border: 2px solid {OR_CLAIR}; }}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus,
+QPlainTextEdit:focus, QTextEdit:focus {{ border: 2px solid {BORDEAUX_CLAIR}; }}
+QTableView:focus, QTreeView:focus, QListView:focus, QGraphicsView:focus {{ border: 2px solid {OR}; }}
+QTabBar::tab:focus {{ text-decoration: underline; }}
+QCheckBox:focus, QRadioButton:focus {{ color: {BORDEAUX}; }}
 """
 
 

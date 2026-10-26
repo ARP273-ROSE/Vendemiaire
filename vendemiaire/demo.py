@@ -221,6 +221,7 @@ def generer(chemin: str | Path, graine: int = 1792) -> Cave:
                         round(72 + hasard.uniform(-5, 5))))
     cave.ajouter_conditions(mesures, source="démonstration")
     phase4(cave, aujourdhui, random.Random(graine + 4))
+    phase5(cave)
     base.definir_meta("demonstration", "1")
     return cave
 
@@ -340,6 +341,67 @@ def references_demo(cave) -> int:
     return cave.references.remplacer_lwin(lignes, source="Vendémiaire (demo)")
 
 
+def phase5(cave) -> None:
+    """Ajouts de la phase 5 : prix maximal et priorité des envies, prix relevés
+    (inventés, datés des derniers jours pour que l'alerte se voie toujours)."""
+    from datetime import date as _date
+    from . import achats
+    b = cave.base
+    envies = b.lire("SELECT id, cuvee FROM envie ORDER BY id")
+    if len(envies) < 2:
+        return
+    with b.ecriture() as c:
+        c.execute("UPDATE envie SET prix_max=95, priorite=1 WHERE id=?", (envies[0]["id"],))
+        c.execute("UPDATE envie SET prix_max=70, priorite=2 WHERE id=?", (envies[1]["id"],))
+    jour = _date.today()
+    achats.ajouter_prix(cave, envies[0]["id"], 112, "Caviste du quartier", (jour - timedelta(days=24)).isoformat())
+    achats.ajouter_prix(cave, envies[0]["id"], 89, "Salon des vignerons", (jour - timedelta(days=3)).isoformat(),
+                        note="démonstration")
+    achats.ajouter_prix(cave, envies[1]["id"], 78, "Catalogue d'automne", (jour - timedelta(days=10)).isoformat())
+
+
+def _photo_du_moment(chemin: Path, graine: int) -> Path:
+    """Photo « du moment » DESSINÉE (libre) : nappe, assiette, verre de vin."""
+    from PyQt6.QtCore import QPointF, QRectF, Qt
+    from PyQt6.QtGui import QBrush, QColor, QImage, QLinearGradient, QPainter, QPainterPath, QPen
+    h = random.Random(graine)
+    img = QImage(1200, 800, QImage.Format.Format_RGB32)
+    p = QPainter(img)
+    p.setRenderHint(QPainter.RenderHint.Antialiasing)
+    fond = QLinearGradient(0, 0, 0, 800)
+    fond.setColorAt(0, QColor("#E9DCC3"))
+    fond.setColorAt(1, QColor("#BFA57A"))
+    p.fillRect(img.rect(), QBrush(fond))
+    p.setPen(Qt.PenStyle.NoPen)
+    p.setBrush(QColor(255, 255, 255, 235))
+    p.drawEllipse(QPointF(470 + h.randint(-40, 40), 500), 290, 150)
+    p.setBrush(QColor(h.choice(["#7A3B1E", "#A0522D", "#5B7F3A"])))
+    p.drawEllipse(QPointF(470, 495), 150, 70)
+    verre = QPainterPath()
+    x = 900 + h.randint(-30, 30)
+    verre.moveTo(x - 80, 170)
+    verre.cubicTo(x - 95, 330, x + 95, 330, x + 80, 170)
+    verre.closeSubpath()
+    p.setPen(QPen(QColor(255, 255, 255, 200), 4))
+    p.setBrush(QColor(255, 255, 255, 70))
+    p.drawPath(verre)
+    vin = QPainterPath()
+    vin.moveTo(x - 86, 245)
+    vin.cubicTo(x - 88, 325, x + 88, 325, x + 86, 245)
+    vin.closeSubpath()
+    p.setPen(Qt.PenStyle.NoPen)
+    p.setBrush(QColor(h.choice(["#6B0F24", "#8E2A3D", "#E8C15A"])))
+    p.drawPath(vin)
+    p.setPen(QPen(QColor(255, 255, 255, 220), 6))
+    p.drawLine(QPointF(x, 300), QPointF(x, 520))
+    p.drawLine(QPointF(x - 60, 525), QPointF(x + 60, 525))
+    p.setPen(QColor("#5E1427"))
+    p.drawText(QRectF(20, 760, 600, 30), "Vendémiaire — démonstration")
+    p.end()
+    img.save(str(chemin), "JPG", 88)
+    return chemin
+
+
 def photos_demo(cave, nombre: int = 8) -> int:
     """Photos d'étiquette DESSINÉES (libres) pour quelques vins, redressées
     automatiquement comme le ferait l'utilisateur. Demande une QGuiApplication."""
@@ -360,6 +422,11 @@ def photos_demo(cave, nombre: int = 8) -> int:
             cave.ajouter_image(traite, vin_id=r["id"], original=photo, retouche=retouche.json(),
                                credit="Vendémiaire (démonstration)", licence="CC0 1.0")
             n += 1
+        # photos du moment dans le livre de cave : les deux dernières bouteilles bues
+        for i, m in enumerate(cave.base.lire("SELECT id FROM mouvement WHERE type='sortie_bue' "
+                                             "ORDER BY date DESC, id DESC LIMIT 2")):
+            for k in range(2 - i):
+                cave.ajouter_photo_mouvement(m["id"], _photo_du_moment(Path(tmp) / f"moment{i}{k}.jpg", 40 + i * 3 + k))
     return n
 
 

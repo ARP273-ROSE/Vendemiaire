@@ -105,39 +105,82 @@ class CaveRegles:
                 "annee_entree": min(annees) if annees else None,
                 "formats": tuple(sorted({x["format"] for x in b}))}
 
+    def _contextes_garde(self, vin_ids, temperatures: dict) -> dict[int, dict]:
+        """Le contexte de `_contexte_garde` pour tous ces vins en deux lectures
+        (une par vin coûtait 0,2 s sur une cave de 20 000 bouteilles)."""
+        racine = self._racines()
+        par_vin: dict[int, list] = {}
+        for r in self.base.lire("SELECT vin_id, format, date_entree, date_achat, statut, emplacement_id "
+                                "FROM bouteille WHERE statut IN ('en_cave','en_attente','primeur')"):
+            par_vin.setdefault(r["vin_id"], []).append(r)
+        sortie = {}
+        for vid in vin_ids:
+            b = par_vin.get(vid, [])
+            annees = [int(str(x["date_entree"] or x["date_achat"])[:4]) for x in b
+                      if (x["date_entree"] or x["date_achat"])]
+            t = None
+            if temperatures:
+                caves = {racine.get(x["emplacement_id"]) for x in b
+                         if x["statut"] == "en_cave" and x["emplacement_id"] is not None}
+                valeurs = [temperatures[c] for c in caves if c in temperatures]
+                t = sum(valeurs) / len(valeurs) if valeurs else temperatures.get(None)
+            sortie[vid] = {"temperature_cave": t, "annee_entree": min(annees) if annees else None,
+                           "formats": tuple(sorted({x["format"] for x in b}))}
+        return sortie
+
     # ------------------------------------------------------------------ fenêtres
     def fenetre_calculee(self, vin_id: int, temperatures: dict | None = None,
-                         vin: dict | None = None):
+                         vin: dict | None = None, contexte: dict | None = None):
         v = vin or self.vin_pour_regles(vin_id)
         if v is None:
             return None
-        return r_garde.fenetre(v, **self._contexte_garde(vin_id, temperatures))
+        contexte = contexte or self._contexte_garde(vin_id, temperatures)
+        # même vin, même contexte, mêmes règles : même fenêtre (mémorisée)
+        from .regles.jeu import jeu
+        cle = (id(jeu()), date.today().year, tuple(sorted((k, tuple(x) if isinstance(x, list) else x) for k, x in v.items()
+                                       if k not in ("modifie_le", "cree_le", "notes"))),
+               tuple(sorted(contexte.items())))
+        memo = self.__dict__.setdefault("_memo_fenetres", {})
+        if cle not in memo:
+            if len(memo) > 50000:
+                memo.clear()
+            memo[cle] = r_garde.fenetre(v, **contexte)
+        return memo[cle]
 
     def enregistrer_fenetres_calculees(self, vin_ids=None) -> int:
         """(Re)calcule la fenêtre de chaque vin et la range dans
         `fenetre_degustation` (source « calcul », detail_source = style/niveau) ;
         les fenêtres « perso » et « critique » ne sont jamais touchées. Calcul
-        d'abord, puis une seule transaction courte."""
+        d'abord, puis une seule transaction courte, qui n'écrit que ce qui a
+        changé (rien du tout si rien n'a changé)."""
         vins = self._vins_pour_regles(vin_ids)
         temperatures = self.temperatures_caves()
+        contextes = self._contextes_garde(vins, temperatures)
         lignes = []
         for vid, v in vins.items():
-            f = self.fenetre_calculee(vid, temperatures, v)
+            f = self.fenetre_calculee(vid, temperatures, v, contextes[vid])
             if f is None or not f.base:
                 lignes.append((vid, None))
                 continue
             a = f.annees
             lignes.append((vid, (f.detail_source, a["debut"], a["apogee_debut"], a["apogee_fin"], a["fin"],
                                  f.modele, f.texte_pour_base())))
-        t = maintenant()
-        with self.base.ecriture() as c:
-            for vid, l in lignes:
-                c.execute("DELETE FROM fenetre_degustation WHERE vin_id=? AND source='calcul'", (vid,))
-                if l is None:
-                    continue
-                c.execute("INSERT INTO fenetre_degustation(vin_id, source, detail_source, debut, apogee_debut, "
-                          "apogee_fin, fin, modele, explication, date) VALUES(?,?,?,?,?,?,?,?,?,?)",
-                          (vid, "calcul", l[0], l[1], l[2], l[3], l[4], l[5], l[6], t))
+        existantes: dict[int, list] = {}
+        for r in self.base.lire("SELECT vin_id, detail_source, debut, apogee_debut, apogee_fin, fin, modele, "
+                                "explication FROM fenetre_degustation WHERE source='calcul'"):
+            existantes.setdefault(r["vin_id"], []).append(tuple(r)[1:])
+        a_ecrire = [(vid, l) for vid, l in lignes
+                    if existantes.get(vid, []) != ([] if l is None else [l])]
+        if a_ecrire:
+            t = maintenant()
+            with self.base.ecriture() as c:
+                for vid, l in a_ecrire:
+                    c.execute("DELETE FROM fenetre_degustation WHERE vin_id=? AND source='calcul'", (vid,))
+                    if l is None:
+                        continue
+                    c.execute("INSERT INTO fenetre_degustation(vin_id, source, detail_source, debut, apogee_debut, "
+                              "apogee_fin, fin, modele, explication, date) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                              (vid, "calcul", l[0], l[1], l[2], l[3], l[4], l[5], l[6], t))
         return sum(1 for _v, l in lignes if l is not None)
 
     def fenetre_effective(self, vin_id: int) -> dict | None:
@@ -155,8 +198,22 @@ class CaveRegles:
     # ------------------------------------------------------------------ état de la cave
     def etat_bouteilles(self, annee: int | None = None) -> list[dict]:
         """Une ligne par bouteille en cave : vin, style, fenêtre qui fait foi,
-        phase et alerte de l'année, prix (achat ou dernière valeur)."""
+        phase et alerte de l'année, prix (achat ou dernière valeur).
+
+        Mis en cache tant que la base ne change pas (tableau de bord, « ce
+        soir », statistiques et carte le demandent tour à tour : sur une cave
+        de 20 000 bouteilles, chaque calcul coûtait près d'une seconde)."""
         annee = annee or date.today().year
+        from .regles.jeu import jeu
+        cle = (annee, self.base.marque(), id(jeu()))
+        cache = getattr(self, "_cache_etat", None)
+        if cache is not None and cache[0] == cle:
+            return list(cache[1])
+        sortie = self._etat_bouteilles(annee)
+        self._cache_etat = (cle, sortie)
+        return list(sortie)
+
+    def _etat_bouteilles(self, annee: int) -> list[dict]:
         vins = self._vins_pour_regles()
         fen: dict[int, dict] = {}
         for r in self.base.lire("SELECT * FROM fenetre_degustation"):

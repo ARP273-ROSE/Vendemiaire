@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import functools
 import re
 import unicodedata
 from functools import lru_cache
@@ -41,10 +42,16 @@ class ReglesInvalides(RuntimeError):
 def normaliser(texte) -> str:
     """Forme de comparaison du dossier : minuscules, sans accents ; traits
     d'union et apostrophes comptent comme des espaces (« Saint-Julien » =
-    « saint julien »)."""
+    « saint julien »). Mémorisée : une grande cave repasse des milliers de fois
+    les mêmes appellations."""
     if texte is None:
         return ""
-    t = unicodedata.normalize("NFKD", str(texte))
+    return _normaliser(str(texte))
+
+
+@functools.lru_cache(maxsize=1 << 16)
+def _normaliser(texte: str) -> str:
+    t = unicodedata.normalize("NFKD", texte)
     t = "".join(c for c in t if not unicodedata.combining(c)).lower()
     t = t.replace("œ", "oe").replace("æ", "ae")
     t = re.sub(r"[-_'’`]", " ", t)

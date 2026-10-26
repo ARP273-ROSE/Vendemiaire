@@ -19,6 +19,7 @@ classement automatique, qui reste affiché pour mémoire.
 """
 from __future__ import annotations
 
+import functools
 import re
 from dataclasses import dataclass, field
 
@@ -56,8 +57,13 @@ def _textes(vin: dict) -> dict[str, str]:
             "region": normaliser(vin.get("region")), "cepages": normaliser(cep)}
 
 
+@functools.lru_cache(maxsize=4096)
+def _motif(motif: str):
+    return re.compile(normaliser(motif))          # « \bpx\b » traverse normaliser() intact
+
+
 def _cherche(motif: str, textes: dict[str, str]):
-    rx = re.compile(normaliser(motif))            # « \bpx\b » traverse normaliser() intact
+    rx = _motif(motif)
     for champ, _fr, _en in CHAMPS:
         if textes[champ] and rx.search(textes[champ]):
             return champ

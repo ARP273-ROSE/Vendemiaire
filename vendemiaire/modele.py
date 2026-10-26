@@ -518,6 +518,22 @@ class Cave(CaveRegles):
                 lignes = lignes[:limite]
         return lignes
 
+    # -- photos du livre de cave (le plat, la tablée, la bouteille ouverte…)
+    def ajouter_photo_mouvement(self, mid: int, fichier: str | Path) -> int:
+        """Photo rattachée à une ligne du livre de cave (et au vin, pour sa
+        galerie) ; jamais « principale » : la pochette du vin reste son étiquette."""
+        vin_id = self.base.valeur("SELECT vin_id FROM mouvement WHERE id=?", (mid,))
+        return self.ajouter_image(fichier, vin_id=vin_id, type_image="moment", principale=False,
+                                  mouvement_id=mid)
+
+    def photos_mouvement(self, mid: int) -> list[dict]:
+        return [dict(r) for r in self.base.lire(
+            "SELECT * FROM image WHERE mouvement_id=? ORDER BY id", (mid,))]
+
+    def nombre_photos_mouvements(self) -> dict[int, int]:
+        return {r[0]: r[1] for r in self.base.lire(
+            "SELECT mouvement_id, COUNT(*) FROM image WHERE mouvement_id IS NOT NULL GROUP BY mouvement_id")}
+
     def modifier_mouvement(self, mid: int, champs: dict) -> None:
         permis = {k: v for k, v in champs.items() if k in (
             "date", "occasion", "convives", "plat", "lieu", "note", "echelle", "commentaire", "prix")}

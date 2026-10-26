@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 """Liste d'envies (et « cave idéale ») : ce qu'on aimerait avoir, avec un prix
-maximal et une priorité ; marquée « achetée » quand l'envie est satisfaite."""
+maximal et une priorité ; marquée « achetée » quand l'envie est satisfaite.
+
+Alertes de prix SANS aspirateur : on note un prix vu (marchand, salon,
+catalogue : source et date obligatoires) ou on importe un CSV de prix relevés ;
+une envie dont un prix récent est au plus son prix maximal passe en alerte
+(ligne dorée, tableau de bord, liste d'achats) — voir achats.py."""
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDialog, QDialogButtonBox,
-                             QFormLayout, QHBoxLayout, QHeaderView, QLabel,
-                             QMessageBox, QPlainTextEdit, QPushButton, QSpinBox, QTableWidget,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+from pathlib import Path
 
+from PyQt6.QtCore import QDate, Qt, pyqtSignal
+from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDateEdit, QDialog,
+                             QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout, QHeaderView,
+                             QLabel, QLineEdit, QMessageBox, QPlainTextEdit, QPushButton, QSpinBox,
+                             QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+
+from .. import achats
 from ..i18n import argent, date_affichee, tr
 from .saisie import _ligne, _reel
 
+FILTRE_CSV = "CSV (*.csv *.txt *.tsv)"
 PRIORITES = {1: "envie.priorite_1", 2: "envie.priorite_2", 3: "envie.priorite_3"}
 
 
@@ -89,6 +99,94 @@ class DialogueEnvie(QDialog):
         self.accept()
 
 
+class DialoguePrix(QDialog):
+    """Prix relevés pour une envie : liste, ajout (source obligatoire), suppression."""
+
+    def __init__(self, cave, envie: dict, parent=None):
+        super().__init__(parent)
+        self.cave, self.envie = cave, envie
+        self.modifie = False
+        libelle = " · ".join(str(x) for x in (envie["producteur"], envie["cuvee"], envie["appellation"],
+                                              envie["millesime"]) if x)
+        self.setWindowTitle(tr("prix.titre", vin=libelle))
+        self.resize(640, 480)
+        v = QVBoxLayout(self)
+        aide = QLabel(tr("prix.aide", jours=achats.JOURS_VALIDITE,
+                         max=argent(envie["prix_max"]) if envie["prix_max"] else "—"))
+        aide.setObjectName("legende")
+        aide.setWordWrap(True)
+        v.addWidget(aide)
+        self.table = QTableWidget(0, 4)
+        self.table.setHorizontalHeaderLabels([tr("prix.c_date"), tr("prix.c_prix"), tr("prix.c_source"),
+                                              tr("prix.c_note")])
+        self.table.verticalHeader().setVisible(False)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.table.setAccessibleName(tr("prix.titre", vin=libelle))
+        v.addWidget(self.table, 1)
+        f = QFormLayout()
+        self.montant = _reel(None, 100000, 2, " €")
+        self.source = QLineEdit()
+        self.source.setPlaceholderText(tr("prix.source_exemple"))
+        self.date = QDateEdit(QDate.currentDate())
+        self.date.setCalendarPopup(True)
+        self.date.setDisplayFormat("dd/MM/yyyy")
+        self.url = QLineEdit()
+        self.note = QLineEdit()
+        for cle, w in (("prix.montant", self.montant), ("prix.source", self.source), ("prix.date", self.date),
+                       ("prix.url", self.url), ("prix.note", self.note)):
+            f.addRow(tr(cle), w)
+        v.addLayout(f)
+        b = QHBoxLayout()
+        self.b_ajouter = QPushButton(tr("prix.ajouter"))
+        self.b_ajouter.setObjectName("principal")
+        self.b_supprimer = QPushButton(tr("prix.supprimer"))
+        fermer = QPushButton(tr("bouton.fermer"))
+        b.addWidget(self.b_ajouter)
+        b.addWidget(self.b_supprimer)
+        b.addStretch(1)
+        b.addWidget(fermer)
+        v.addLayout(b)
+        self.b_ajouter.clicked.connect(self.ajouter)
+        self.b_supprimer.clicked.connect(self.supprimer)
+        fermer.clicked.connect(self.accept)
+        self.rafraichir()
+
+    def rafraichir(self) -> None:
+        self.releves = achats.prix_releves(self.cave, self.envie["id"])
+        self.table.setRowCount(len(self.releves))
+        for r, p in enumerate(self.releves):
+            for c, val in enumerate((date_affichee(p["date"]), argent(p["montant"]), p["source"],
+                                     " ".join(x for x in (p["note"], p["url"]) if x))):
+                it = _cellule(val, p["id"] if c == 0 else None)
+                if c == 1 and self.envie["prix_max"] and p["montant"] <= self.envie["prix_max"]:
+                    it.setForeground(QBrush(QColor("#2E7D32")))
+                self.table.setItem(r, c, it)
+        self.table.resizeColumnsToContents()
+        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.b_supprimer.setEnabled(bool(self.releves))
+
+    def ajouter(self) -> None:
+        if not self.montant.value() or not self.source.text().strip():
+            QMessageBox.warning(self, self.windowTitle(), tr("prix.erreur"))
+            return
+        achats.ajouter_prix(self.cave, self.envie["id"], self.montant.value(), self.source.text(),
+                            self.date.date().toString("yyyy-MM-dd"), self.url.text(), self.note.text())
+        self.modifie = True
+        self.montant.setValue(0)
+        self.note.clear()
+        self.url.clear()
+        self.rafraichir()
+
+    def supprimer(self) -> None:
+        rangs = self.table.selectionModel().selectedRows()
+        if rangs:
+            achats.supprimer_prix(self.cave, self.table.item(rangs[0].row(), 0).data(Qt.ItemDataRole.UserRole))
+            self.modifie = True
+            self.rafraichir()
+
+
 class VueEnvies(QWidget):
     modifie = pyqtSignal()
 
@@ -100,11 +198,12 @@ class VueEnvies(QWidget):
         aide.setObjectName("legende")
         aide.setWordWrap(True)
         racine.addWidget(aide)
-        self.table = QTableWidget(0, 7)
+        self.table = QTableWidget(0, 8)
         self.table.setHorizontalHeaderLabels([tr("envie.c_priorite"), tr("vin.producteur"),
                                               tr("vin.cuvee"), tr("vin.appellation"),
                                               tr("vin.millesime"), tr("envie.c_quantite_prix"),
-                                              tr("envie.c_etat")])
+                                              tr("envie.c_releve"), tr("envie.c_etat")])
+        self.table.setAccessibleName(tr("onglet.envies"))
         self.table.verticalHeader().setVisible(False)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -117,8 +216,11 @@ class VueEnvies(QWidget):
         self.b_modifier = QPushButton(tr("envie.modifier"))
         self.b_achetee = QPushButton(tr("envie.achetee"))
         self.b_supprimer = QPushButton(tr("envie.supprimer"))
+        self.b_prix = QPushButton(tr("envie.prix_vu"))
+        self.b_importer = QPushButton(tr("envie.importer_prix"))
         self.toutes = QCheckBox(tr("envie.montrer_satisfaites"))
-        for w in (self.b_ajouter, self.b_modifier, self.b_achetee, self.b_supprimer):
+        for w in (self.b_ajouter, self.b_modifier, self.b_achetee, self.b_prix, self.b_importer,
+                  self.b_supprimer):
             b.addWidget(w)
         b.addStretch(1)
         b.addWidget(self.toutes)
@@ -127,6 +229,8 @@ class VueEnvies(QWidget):
         self.b_modifier.clicked.connect(self.modifier)
         self.b_achetee.clicked.connect(self.achetee)
         self.b_supprimer.clicked.connect(self.supprimer)
+        self.b_prix.clicked.connect(self.prix_vu)
+        self.b_importer.clicked.connect(self.importer_prix)
         self.toutes.toggled.connect(lambda _b: self.rafraichir())
         self.table.itemSelectionChanged.connect(self._etat)
         self.table.itemDoubleClicked.connect(lambda _i: self.modifier())
@@ -134,17 +238,29 @@ class VueEnvies(QWidget):
 
     def rafraichir(self) -> None:
         self.lignes = self.cave.envies(self.toutes.isChecked())
+        meilleurs = achats.meilleurs_prix(self.cave)
+        alertes = {a["envie_id"]: a for a in achats.alertes_prix(self.cave)}
         self.table.setRowCount(len(self.lignes))
+        fond = QBrush(QColor("#F3D58A"))
         for r, e in enumerate(self.lignes):
             qp = " · ".join(x for x in (str(e["quantite"]) if e["quantite"] else None,
                                          tr("envie.max", prix=argent(e["prix_max"])) if e["prix_max"]
                                          else None) if x)
+            m = meilleurs.get(e["id"])
+            releve = tr("envie.releve", prix=argent(m["montant"]), source=m["source"],
+                        date=date_affichee(m["date"])) if m else ""
+            a = alertes.get(e["id"]) if not e["satisfaite_le"] else None
             etat = (tr("envie.satisfaite_le", date=date_affichee(e["satisfaite_le"]))
                     if e["satisfaite_le"] else (tr("envie.deja", n=e["en_cave"]) if e.get("en_cave") else ""))
+            if a:
+                etat = " · ".join(x for x in (tr("envie.alerte", prix=argent(a["prix"])), etat) if x)
             for c, val in enumerate((tr(PRIORITES[e["priorite"]]) if e["priorite"] in PRIORITES
                                      else e["priorite"], e["producteur"], e["cuvee"], e["appellation"],
-                                     e["millesime"], qp, etat)):
-                self.table.setItem(r, c, _cellule(val, e["id"] if c == 0 else None))
+                                     e["millesime"], qp, releve, etat)):
+                it = _cellule(val, e["id"] if c == 0 else None)
+                if a:
+                    it.setBackground(fond)
+                self.table.setItem(r, c, it)
         self.table.resizeColumnsToContents()
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         self._etat()
@@ -161,6 +277,7 @@ class VueEnvies(QWidget):
         for w in (self.b_modifier, self.b_supprimer):
             w.setEnabled(e is not None)
         self.b_achetee.setEnabled(bool(e and not e["satisfaite_le"]))
+        self.b_prix.setEnabled(bool(e and not e["satisfaite_le"]))
 
     def ajouter(self, vin_id: int | None = None) -> None:
         if DialogueEnvie(self.cave, None, self, vin_id=vin_id or None).exec() == QDialog.DialogCode.Accepted:
@@ -177,6 +294,29 @@ class VueEnvies(QWidget):
         if e:
             self.cave.satisfaire_envie(e["id"])
             self.rafraichir()
+
+    def prix_vu(self) -> None:
+        e = self._choisie()
+        if e:
+            d = DialoguePrix(self.cave, e, self)
+            d.exec()
+            if d.modifie:
+                self.rafraichir()
+                self.modifie.emit()
+
+    def importer_prix(self) -> None:
+        chemin, _ = QFileDialog.getOpenFileName(self, tr("envie.importer_prix"), str(Path.home()),
+                                                FILTRE_CSV)
+        if not chemin:
+            return
+        r = achats.importer_prix_csv(self.cave, chemin)
+        details = "\n".join((r.non_rapproches + r.erreurs)[:15])
+        QMessageBox.information(self, tr("envie.importer_prix"),
+                                tr("prix.import_bilan", n=r.importes, non=len(r.non_rapproches),
+                                   err=len(r.erreurs)) + ("\n\n" + details if details else ""))
+        if r.importes:
+            self.rafraichir()
+            self.modifie.emit()
 
     def supprimer(self) -> None:
         e = self._choisie()

@@ -28,7 +28,7 @@ def test_fichiers_du_kit_identiques_au_gabarit():
     if not gabarits.is_dir():
         pytest.skip("gabarit absent")
     for nom in ("reporting.py", "updater.py", "build_package.py", "installer.iss",
-                "build_unix.py", "interface_kit.py"):
+                "build_unix.py", "interface_kit.py", "outils_kit.py"):
         assert (RACINE / nom).read_bytes() == (gabarits / nom).read_bytes(), nom
     wf = (RACINE / ".github" / "workflows" / "release.yml").read_bytes()
     assert wf == (gabarits / "release-multiplateforme.yml").read_bytes()

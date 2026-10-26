@@ -76,14 +76,16 @@ class FenetrePrincipale(QMainWindow):
         self.vue_cave = VueCave(self.cave)
         self.mur = VueMur(self.cave)
         self.plan = VuePlan(self.cave)
-        self.livre = VueLivre(self.cave)
+        self.livre = VueLivre(self.cave, charger=False)
         self.envies = VueEnvies(self.cave)
         self.conditions = VueConditions(self.cave)
         from .ce_soir import VueCeSoir
         from .seances import VueSeances
         from .statistiques import VueStatistiques
-        self.ce_soir = VueCeSoir(self.cave)
-        self.statistiques = VueStatistiques(self.cave)
+        self.ce_soir = VueCeSoir(self.cave, charger=False)
+        self.statistiques = VueStatistiques(self.cave, charger=False)
+        # chargés à leur première ouverture (grande cave : démarrage plus court)
+        self._a_rafraichir = {self.livre, self.ce_soir}
         self.seances = VueSeances(self.cave)
         self.onglets.addTab(self.tableau, tr("onglet.tableau"))
         self.onglets.addTab(self.vue_cave, tr("onglet.cave"))
@@ -101,6 +103,8 @@ class FenetrePrincipale(QMainWindow):
             ancien.deleteLater()
         self.onglets.setCurrentIndex(onglet)
         self.onglets.currentChanged.connect(self._onglet_change)
+        if onglet:
+            self._onglet_change(onglet)
 
         f = self.vue_cave.fiche
         self.vue_cave.bouton_nouveau.clicked.connect(self.nouveau_vin)
@@ -127,6 +131,7 @@ class FenetrePrincipale(QMainWindow):
         self.plan.vin_choisi.connect(lambda vid: self.vue_cave.fiche.afficher(vid))
         self.livre.modifie.connect(self.tout_rafraichir)
         self._menus()
+        self._raccourcis_onglets()
         self.statusBar().showMessage(tr("etat.base", chemin=str(self.cave.base.chemin)))
 
     def _menus(self) -> None:
@@ -149,9 +154,10 @@ class FenetrePrincipale(QMainWindow):
 
         m = self.menuBar().addMenu(tr("menu.cave"))
         self._action(m, "action.nouveau_vin", self.nouveau_vin, QKeySequence.StandardKey.New)
-        self._action(m, "menu.modifier_vin", lambda: self._vin_courant(self.modifier_vin))
-        self._action(m, "menu.ajouter_bouteilles", lambda: self._vin_courant(self.ajouter_bouteilles))
-        self._action(m, "menu.sortir", self._sortir_courante)
+        self._action(m, "menu.modifier_vin", lambda: self._vin_courant(self.modifier_vin), "Ctrl+E")
+        self._action(m, "menu.ajouter_bouteilles", lambda: self._vin_courant(self.ajouter_bouteilles),
+                     "Ctrl+Shift+B")
+        self._action(m, "menu.sortir", self._sortir_courante, "Ctrl+Shift+D")
         m.addSeparator()
         self._action(m, "menu.inventaire", self.inventaire)
         self._action(m, "menu.scanner", self.scanner)
@@ -168,6 +174,8 @@ class FenetrePrincipale(QMainWindow):
         self._action(m, "menu.assurance", self.rapport_assurance)
         self._action(m, "menu.partage", self.partager)
         self._action(m, "menu.etiquettes", self.etiquettes_qr)
+        m.addSeparator()
+        self._action(m, "menu.liste_achats", self.liste_achats, QKeySequence("Ctrl+Shift+L"))
 
         m = self.menuBar().addMenu(tr("menu.references"))
         self._action(m, "menu.identifier_vin", lambda: self._vin_courant(self.identifier_vin))
@@ -194,11 +202,28 @@ class FenetrePrincipale(QMainWindow):
                                              [chemins.dossier_docs()], nom_fil="vendemiaire",
                                              etat=self._etat_rapport)
                 self.aide.remplir_menu(m)
+                if getattr(self.aide, "act_manuel", None) is not None:
+                    self.aide.act_manuel.setShortcut(QKeySequence(QKeySequence.StandardKey.HelpContents))
                 m.addSeparator()
             except Exception:
                 log.exception("menu Aide du kit")
                 self.aide = None
         self._action(m, "menu.apropos", self.a_propos)
+
+    def _raccourcis_onglets(self) -> None:
+        """Accessibilité au clavier : Ctrl+1 … Ctrl+9 et Ctrl+0 ouvrent les dix
+        onglets (Ctrl+Tab / Ctrl+Maj+Tab les parcourent, comme partout dans Qt) ;
+        les infobulles des onglets rappellent leur raccourci."""
+        from PyQt6.QtGui import QShortcut
+        for anciens in getattr(self, "_raccourcis", []):
+            anciens.setParent(None)
+        self._raccourcis = []
+        for i in range(min(10, self.onglets.count())):
+            touche = QKeySequence(f"Ctrl+{(i + 1) % 10}")
+            r = QShortcut(touche, self)
+            r.activated.connect(lambda i=i: self.onglets.setCurrentIndex(i))
+            self._raccourcis.append(r)
+            self.onglets.setTabToolTip(i, touche.toString(QKeySequence.SequenceFormat.NativeText))
 
     def _action(self, menu, cle: str, fonction, raccourci=None) -> QAction:
         a = QAction(tr(cle), self)
@@ -224,6 +249,9 @@ class FenetrePrincipale(QMainWindow):
             self.mur.rafraichir()
         elif w is self.statistiques:
             self.statistiques.rafraichir()
+        elif w in getattr(self, "_a_rafraichir", set()):
+            w.rafraichir()
+        getattr(self, "_a_rafraichir", set()).discard(w)
 
     def changer_langue(self, code: str) -> None:
         i18n.definir_langue(code)
@@ -248,17 +276,15 @@ class FenetrePrincipale(QMainWindow):
         if vin:
             self.vue_cave.selectionner(vin)
         self.vue_cave.fiche.afficher(vin or self.vue_cave.vin_courant())
-        self.plan.rafraichir()
-        self.livre.rafraichir()
-        self.tableau.rafraichir()
-        self.envies.rafraichir()
-        self.ce_soir.rafraichir()
-        self.conditions.rafraichir()
-        self.seances.rafraichir()
-        if self.onglets.currentWidget() is self.statistiques:
-            self.statistiques.rafraichir()
-        if self.onglets.currentWidget() is self.mur:
-            self.mur.rafraichir()
+        # seul l'onglet visible se recalcule tout de suite ; les autres à leur
+        # prochaine ouverture (une grande cave ne gèle plus à chaque saisie)
+        courant = self.onglets.currentWidget()
+        vues = (self.plan, self.livre, self.envies, self.ce_soir, self.conditions, self.seances)
+        self._a_rafraichir = set(vues)
+        for v in (self.tableau, self.statistiques, self.mur) + vues:
+            if v is courant:
+                v.rafraichir()
+                self._a_rafraichir.discard(v)
 
     # ------------------------------------------------------------------ vins
     def _vin_courant(self, fonction) -> None:
@@ -534,6 +560,10 @@ class FenetrePrincipale(QMainWindow):
     def rapport_assurance(self) -> None:
         from .documents import DialogueAssurance
         DialogueAssurance(self.cave, self).exec()
+
+    def liste_achats(self) -> None:
+        from .achats import DialogueAchats
+        DialogueAchats(self.cave, self).exec()
 
     def partager(self) -> None:
         from .documents import DialoguePartage

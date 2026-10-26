@@ -15,6 +15,7 @@ Resultat : dist/<NomApp>/ contenant
     python/     interpreteur + dependances
     app/        le code de l'application
     bin/        binaires supplementaires eventuels (ffmpeg...)
+    outils/     outils tiers embarques (kit.json « outils », voir outils_kit.py)
     <NomApp>.bat et Diagnostic.bat
 
 Usage :
@@ -270,6 +271,14 @@ def step_binaires():
                     log(f'{base} extrait')
 
 
+def step_outils():
+    """Outils tiers embarques (kit.json « outils ») : Tesseract, Tectonic...
+    poses dans outils/<nom>/ a cote de python/ et app/, essayes, caches
+    pre-remplis. Le detail vit dans outils_kit.py, commun aux trois systemes."""
+    import outils_kit
+    outils_kit.poser_tous(KIT, PKG, CACHE, ROOT, app=PKG / 'app', log=log)
+
+
 def qt_gardes() -> tuple:
     """kit.json « qt_garder » : modules Qt que l'elagage doit epargner, par
     fragment de nom (["Pdf"] garde Qt6Pdf, QtPdf et QtPdfWidgets — les vignettes
@@ -404,6 +413,7 @@ def main():
     ap.add_argument('--out', help="dossier de sortie (doit etre un disque local)")
     ap.add_argument('--no-prune', action='store_true')
     ap.add_argument('--skip-binaires', action='store_true')
+    ap.add_argument('--skip-outils', action='store_true')
     args = ap.parse_args()
 
     if args.out:
@@ -433,6 +443,7 @@ def main():
         ('Dependances', lambda: step_deps(globals()['_exe'])),
         ('Application', step_app),
         ('Binaires', (lambda: log('ignore')) if args.skip_binaires else step_binaires),
+        ('Outils embarques', (lambda: log('ignore')) if args.skip_outils else step_outils),
         # kit.json « qt_elaguer » : false pour une application qui se sert de
         # modules Qt que l'elagage retire (QtWebEngine et ses dependances
         # Qml/Quick/WebChannel/Positioning : une liseuse EPUB, par exemple).

@@ -5,8 +5,9 @@ Choix du moteur, dans cet ordre :
 
 1. celui que l'utilisateur a désigné (réglage « documents/moteur », ou la
    variable VENDEMIAIRE_LATEX) ;
-2. Tectonic posé à côté de l'application (`tectonic/tectonic[.exe]`, prévu pour
-   le paquet de la phase 5) ou trouvé dans le PATH ;
+2. Tectonic livré avec le paquet (`outils/tectonic/`, avec un cache de paquets
+   LaTeX rempli à la construction : compilation HORS LIGNE, voir
+   outils_embarques.py), puis Tectonic trouvé dans le PATH ;
 3. une distribution installée : XeLaTeX, LuaLaTeX, puis pdfLaTeX (PATH, puis les
    dossiers usuels de MiKTeX, TeX Live et MacTeX).
 
@@ -60,8 +61,6 @@ class Moteur:
 
 def _dossiers_usuels() -> list[str]:
     d: list[str] = []
-    racine_app = Path(__file__).resolve().parent.parent.parent
-    d.append(str(racine_app / "tectonic"))
     if sys.platform == "win32":
         for base in (os.environ.get("LOCALAPPDATA", ""), os.environ.get("ProgramFiles", r"C:\Program Files")):
             if base:
@@ -96,11 +95,12 @@ def trouver_moteur(prefere: str | None = None, interdits: tuple = ()) -> Moteur 
             if trouve:
                 return Moteur(voulu, trouve)
     dossiers = _dossiers_usuels()
+    from .. import outils_embarques
     for nom in ORDRE:
         if nom in interdits:
             continue
         exe = nom + (".exe" if sys.platform == "win32" else "")
-        trouve = shutil.which(nom)
+        trouve = outils_embarques.executable(nom) or shutil.which(nom)
         if not trouve:
             for d in dossiers:
                 p = Path(d) / exe
@@ -143,10 +143,15 @@ class Resultat:
 
 
 def compiler(tex: str, sortie_pdf: str | Path, annexes: dict[str, bytes | str | Path] | None = None,
-             moteur: Moteur | None = None, passes: int = 2, garder_tex: bool = False) -> Resultat:
+             moteur: Moteur | None = None, passes: int = 2, garder_tex: bool = False,
+             reseau: bool = True) -> Resultat:
     """Compile `tex` vers `sortie_pdf`. `annexes` : fichiers posés à côté
     ({nom: octets | chemin}). Lève LatexIndisponible ou ErreurLatex (avec la fin
-    du journal). Les fichiers temporaires disparaissent dans tous les cas."""
+    du journal). Les fichiers temporaires disparaissent dans tous les cas.
+
+    Tectonic du paquet : d'abord SANS réseau, sur la copie de son cache
+    (`--only-cached`) ; si un paquet LaTeX y manque, une seconde tentative
+    le télécharge (sauf `reseau=False`)."""
     moteur = moteur or trouver_moteur()
     if moteur is None:
         raise LatexIndisponible("aucun moteur LaTeX")
@@ -163,16 +168,30 @@ def compiler(tex: str, sortie_pdf: str | Path, annexes: dict[str, bytes | str | 
                 shutil.copyfile(contenu, cible)
         env = dict(os.environ)
         env.setdefault("TEXMFOUTPUT", tmp)
+        hors_ligne = False
         if moteur.nom == "tectonic":
-            commandes = [[moteur.chemin, "-X", "compile", "--keep-logs", "document.tex"]]
+            from .. import outils_embarques
+            cache = outils_embarques.cache_tectonic() if outils_embarques.est_embarque(moteur.chemin) else None
+            if cache is not None:
+                env["TECTONIC_CACHE_DIR"] = str(cache)
+                hors_ligne = True
+            commandes = [[moteur.chemin, "-X", "compile", "--keep-logs"]
+                         + (["--only-cached"] if hors_ligne else []) + ["document.tex"]]
         else:
             commandes = [[moteur.chemin, "-interaction=nonstopmode", "-halt-on-error", "document.tex"]] * passes
-        for i, cmd in enumerate(commandes):
+        i = 0
+        while i < len(commandes):
+            cmd = commandes[i]
+            i += 1
             try:
                 r = subprocess.run(cmd, cwd=tmp, capture_output=True, timeout=DELAI_S, env=env,
                                    **({"creationflags": 0x08000000} if sys.platform == "win32" else {}))
             except subprocess.TimeoutExpired as e:
                 raise ErreurLatex(f"{moteur.nom} : délai dépassé ({DELAI_S} s)") from e
+            if (r.returncode != 0 or not (t / "document.pdf").exists()) and "--only-cached" in cmd and reseau:
+                # un paquet LaTeX absent du cache embarqué : on le télécharge (une fois, puis cache)
+                commandes.append([c for c in cmd if c != "--only-cached"])
+                continue
             if r.returncode != 0 or not (t / "document.pdf").exists():
                 journal = ""
                 if (t / "document.log").exists():

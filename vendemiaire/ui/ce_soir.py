@@ -244,7 +244,7 @@ class VueCeSoir(QWidget):
     vin_choisi = pyqtSignal(int)
     modifie = pyqtSignal()
 
-    def __init__(self, cave, parent=None):
+    def __init__(self, cave, parent=None, charger: bool = True):
         super().__init__(parent)
         self.cave = cave
         lg = langue()
@@ -312,7 +312,8 @@ class VueCeSoir(QWidget):
         self.b_voir.clicked.connect(self._voir)
         self.b_fiche.clicked.connect(self.fiche)
         self.resultat: dict = {}
-        self.rafraichir()
+        if charger:                      # la fenêtre le charge à la première ouverture
+            self.rafraichir()
 
     def vins_choisis(self) -> list[int]:
         rangs = sorted({i.row() for i in self.table.selectedIndexes()})
