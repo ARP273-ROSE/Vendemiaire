@@ -59,10 +59,10 @@ def test_copie_identique_au_dossier():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
-def test_jeu_valide_194_regles_66_sources():
+def test_jeu_valide_194_regles_69_sources():
     j = jeu()
     assert j.nombre_regles() == 194
-    assert len(j.sources) == 66
+    assert len(j.sources) == 69
     assert len(j.styles) == 28
     assert j.date_audit == "2026-10-26"
 
@@ -461,6 +461,28 @@ def test_vdn_rimage_et_grenat_pas_oxydatifs():
                         millesime=2020)).id == "mute_fruite"
     assert classer(dict(couleur="rouge", type="mute", appellation="Banyuls",
                         cuvee="Traditionnel hors d'âge")).id == "mute_oxydatif"
+
+
+def test_portos_et_muscat_de_rivesaltes_bien_classes():
+    """Correction 6 du dossier (27/10/2026) : seul un porto millésimé qui n'est ni ruby, ni LBV, ni
+    crusted, ni tawny, ni colheita est « porto vintage » ; le muscat de Rivesaltes est jeune et fruité."""
+    porto = dict(couleur="rouge", type="mute", appellation="Porto")
+    assert classer(dict(porto, cuvee="Vintage", millesime=2017)).id == "porto_vintage"
+    assert classer(dict(porto, cuvee="Quinta do Exemplo", millesime=2011)).id == "porto_vintage"
+    assert classer(dict(porto, cuvee="Ruby")).id == "mute_fruite"
+    assert classer(dict(porto, cuvee="Ruby Reserva")).id == "mute_fruite"
+    assert classer(dict(porto, cuvee="LBV", millesime=2018)).id == "mute_fruite"
+    assert classer(dict(porto, cuvee="Late Bottled Vintage", millesime=2019)).id == "mute_fruite"
+    assert classer(dict(porto, cuvee="Tawny 20 ans")).id == "mute_oxydatif"
+    assert classer(dict(porto, cuvee="Colheita", millesime=1997)).id == "mute_oxydatif"
+    assert classer(dict(porto)).id == "mute_fruite"                     # sans mention : pas un vintage
+    # « Portugal » dans la région ne fait pas un porto
+    assert classer(dict(couleur="rouge", type="mute", region="Portugal", appellation="Moscatel roxo",
+                        millesime=2015)).id != "porto_vintage"
+    muscat = dict(couleur="blanc", type="mute", appellation="Muscat de Rivesaltes", millesime=2023)
+    assert classer(muscat).id == "mute_fruite"
+    assert classer(dict(couleur="blanc", type="mute", appellation="Rivesaltes", cuvee="Ambré hors d'âge")).id \
+        == "mute_oxydatif"
 
 
 def test_rattachement_lu_dans_le_dossier():

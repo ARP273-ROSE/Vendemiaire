@@ -206,14 +206,26 @@
     ],
     "appellations": [
      "porto",
-     "port"
+     "\\bport\\b"
     ],
     "regions": [],
     "cepages": [],
     "mots": [
      "vintage"
+    ],
+    "millesime": "avec",
+    "exclure": [
+     "ruby",
+     "late bottled",
+     "\\blbv\\b",
+     "crusted",
+     "tawny",
+     "colheita"
     ]
-   }
+   },
+   "sources_criteres": [
+    "WIKI_PORTO"
+   ]
   },
   {
    "id": "mute_oxydatif",
@@ -256,12 +268,15 @@
     ],
     "exclure": [
      "rimage",
-     "grenat"
+     "grenat",
+     "muscat de rivesaltes"
     ]
    },
    "sources_criteres": [
     "WIKI_BANYULS",
-    "WIKI_RIVESALTES"
+    "WIKI_RIVESALTES",
+    "WIKI_MUSCAT_RIVESALTES",
+    "WIKI_MUSCAT_RIVESALTES_EN"
    ]
   },
   {

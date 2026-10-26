@@ -3,18 +3,18 @@
  "date_audit": "2026-10-26",
  "fichiers": {
   "LISEZMOI.md": {
-   "sha256": "84e4c076b3e3fb9fb1fffa508383c25f3a4dc362674c43330d74f6351e681ad4",
-   "octets": 9029
+   "sha256": "450f2a44301dd3e133f6c8bfb7f54b4a3c7b47a2b731eebd20ea0a3dc8990329",
+   "octets": 9557
   },
   "sources.json": {
-   "sha256": "4e23eb6fbee6e8269bf59a7c151cfdfd2b3218287c152e726346626b943236d9",
-   "octets": 13589,
+   "sha256": "667e42163d0570475fe77c78ff3875ff589fc55c126611a6514368fe01968285",
+   "octets": 14594,
    "version": "1.0",
    "date": "2026-10-26"
   },
   "styles.json": {
-   "sha256": "6d2df3ed216fad55fe0816a54eedf73d6f5de1baa1acac0465c7cb265c705d3c",
-   "octets": 16478,
+   "sha256": "64a8e2deb7eb3d91d148e9ab444aaece2d6d35a634a4d53f097d94c93d82e1ea",
+   "octets": 16771,
    "version": "1.0",
    "date": "2026-10-26"
   },

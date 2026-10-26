@@ -60,7 +60,11 @@ Les styles de priorité ≥ 90 n'ont que couleur et type : ce sont les styles pa
    Ainsi un champagne **sans millésime** n'est pas « millésimé ou de prestige » mais « effervescent sans année »
    (`eff_millesime` exige un millésime : bruts sans année = assemblages de plusieurs années, WIKI_CHAMPAGNE_BSA,
    WIKI_MILLESIME), et un banyuls **rimage** ou un VDN **grenat** (élevage réducteur, WIKI_BANYULS, WIKI_RIVESALTES)
-   n'est pas « muté oxydatif » mais « muté jeune et fruité ».
+   n'est pas « muté oxydatif » mais « muté jeune et fruité ». De même (27/10/2026) : un **porto** n'est « porto
+   vintage » que s'il porte un millésime et n'est ni ruby, ni LBV (`late bottled`, `lbv`), ni crusted, ni tawny, ni
+   colheita (WIKI_PORTO) — un ruby ou un LBV tombe dans « muté jeune et fruité », un tawny ou un colheita dans
+   « muté oxydatif » ; un **muscat de Rivesaltes** (VDN blanc servi frais, aux arômes de raisin frais, vendu jeune :
+   WIKI_MUSCAT_RIVESALTES, WIKI_MUSCAT_RIVESALTES_EN) n'est pas « muté oxydatif » mais « muté jeune et fruité ».
 
 ## Rattacher un vin à une région de millésimes (`rattachement_millesimes.json`)
 

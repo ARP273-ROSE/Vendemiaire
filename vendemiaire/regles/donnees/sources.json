@@ -328,6 +328,21 @@
    "fichier": "data/sources/wiki/fr_Rivesaltes_VDN_.txt",
    "nature": "encyclopédie"
   },
+  "WIKI_PORTO": {
+   "titre": "Wikipédia FR « Porto (DOC) » : le vintage, issu d'une seule année déclarée à l'IVDP, vieillit en bouteille ; ruby (assemblages peu oxydés, à boire rapidement), LBV (un millésime, 4 à 6 ans en foudre, prêt à boire), crusted, tawny et colheita (élevage oxydatif en fût) sont d'autres catégories",
+   "fichier": "data/sources/wiki/fr_Porto_DOC_.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_MUSCAT_RIVESALTES": {
+   "titre": "Wikipédia FR « Muscat de Rivesaltes » : VDN blanc de muscats, servi frais (6-7 °C), arômes muscatés et de raisin frais",
+   "fichier": "data/sources/wiki/fr_Muscat_de_Rivesaltes.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_MUSCAT_RIVESALTES_EN": {
+   "titre": "Wikipédia EN « Muscat de Rivesaltes AOC » : vendu dès février suivant la récolte, « muscat de Noël » dès novembre de l'année de récolte (vin jeune)",
+   "fichier": "data/sources/wiki/en_Muscat_de_Rivesaltes_AOC.txt",
+   "nature": "encyclopédie"
+  },
   "DOSSIER": {
    "titre": "Convention du dossier « Le vin » faute de source chiffrée : à ajuster par l'utilisateur",
    "fichier": "data/regles/LISEZMOI.md",
