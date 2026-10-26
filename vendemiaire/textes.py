@@ -1402,4 +1402,8 @@ T.update({
         "fr": "Clavier : flèches = bouteille voisine, Ctrl+flèches = la déplacer d'une case (échange si la case est prise), Entrée = sa fiche.",
         "en": "Keyboard: arrows = next bottle, Ctrl+arrows = move it one slot (swap if taken), Enter = its record."},
     "plan.motif_clavier": {"fr": "déplacement au clavier", "en": "moved with the keyboard"},
+    "menu.demonstration": {"fr": "Ouvrir la cave de démonstration (autre fenêtre)",
+                           "en": "Open the demo cellar (separate window)"},
+    "demonstration.echec": {"fr": "La cave de démonstration n'a pas pu être lancée.",
+                            "en": "The demo cellar could not be started."},
 })

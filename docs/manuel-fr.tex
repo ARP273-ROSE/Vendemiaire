@@ -2,10 +2,608 @@
 \usepackage[french]{babel}
 \newcommand{\VersionManuel}{1.0.0}
 \input{manuel-preambule.tex}
+\hypersetup{pdftitle={Vendémiaire — manuel d'utilisation},pdfauthor={ARP273-ROSE},pdfsubject={Logiciel de gestion de cave à vin}}
+
 \begin{document}
-\PageDeGarde{Manuel d'utilisation}{Version \VersionManuel}{ARP273-ROSE}
+\PageDeGarde{Manuel d'utilisation}{Version \VersionManuel}{Logiciel libre de gestion de cave à vin — Windows, macOS, Linux\\[1mm]ARP273-ROSE}
+
 \tableofcontents
-\section{Vendémiaire}
-\capture{fr-tableau-de-bord.png}{Tableau}
-\begin{astuce}[Astuce]Texte.\end{astuce}
+\clearpage
+
+% =====================================================================
+\section{Vendémiaire en une page}
+
+Vendémiaire (du nom du mois des vendanges du calendrier républicain) tient votre cave : chaque
+bouteille, son emplacement, son histoire et sa valeur ; le livre de cave de ce qui entre et sort ; le
+moment de l'ouvrir, comment la servir et avec quoi ; une carte des vins digne d'un grand restaurant ;
+des statistiques, un rapport d'assurance, des étiquettes à code QR.
+
+\begin{itemize}
+  \item \textbf{Hors ligne et chez vous.} La base vit sur votre ordinateur (ou sur un dossier partagé de
+        votre réseau). Aucun compte, aucun abonnement. Les recherches en ligne (Wikidata, Open Food Facts)
+        sont facultatives et demandent votre accord.
+  \item \textbf{Des règles sourcées.} L'apogée, le service, la conservation, les niveaux et les accords
+        viennent d'un dossier documenté (« Le vin ») : 194 règles, chacune avec ses sources et un niveau
+        de confiance. Vendémiaire n'invente rien et dit toujours pourquoi.
+  \item \textbf{Aucune donnée prisonnière.} Tout s'exporte (CSV, JSON complet) ; CellarTracker, Vivino et
+        les tableurs s'importent.
+  \item \textbf{Trois systèmes, deux langues.} Windows, macOS (Apple Silicon et Intel), Linux (x86\_64 et
+        ARM64), en français et en anglais ; mise à jour automatique.
+\end{itemize}
+
+\capture{fr-tableau-de-bord.png}{Le tableau de bord de la cave de démonstration : chiffres clés,
+répartitions, alertes (à boire, déclin, primeurs, réassort, prix atteint) et courbe d'apogée.}
+
+\begin{astuce}[Pour essayer sans rien risquer]
+\menu{Aide › Ouvrir la cave de démonstration} ouvre, dans une autre fenêtre, une cave inventée
+(producteurs fictifs, photos dessinées) : toutes les fonctions y sont garnies. Votre propre cave n'est
+jamais touchée : la démonstration a son propre dossier de données.
+\end{astuce}
+
+% =====================================================================
+\section{Installer, mettre à jour}
+
+\subsection{Installer}
+Les fichiers se téléchargent sur la page des versions du projet (dépôt public
+\texttt{ARP273-ROSE/Vendemiaire}, rubrique \emph{Releases}).
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[Windows] \texttt{Vendemiaire-Setup.exe}. L'installation se fait dans votre profil, sans mot de
+    passe administrateur. L'installeur n'étant pas signé, Windows peut afficher « Windows a protégé votre
+    ordinateur » : \emph{Informations complémentaires}, puis \emph{Exécuter quand même} (une seule fois).
+  \item[macOS] l'image disque qui correspond à votre Mac (\texttt{macos-arm64} pour Apple Silicon,
+    \texttt{macos-x86\_64} pour Intel) ; glissez l'application dans Applications. La première fois :
+    clic droit sur l'application, \emph{Ouvrir}, puis confirmer.
+  \item[Linux] décompressez l'archive \texttt{.tar.gz} de votre processeur (x86\_64 ou ARM64) et lancez
+    \texttt{./installer.sh} : installation dans \texttt{\textasciitilde/.local/share}, entrée de menu,
+    commande \texttt{vendemiaire} dans un terminal, sans \texttt{sudo}.
+\end{description}
+
+\subsection{Ce que le paquet contient}
+Le paquet est autonome : son propre Python, Qt, et deux outils libres embarqués.
+\begin{itemize}
+  \item \textbf{Tesseract} (licence Apache 2.0) et ses modèles français et anglais : la lecture du texte
+        des étiquettes (OCR), hors ligne.
+  \item \textbf{Tectonic} (licence MIT), un moteur LaTeX d'un seul fichier, livré avec un \emph{cache} des
+        paquets LaTeX dont ont besoin la carte des vins, le rapport d'assurance et ce manuel : les beaux PDF
+        se fabriquent hors ligne. Ce cache est recopié une fois dans votre profil au premier document.
+\end{itemize}
+Lancé depuis les sources, Vendémiaire cherche ces outils sur le système (Tesseract installé à part ;
+Tectonic, XeLaTeX, LuaLaTeX ou pdfLaTeX). Sans moteur LaTeX, chaque document est écrit par Qt : même
+contenu, typographie plus simple.
+
+\subsection{Mise à jour automatique}
+Au démarrage, Vendémiaire regarde (sans bloquer) s'il existe une version plus récente et propose de
+l'installer, sur les trois systèmes. Seul le code de l'application est remplacé : vos données, vos
+réglages et vos sauvegardes vivent ailleurs et ne sont jamais touchés. \menu{Aide › Rechercher des mises
+à jour…} le fait à la demande.
+\begin{attention}[Les outils embarqués viennent avec le paquet complet]
+La mise à jour automatique ne remplace que le code. Tesseract, Tectonic, Python et Qt arrivent avec le
+paquet complet (installeur, image disque, archive). Une installation mise à jour depuis une version qui ne
+les avait pas continue de chercher ces outils sur le système, comme avant ; réinstaller le paquet complet
+les ajoute.
+\end{attention}
+
+\subsection{Premier lancement}
+\begin{enumerate}
+  \item La langue est celle du système ; \menu{Langue} la change à tout moment (elle est retenue).
+  \item Vendémiaire demande s'il peut envoyer des rapports d'incident (voir
+        section~\ref{sec:confidentialite}). Répondre non ne retire aucune fonction.
+  \item Votre cave est vide : commencez par \menu{Cave › Nouveau vin…} ou par un import
+        (section~\ref{sec:imports}).
+\end{enumerate}
+
+% =====================================================================
+\section{La cave}
+
+\subsection{La liste et la fiche}
+L'onglet \menu{Cave} montre un vin par ligne, avec sa « pochette » (la photo de son étiquette, sinon une
+étiquette dessinée), le nombre de bouteilles et la fenêtre de dégustation. La recherche accepte n'importe
+quel mot (domaine, cuvée, appellation, millésime…) ; les filtres choisissent la couleur et le statut. Les
+colonnes se déplacent, se masquent et sont retenues. À droite, la fiche du vin réunit tout : bouteilles et
+emplacements, fenêtre et son \emph{pourquoi}, service, accords, critiques, valeurs, dégustations, photos,
+identifiants mondiaux.
+
+\capture{fr-cave.png}{L'onglet Cave : liste, recherche, filtres, et la fiche du vin choisi.}
+
+\subsection{Saisir un vin}
+\menu{Cave › Nouveau vin…} (\touche{Ctrl+N}) ouvre la saisie : domaine, cuvée, appellation, région, pays,
+couleur et type, cépages et pourcentages, millésime (ou « non millésimé »), degré, classement,
+code-barres, seuil de réassort, coup de cœur, notes. La saisie complète les appellations, les cépages et
+les domaines d'après votre cave et les registres officiels (INAO, eAmbrosia) et propose l'orthographe
+officielle. Le style (famille de vins des règles) se déduit tout seul ; on peut l'imposer.
+
+\capture[0.8]{fr-saisie-vin.png}{La saisie d'un vin.}
+
+\subsection{Les bouteilles}
+Chaque bouteille est suivie à part : format (de la piccolo au melchisédech, 20 formats), statut (en cave,
+en attente de livraison, primeur, bue, offerte, vendue, cassée, bouchonnée), emplacement (cave › meuble ›
+casier › rangée › colonne), prix et lieu d'achat, dates, niveau, état de l'étiquette, de la capsule et du
+bouchon, caisse bois d'origine (complète ou non), provenance, historique de stockage, facture.
+\menu{Cave › Ajouter des bouteilles…} (\touche{Ctrl+Maj+B}) en ajoute plusieurs d'un coup ; un primeur est
+« reçu » à sa livraison (le tableau de bord le rappelle tant qu'il ne l'est pas).
+
+\capture[0.8]{fr-bouteille.png}{Une bouteille : emplacement, achat, niveau, état, caisse, provenance.}
+
+\subsection{Sortir une bouteille}
+\menu{Cave › Sortir la bouteille choisie…} (\touche{Ctrl+Maj+D}) : bue, offerte, vendue, cassée ou
+bouchonnée, avec l'occasion, les convives, le plat, la note (sur 20 ou sur 100) et le commentaire. La
+sortie s'inscrit au livre de cave et libère la case.
+
+\capture[0.7]{fr-sortie.png}{Sortir une bouteille : tout ce qui sera inscrit au livre de cave.}
+
+\subsection{Le mur d'étiquettes}
+L'onglet \menu{Mur d'étiquettes} montre la cave comme une collection de disques : une case par vin, sa
+photo d'étiquette. Glisser une photo sur une case l'ajoute au vin.
+
+\capture{fr-mur.png}{Le mur d'étiquettes.}
+
+% =====================================================================
+\section{Le plan des casiers}
+L'onglet \menu{Plan des casiers} dessine vos caves, meubles et casiers (rangées × colonnes). Une pastille
+par bouteille, de la couleur du vin, avec les deux derniers chiffres du millésime ; un cercle doré signale
+un grand format.
+\begin{itemize}
+  \item \textbf{Glisser-déposer} une bouteille vers une case libre, ou sur une autre pour les échanger.
+  \item \textbf{Encadrer} plusieurs bouteilles à la souris puis \emph{Déplacer la sélection vers…} : le lot
+        part dans les cases libres d'un autre casier ; un lot impossible est refusé en entier.
+  \item \emph{Ranger ici les bouteilles sans case} remplit les cases libres.
+  \item Chaque déplacement est consigné (historique de la bouteille).
+\end{itemize}
+
+\capture{fr-plan.png}{Le plan d'un casier de 6 × 10.}
+
+\begin{clavier}[Le plan au clavier]
+Cliquez dans le plan (ou atteignez-le avec \touche{Tab}) : les \textbf{flèches} choisissent la bouteille
+voisine ; \touche{Ctrl}+\textbf{flèche} la déplace d'une case (échange si la case est prise) ;
+\touche{Entrée} ouvre sa fiche.
+\end{clavier}
+
+% =====================================================================
+\section{Le livre de cave}
+L'onglet \menu{Livre de cave} est le journal de tout ce qui entre et sort : date, mouvement, vin,
+occasion, convives, plat, note, commentaire. La recherche (\touche{Ctrl+F}) porte sur tous ces champs ; un
+double-clic complète une ligne.
+
+\subsection{Les photos du moment}
+Le plat, la tablée, la bouteille ouverte : à droite, le panneau \emph{Photos du moment} montre les photos
+de la ligne choisie. \emph{Ajouter des photos…} (ou un glisser-déposer de fichiers) les range avec la
+ligne du livre ; elles rejoignent aussi la galerie du vin (\menu{Photos…} de la fiche), sans jamais
+remplacer sa pochette. La colonne \emph{Photos} compte celles de chaque ligne ; \emph{Ouvrir} affiche la
+photo dans votre visionneuse, \emph{Retirer} l'enlève.
+
+\capture{fr-livre.png}{Le livre de cave et les photos du moment de la ligne choisie.}
+
+% =====================================================================
+\section{Bases mondiales et identifiants}
+Comme un morceau de musique dans une base de disques, chaque vin peut recevoir un identifiant mondial et
+compléter sa fiche. Tout est \textbf{facultatif} ; rien n'est écrit sans votre confirmation.
+
+\subsection{LWIN, l'identifiant du commerce des grands vins}
+Le \textbf{LWIN} (Liv-ex Wine Identification Number) est le « code ISBN du vin » : 7 chiffres pour le vin,
+11 avec le millésime ; plus de 200\,000 vins. La base est gratuite (licence CC BY 4.0) mais Liv-ex la remet
+par un \textbf{formulaire} (nom, adresse électronique) : Vendémiaire ne le remplit jamais à votre place.
+\begin{enumerate}
+  \item \menu{Références › Bases de référence et licences…}, bouton \emph{Page de téléchargement de Liv-ex} :
+        la page s'ouvre dans votre navigateur ; remplissez le formulaire, Liv-ex envoie le fichier.
+  \item \emph{Importer le fichier LWIN…} : le fichier (XLSX ou CSV) est converti en une base de référence
+        locale (\texttt{references.db}, à côté de la cave), en une quinzaine de secondes, dans un fil de fond :
+        la cave reste utilisable. Un import interrompu laisse l'ancienne copie intacte.
+  \item Si Liv-ex vous donne un lien direct stable, collez-le dans la même fenêtre et cochez la mise à jour
+        tous les 30 jours (seulement si les recherches en ligne sont permises).
+\end{enumerate}
+La recherche dans LWIN se fait ensuite \textbf{hors ligne}.
+
+\capture{fr-references.png}{Les bases de référence : LWIN (formulaire de Liv-ex, import, lien direct),
+registres d'appellations, accord pour les recherches en ligne, licences.}
+
+\subsection{Les autres sources}
+\begin{itemize}
+  \item \textbf{Wikidata} (CC0) : domaines, châteaux, appellations, cépages — fondation, coordonnées, site,
+        liens Wikipédia ; une image de Wikimedia Commons avec son auteur et sa licence.
+  \item \textbf{Open Food Facts} (base ODbL, photos CC BY-SA) : la lecture d'un code-barres EAN donne nom,
+        degré et photo.
+  \item \textbf{Registres officiels} : INAO (Licence Ouverte 2.0) et eAmbrosia de l'Union européenne,
+        embarqués : liste exacte et orthographe officielle des AOP/IGP.
+  \item \textbf{Jamais d'aspirateur} : Vivino et Wine-Searcher n'ont pas d'interface publique ; un bouton
+        ouvre seulement une recherche dans votre navigateur.
+\end{itemize}
+
+\subsection{Identifier un vin}
+\menu{Références › Identifier le vin choisi…} cherche des candidats, chacun avec un \textbf{score
+expliqué} critère par critère (domaine, cuvée, appellation, couleur, pays, millésime). Sous un score de
+0,45 rien n'est présélectionné ; si deux candidats sont trop proches, Vendémiaire renonce à choisir. Vous
+voyez, champ par champ, ce qui sera rempli : seuls les champs \textbf{vides et non saisis à la main}
+peuvent l'être, et chaque remplissage est noté au \emph{journal} de la fiche (onglet Références), avec sa
+source.
+
+\capture{fr-identifier.png}{Identifier un vin : candidats, score expliqué, champs proposés.}
+\capture{fr-fiche-references.png}{La fiche du vin, onglet Références : identifiants retenus et journal
+de ce qui a été rempli, et d'où.}
+
+\begin{astuce}[Recherches en ligne]
+Hors ligne par défaut. L'accord est demandé à la première recherche en ligne et se change dans
+\menu{Références › Bases de référence et licences…}. Vendémiaire s'annonce poliment (une requête par
+seconde au plus par service) et respecte les délais demandés par les serveurs.
+\end{astuce}
+
+% =====================================================================
+\section{Photos d'étiquette et lecture du texte}
+\subsection{La pochette}
+Chaque vin a son visuel : \emph{Photo de l'étiquette…} dans la fiche, la fenêtre \emph{Photos…} (étiquette,
+contre-étiquette, capsule, caisse, bouteille, facture), un glisser-déposer sur la pochette ou sur le mur,
+ou la webcam. Les images libres (Open Food Facts, Wikimedia Commons) sont enregistrées avec leur crédit
+et leur licence ; aucune image protégée n'est téléchargée automatiquement.
+
+\subsection{Redresser}
+La photo d'une étiquette prise de travers est \textbf{recadrée et redressée} automatiquement : détection
+des bords, correction de perspective, quarts de tour et même \emph{déroulage} d'une étiquette enroulée
+sur la bouteille. Les quatre coins se déplacent à la main. La photo d'origine est toujours gardée ; les
+réglages restent modifiables.
+
+\capture{fr-retouche.png}{Retouche : coins détectés, perspective corrigée.}
+
+\subsection{Lire le texte (OCR) et identifier}
+\emph{Lire le texte} passe l'étiquette redressée à Tesseract (embarqué, hors ligne, en français et en
+anglais) : Vendémiaire en tire des indices — millésime, degré, contenance, code-barres, couleur,
+appellations du registre, lignes écrites le plus gros — puis cherche les candidats (LWIN, et sur demande
+Wikidata ou Open Food Facts). \menu{Références › Nouvelle bouteille d'après sa photo…} enchaîne tout,
+jusqu'au vin créé avec sa photo.
+
+\capture{fr-retouche-ocr.png}{Le texte lu et les indices trouvés.}
+
+\begin{attention}[Le redressement d'abord]
+Sur une photo brute de travers, Tesseract ne lit presque rien ; une fois l'étiquette redressée, il lit
+l'essentiel. Une photo nette, de face, bien éclairée reste la meilleure aide.
+\end{attention}
+
+% =====================================================================
+\section{Les règles et leurs sources}
+\label{sec:regles}
+Toutes les réponses « œnologiques » de Vendémiaire — garde, service, conservation, niveaux, accords,
+défauts, arômes — viennent des fichiers de règles du dossier « Le vin », copiés à l'identique avec leur
+empreinte (une copie retouchée est refusée au chargement). \menu{Références › Règles du dossier « Le vin »…}
+les montre toutes : valeur, explication, sources, niveau de confiance.
+
+\capture{fr-regles.png}{Les règles : 194 règles, leurs sources et leur niveau de confiance.}
+
+\subsection{Le style du vin}
+Chaque vin est rangé dans l'un des 28 \emph{styles} du dossier (grand rouge de garde, blanc minéral,
+effervescent sans année, porto vintage, muté jeune et fruité…), d'après sa couleur, son type, son
+appellation, sa cuvée, sa région et ses cépages. La fiche dit pourquoi (« \emph{pauillac} trouvé dans
+l'appellation… »). Un style peut être imposé à la main ; le classement automatique reste affiché.
+
+\subsection{La fenêtre de dégustation}
+Trois fenêtres peuvent coexister : \textbf{la vôtre}, celle d'un \textbf{critique}, et celle
+\textbf{calculée} par Vendémiaire ; la vôtre l'emporte, puis celle du critique. La fenêtre calculée part des
+âges du style (« prêt », « apogée », « fin ») et les ajuste :
+\begin{itemize}
+  \item au \textbf{millésime} : 0,44 an par point sur 100 au-dessus ou au-dessous de la moyenne de la région
+        dans le même tableau de millésimes ;
+  \item à la \textbf{température mesurée} de la cave : les durées sont divisées par
+        $2^{(T-12)/10}$ (une cave plus chaude fait vieillir plus vite) ;
+  \item au \textbf{niveau de garde} choisi (garde, courant, primeur, Nouveau Monde).
+\end{itemize}
+Le modèle est un plateau ou une cloche (pic au milieu de l'apogée). Le \emph{pourquoi} de la fiche détaille
+chaque étape, les sources et la confiance.
+
+\capture{fr-fiche-regles.png}{La fiche du vin : style, fenêtre calculée et son pourquoi.}
+\capture{fr-garde.png}{La courbe d'apogée : combien de bouteilles arrivent à boire chaque année.}
+
+\begin{sources}[Ce que les règles ne disent pas]
+Un magnum vieillit plus lentement et une demi-bouteille plus vite, mais aucune source ne le chiffre : la
+fiche le signale, la fenêtre ne change pas. La note d'un critique sur le vin lui-même ne modifie pas la
+fenêtre (aucune règle ne les relie) ; seule la note du millésime compte. Une règle dont la source est
+« DOSSIER » est une convention faute de chiffre publié : l'interface le dit.
+\end{sources}
+
+\subsection{Alertes}
+Le tableau de bord signale les bouteilles \textbf{à boire cette année}, \textbf{en déclin} et \textbf{trop
+jeunes}, les bouteilles entamées à finir, les mesures de cave hors plage et les bouchons à contrôler.
+
+% =====================================================================
+\section{Ce soir : choisir et servir}
+\subsection{Que boire ce soir ?}
+L'onglet \menu{Ce soir} propose les bouteilles de \emph{votre} cave pour un plat, un budget, une couleur,
+une occasion (apéritif, quotidien, grande occasion), les urgences d'abord (déclin, puis « à boire cette
+année »). Les accords viennent du dossier, avec leur explication ; les accords difficiles (artichaut,
+vinaigrette, piment face aux tanins, poisson gras et vin rouge, dessert et vin sec) sont signalés.
+
+\capture{fr-ce-soir.png}{Que boire ce soir ? Plat, budget, occasion ; les urgences d'abord.}
+
+\subsection{La fiche « ce soir »}
+Pour une bouteille : température de service, \textbf{heure de sortie de la cave} (calculée par la loi de
+refroidissement du dossier, selon la pièce, le réfrigérateur ou le seau), carafe ou non et combien de
+temps, verre conseillé, plats. Elle s'imprime en HTML ou en PDF.
+
+\capture[0.85]{fr-fiche-ce-soir.png}{La fiche « ce soir » d'une bouteille.}
+
+\subsection{Les accords dans les deux sens}
+« J'ouvre ce vin » : la fiche du vin donne les plats qui lui conviennent. « J'ai ce plat » : l'onglet
+\menu{Ce soir} cherche, avec une recherche tolérante, les bouteilles de la cave qui s'y accordent. Chaque
+accord dit pourquoi il marche et d'où il vient.
+
+% =====================================================================
+\section{Conserver}
+\subsection{Les conditions de cave}
+L'onglet \menu{Conditions de cave} reçoit la température et l'hygrométrie, saisies ou importées (CSV d'une
+sonde, par exemple). Courbes, mesures hors plage (10–15~°C, 55–75~\% selon le dossier) et vitesse de
+vieillissement qui en découle ; la température mesurée sert au calcul des fenêtres.
+
+\capture{fr-conditions.png}{Les conditions de cave : mesures, plages du dossier, alertes.}
+
+\subsection{La bouteille entamée}
+\emph{Entamer} une bouteille note ce qui reste et le mode de conservation (rebouchée, gaz inerte ou pompe,
+Coravin) ; Vendémiaire calcule la date « à finir avant » selon le style, et le tableau de bord la rappelle.
+
+\capture[0.7]{fr-entamer.png}{Une bouteille entamée et la date à laquelle la finir.}
+
+\subsection{Les niveaux}
+Le niveau du vin (\emph{ullage}) se saisit avec l'échelle des ventes aux enchères : bordelaise (dans le col,
+haut de l'épaule, mi-épaule…) ou bourguignonne (en centimètres sous le bouchon). L'échelle illustrée dit
+ce que chaque niveau signifie \textbf{pour l'âge} du vin (normal, excellent, bas pour l'âge, risqué).
+
+\capture[0.75]{fr-niveaux.png}{L'échelle des niveaux, illustrée, et son sens selon l'âge.}
+
+% =====================================================================
+\section{Déguster}
+\subsection{La fiche de dégustation}
+Robe, nez, bouche, finale, arômes choisis dans la \textbf{roue des arômes}, note sur 20 ou sur 100. Les
+dégustations restent attachées au vin.
+
+\capture[0.8]{fr-degustation.png}{La fiche de dégustation et la roue des arômes.}
+
+\subsection{Les séances : verticale, horizontale, à l'aveugle}
+L'onglet \menu{Dégustations} organise une séance : \emph{verticale} (un vin sur plusieurs millésimes),
+\emph{horizontale} (plusieurs vins d'un même millésime), \emph{à l'aveugle} (ordre tiré au hasard, verres A,
+B, C… ; on note chaque verre puis on \emph{révèle} : les notes sont alors figées).
+
+\capture{fr-seances.png}{Une séance de dégustation.}
+\capture{fr-seance-aveugle.png}{À l'aveugle : les verres sont notés avant la révélation.}
+
+\subsection{Diagnostiquer un défaut}
+\menu{Cave › Diagnostic d'une bouteille (défauts)…} aide à reconnaître un bouchon (TCA), une oxydation,
+une réduction, des \emph{brettanomyces}, une acidité volatile, un excès de soufre, la géosmine, le géranium,
+le goût de fumée, un vin cuit ou du tartre, d'après les règles du dossier.
+
+\capture[0.8]{fr-defauts.png}{Le diagnostic des défauts.}
+
+% =====================================================================
+\section{Critiques, valeurs, envies et achats}
+\subsection{Notes des critiques}
+Les notes de Parker, Wine Spectator, Decanter, Bettane+Desseauve, Jancis Robinson… se saisissent avec leur
+échelle, leur source et leur date ; la conversion entre 100, 20 et les étoiles suit la table publiée du
+dossier (sans table, pas de conversion).
+
+\capture[0.7]{fr-critique.png}{Une note de critique, avec son échelle.}
+
+\subsection{La valeur}
+Prix d'achat, puis valeurs \textbf{datées et sourcées} (une valeur sans source est refusée) : la valeur de la
+cave, sa plus ou moins-value et son évolution apparaissent dans le tableau de bord et les statistiques.
+
+\subsection{La liste d'envies et les alertes de prix}
+L'onglet \menu{Liste d'envies} garde les vins que vous aimeriez avoir : quantité, prix maximal, priorité.
+Vendémiaire ne parcourt \textbf{aucun site marchand} : vous notez vous-même un prix vu (bouton \emph{Prix
+vu…} : montant, source obligatoire, date, lien), ou vous importez un fichier CSV de prix relevés
+(\emph{Importer des prix…} : colonnes \texttt{producteur}, \texttt{cuvee}, \texttt{millesime} ou
+\texttt{envie}, \texttt{prix}, \texttt{date}, \texttt{source}, \texttt{url}). Quand un prix relevé depuis moins
+de 90 jours est au plus votre prix maximal — ou quand la dernière valeur saisie du vin lié l'est — la ligne
+passe en \textbf{alerte} (fond doré) et le tableau de bord le dit.
+
+\capture{fr-envies.png}{La liste d'envies : la première envie est en alerte (prix atteint).}
+\capture[0.75]{fr-prix.png}{Les prix relevés d'une envie : source et date obligatoires.}
+
+\subsection{La liste d'achats}
+\menu{Documents › Liste d'achats…} (\touche{Ctrl+Maj+L}) la fabrique : d'abord le \textbf{réassort} (pour
+chaque vin dont le seuil n'est plus atteint — « garder au moins 6 bouteilles » —, combien en racheter, le
+dernier prix payé et où), puis, au choix, les \textbf{envies} et leurs alertes de prix. Elle s'enregistre en
+PDF pour l'imprimer, ou en CSV.
+
+\capture[0.8]{fr-achats.png}{La liste d'achats : réassort et envies, cases à cocher.}
+
+% =====================================================================
+\section{Inventaire, codes QR et scanner}
+\subsection{L'inventaire de contrôle}
+\menu{Cave › Inventaire de contrôle…} : choisissez un casier, comptez (ou scannez) ce qui s'y trouve ;
+Vendémiaire montre les écarts (bouteilles manquantes, bouteilles en trop) et n'inscrit une bouteille
+introuvable au livre de cave (« écart d'inventaire ») que sur votre décision.
+
+\capture{fr-inventaire.png}{L'inventaire de contrôle d'un casier.}
+
+\subsection{Étiquettes de casier à code QR}
+\menu{Documents › Étiquettes de casier à code QR…} imprime une planche (3 × 8 de 70 × 37 mm, ou 3 × 7 de
+63,5 × 38,1 mm ; départ possible sur une planche entamée) : chaque étiquette porte le code de sa bouteille.
+
+\capture{fr-etiquettes.png}{La planche d'étiquettes QR.}
+
+\subsection{Scanner une bouteille}
+\menu{Cave › Scanner une bouteille…} lit un code à la webcam ou sur une image (en local), ou au clavier
+avec une douchette USB : le code d'une étiquette de casier retrouve la bouteille et propose de la sortir ;
+un code-barres EAN retrouve les vins de la cave qui le portent.
+
+\capture[0.8]{fr-scanner.png}{Scanner une bouteille.}
+
+% =====================================================================
+\section{Documents}
+\subsection{La carte des vins « de grand restaurant »}
+\menu{Documents › Carte des vins…} compose une carte imprimable de votre cave (tout ou une sélection : « le
+dîner de samedi ») selon les règles des grandes maisons :
+\begin{itemize}
+  \item \textbf{ordre classique} : effervescents, blancs, rosés, rouges, vins doux, mutés ; puis pays,
+        région, appellation, producteur, millésime — jamais par prix ;
+  \item chaque ligne : numéro BIN, producteur, cuvée, millésime, format, prix (si vous en affichez), une
+        ligne d'accord ; \textbf{verticales} regroupées ;
+  \item au verre et à la carafe, demi-bouteilles et grands formats à part, coups de cœur mis en avant ;
+  \item page de garde, mot d'accueil, \textbf{menu du soir} (un vin de la carte proposé pour chaque plat,
+        avec le pourquoi), petites cartes des régions (Natural Earth, domaine public), index des producteurs ;
+  \item trois modèles : \emph{classique} (Garamond, bordeaux et or), \emph{moderne}, \emph{bistrot} ; livret
+        A4, livret A5 ou carte simple ; en français ou en anglais.
+\end{itemize}
+Une carte \textbf{enregistrée} se régénère d'un clic d'après la cave du jour : une bouteille bue disparaît
+de la carte.
+
+\capture{fr-carte-reglages.png}{La carte des vins : modèle, format, langue, options.}
+\capture{fr-carte-vins.png}{Les vins de la carte : sélection, prix, au verre, ligne d'accord.}
+\capture{fr-carte-apercu.png}{L'aperçu avant le PDF.}
+
+\subsection{Le rapport d'assurance ou d'inventaire}
+\menu{Documents › Rapport d'assurance / d'inventaire…} : un PDF qui liste chaque bouteille avec son
+emplacement, son niveau et ce qu'il signifie pour l'âge, l'état de l'étiquette, de la capsule et du bouchon,
+la caisse, la provenance, l'achat et la \textbf{valeur datée et sourcée} (à défaut le prix d'achat, dit
+comme tel), avec la photo de l'étiquette, un résumé chiffré et une attestation à signer.
+
+\capture[0.8]{fr-assurance.png}{Le rapport d'assurance.}
+
+\subsection{Partager la cave}
+\menu{Documents › Partager la cave (HTML, PDF)…} écrit un fichier HTML autonome (vignettes incluses, aucun
+script, aucun lien en ligne) ou son PDF. Par défaut ni prix, ni valeurs, ni emplacements, ni notes privées :
+on les ajoute en cochant.
+
+\capture[0.8]{fr-partage.png}{Partager la cave en lecture seule.}
+
+% =====================================================================
+\section{Statistiques}
+L'onglet \menu{Statistiques} répartit la cave par pays, région, couleur, cépage (au prorata des
+pourcentages), millésime, tranche de prix, format et cave — en bouteilles ou en valeur ; il trace la valeur
+de la cave dans le temps (coût d'achat et valeur retenue), les entrées et sorties par année, le rythme de
+consommation comparé à la courbe d'apogée (« combien en boire par an »), et la courbe d'apogée par couleur.
+
+\capture{fr-statistiques.png}{Les statistiques : répartitions, valeur dans le temps, entrées et sorties.}
+\capture{fr-statistiques-cepages.png}{La répartition par cépage, en valeur.}
+
+% =====================================================================
+\section{Importer, exporter}
+\label{sec:imports}
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[CellarTracker] \menu{Fichier › Importer un export CellarTracker…} : les exports « Inventory »
+    (une ligne par bouteille) ou « List » (une ligne par vin) en CSV ou texte tabulé. Le mot \texttt{Unknown}
+    vaut un champ vide, le millésime \texttt{1001} « non millésimé ».
+  \item[Excel, CSV] \menu{Fichier › Importer un tableau (Excel, CSV)…} : la correspondance des colonnes est
+    proposée d'après les en-têtes, modifiable, avec un aperçu.
+  \item[Vivino] \menu{Fichier › Importer un export Vivino…} : la correspondance part d'en-têtes plausibles ;
+    relisez-la avant d'importer.
+  \item[Vendémiaire] CSV (une ligne par bouteille) en aller-retour, et \menu{Fichier › Exporter tout en
+    JSON…} : toutes les tables, rien ne reste prisonnier.
+\end{description}
+Une sauvegarde « avant-import » précède chaque import, et un import \textbf{ne remplace jamais} ce que
+vous avez saisi à la main : il ne complète que les champs vides.
+
+\capture{fr-import-vivino.png}{L'import d'un tableau : correspondance des colonnes et aperçu.}
+
+% =====================================================================
+\section{Sauvegardes}
+Vendémiaire sauvegarde la base toutes les 30 minutes si elle a changé, et avant chaque migration ou import.
+Les copies sont cohérentes même base ouverte. On garde les 10 dernières copies automatiques et une par
+semaine sur 8 semaines ; les copies « manuel » et « avant-import » (jusqu'à 20) ne sont jamais effacées
+par la rotation.
+\begin{itemize}
+  \item \menu{Fichier › Sauvegarder maintenant} ;
+  \item \menu{Fichier › Restaurer une sauvegarde…} (la base actuelle est sauvegardée avant) ;
+  \item \menu{Fichier › Ouvrir le dossier des sauvegardes}.
+\end{itemize}
+Les sauvegardes vivent avec les données, jamais dans le dossier du programme.
+
+% =====================================================================
+\section{La base sur un NAS ou un dossier partagé}
+Les données vivent par défaut dans votre profil (Windows~: \texttt{\%LOCALAPPDATA\%\textbackslash
+Vendemiaire} ; macOS~: \texttt{\textasciitilde/Library/Application Support/Vendemiaire} ; Linux~:
+\texttt{\textasciitilde/.local/share/Vendemiaire}). Elles peuvent vivre dans un \textbf{dossier partagé sur
+un NAS} (lecteur réseau), pour qu'un autre ordinateur ou un autre programme les lise :
+\begin{enumerate}
+  \item connectez le dossier partagé (sous Windows, une lettre de lecteur réseau) ;
+  \item \menu{Fichier › Dossier des données…} et choisissez-le ; Vendémiaire y range la base
+        (\texttt{cave.db}), les images, les sauvegardes et son verrou.
+\end{enumerate}
+\begin{attention}[Un seul écrivain]
+Une seule copie de Vendémiaire peut écrire à la fois : le verrou est posé \emph{dans} le dossier des
+données, donc sur le partage lui-même. Une seconde copie (sur un autre ordinateur) le dit et ne s'ouvre pas
+en écriture. Les autres programmes lisent la base en lecture seule, de préférence une copie ou la dernière
+sauvegarde. La base n'utilise jamais le mode WAL, incompatible avec les partages réseau.
+\end{attention}
+
+% =====================================================================
+\section{Confidentialité et rapports d'incident}
+\label{sec:confidentialite}
+\begin{itemize}
+  \item Votre cave ne quitte jamais votre ordinateur (ou votre partage). Aucune télémétrie de la cave.
+  \item Les \textbf{recherches en ligne} (Wikidata, Open Food Facts, mise à jour des registres) ne partent
+        qu'avec votre accord ; la mise à jour automatique interroge seulement la page des versions du projet.
+  \item Les \textbf{rapports d'incident} (plantage, gel, crash, ou \menu{Aide › Signaler un problème…})
+        ne partent qu'avec votre accord, demandé au premier lancement et modifiable dans le menu Aide
+        (\emph{Envoyer automatiquement les rapports d'incident}). Un rapport contient la version, le système,
+        la trace technique de l'erreur, le nom de l'ordinateur et un identifiant d'installation tiré au
+        hasard ; les chemins et noms d'utilisateur sont masqués dans les traces ; jamais votre cave, vos
+        fichiers ni vos photos. Sans accord, ils restent sur votre ordinateur.
+\end{itemize}
+
+% =====================================================================
+\section{Accessibilité et raccourcis clavier}
+Tout se fait au clavier (sous macOS, Ctrl correspond à la touche Commande) : \touche{Tab} et \touche{Maj+Tab} parcourent les champs et les boutons (celui qui
+a le focus est entouré d'un trait doré), \touche{Alt} et les lettres soulignées ouvrent les menus.
+
+\begin{center}
+\begin{tabular}{>{\sffamily}l l}
+\toprule
+\textbf{Touches} & \textbf{Action} \\
+\midrule
+Ctrl+1 … Ctrl+9, Ctrl+0 & aller à l'un des dix onglets (l'infobulle de l'onglet le rappelle) \\
+Ctrl+Tab, Ctrl+Maj+Tab & onglet suivant, précédent \\
+Ctrl+N & nouveau vin \\
+Ctrl+E & modifier le vin choisi \\
+Ctrl+Maj+B & ajouter des bouteilles \\
+Ctrl+Maj+D & sortir la bouteille choisie \\
+Ctrl+Maj+L & liste d'achats \\
+Ctrl+F & rechercher (livre de cave) \\
+F1 & ce manuel \\
+Ctrl+Q & quitter (Windows : Alt+F4) \\
+\midrule
+flèches (plan) & bouteille voisine \\
+Ctrl+flèches (plan) & déplacer la bouteille d'une case \\
+Entrée (plan) & fiche de la bouteille \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Sources de données et licences}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.27\linewidth} X}
+\toprule
+\textbf{Source} & \textbf{Licence, usage} \\
+\midrule
+Dossier « Le vin » & règles de garde, service, conservation, niveaux, accords ; chaque règle cite ses sources
+(guides, encyclopédies, études, textes officiels) \\
+LWIN (Liv-ex) & CC BY 4.0 ; « LWIN © Liv-ex Ltd » ; copie locale convertie, téléchargée par vous \\
+Wikidata & CC0 \\
+Wikimedia Commons & licence de chaque image, enregistrée avec elle \\
+Open Food Facts & base ODbL, contenus DbCL, photos CC BY-SA (« Open Food Facts contributors ») \\
+INAO (data.gouv.fr) & Licence Ouverte 2.0 \\
+eAmbrosia (UE) & réutilisation autorisée (décision 2011/833/UE) \\
+Natural Earth & domaine public (petites cartes des régions) \\
+Tesseract, modèles \emph{tessdata\_fast} & Apache 2.0 \\
+Tectonic & MIT ; les paquets LaTeX de son cache gardent leurs licences (LPPL, OFL pour les polices…) \\
+Qt, PyQt6 & LGPL v3 ; GPL v3 \\
+segno, zxing-cpp & BSD ; Apache 2.0 \\
+Polices Source Sans 3, Cormorant Garamond & SIL Open Font License \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Vendémiaire lui-même est publié sous licence MIT (fichier \texttt{LICENSE}).
+
+% =====================================================================
+\section{En cas de souci}
+\begin{description}[style=nextline,leftmargin=1.2em]
+  \item[« Une autre copie de Vendémiaire utilise cette cave »] une autre fenêtre (ou un autre ordinateur, si
+    la base est partagée) est ouverte : fermez-la. Un verrou laissé par un programme arrêté brutalement est
+    repris tout seul.
+  \item[L'OCR ne lit rien] redressez d'abord l'étiquette ; vérifiez dans \menu{Références › Bases de
+    référence et licences…} que Tesseract est trouvé.
+  \item[Le PDF est « simple »] aucun moteur LaTeX n'a été trouvé (installation depuis les sources) :
+    installez Tectonic ou une distribution TeX, ou utilisez le paquet complet.
+  \item[Un document LaTeX échoue hors ligne] le cache embarqué couvre les documents de Vendémiaire ; un
+    paquet LaTeX manquant est téléchargé si le réseau est là.
+  \item[Autre chose] \menu{Aide › Signaler un problème…} : décrivez ce qui s'est passé ; le rapport part
+    avec votre accord, ou reste en fichier à envoyer à la main.
+\end{description}
+
 \end{document}

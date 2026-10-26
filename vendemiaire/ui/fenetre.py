@@ -208,6 +208,7 @@ class FenetrePrincipale(QMainWindow):
             except Exception:
                 log.exception("menu Aide du kit")
                 self.aide = None
+        self._action(m, "menu.demonstration", self.ouvrir_demonstration)
         self._action(m, "menu.apropos", self.a_propos)
 
     def _raccourcis_onglets(self) -> None:
@@ -635,6 +636,22 @@ class FenetrePrincipale(QMainWindow):
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(dossier)))
 
     # ------------------------------------------------------------------ aide
+    def commande_demonstration(self) -> tuple[str, list[str]]:
+        """Programme et arguments qui ouvrent la cave de démonstration dans une
+        AUTRE fenêtre (son propre dossier de données, son propre verrou : la
+        vraie cave n'est jamais touchée)."""
+        import sys
+        racine = chemins.RACINE_APP
+        py = racine.parent / "python" / "pythonw.exe"
+        exe = str(py) if py.exists() else sys.executable
+        return exe, [str(racine / "run.py"), "--demo", "--lang", i18n.langue()]
+
+    def ouvrir_demonstration(self) -> None:
+        from PyQt6.QtCore import QProcess
+        exe, args = self.commande_demonstration()
+        if not QProcess.startDetached(exe, args)[0]:
+            QMessageBox.warning(self, tr("menu.demonstration"), tr("demonstration.echec"))
+
     def a_propos(self) -> None:
         box = QMessageBox(self)
         box.setWindowTitle(tr("menu.apropos"))

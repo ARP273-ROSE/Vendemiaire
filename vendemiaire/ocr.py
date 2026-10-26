@@ -163,7 +163,10 @@ def lire(image, langue: str | None = None, delai: float = 90) -> ResultatOCR:
         else:
             source = str(Path(tmp) / "etiquette.png")
             image.save(source, "PNG")
-        args = _commande(m) + [source, "stdout", "-l", langue or langues_etiquette(), "--psm", "3", "tsv"]
+        # « -c tessedit_create_tsv=1 » plutôt que le fichier de configuration « tsv » : le
+        # Tesseract du paquet n'a que ses modèles fra/eng dans tessdata/, pas de configs/
+        args = _commande(m) + [source, "stdout", "-l", langue or langues_etiquette(), "--psm", "3",
+                               "-c", "tessedit_create_tsv=1"]
         r = _executer(args, delai)
     if r.returncode != 0:
         raise RuntimeError((r.stderr or b"").decode("utf-8", "replace")[-400:])

@@ -181,6 +181,12 @@ def test_tesseract_du_paquet_avec_ses_modeles(tmp_path, monkeypatch):
     assert ocr.moteur() == str(exe) and outils_embarques.est_embarque(ocr.moteur())
     assert ocr.langues() == ["eng", "fra"]
     assert f"--tessdata-dir {outils / 'tesseract' / 'tessdata'} --list-langs" in journal.read_text()
+    img = tmp_path / "e.png"
+    _image(img)
+    ocr.lire(str(img), "eng")
+    derniere = journal.read_text().splitlines()[-1]
+    # pas de fichier de configuration « tsv » (absent du tessdata du paquet) : une variable
+    assert derniere.endswith("-c tessedit_create_tsv=1") and "--tessdata-dir" in derniere
     monkeypatch.setenv("VENDEMIAIRE_OUTILS", str(tmp_path / "rien"))
     assert ocr.moteur() != str(exe)                          # sans paquet : celui du système
 
