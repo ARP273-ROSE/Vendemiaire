@@ -1,0 +1,44 @@
+
+
+# --- kit Windows : fichiers produits a l'execution ---------------------------
+# Sur un poste ou le dossier de donnees est le depot lui-meme, sans ces lignes
+# chaque plantage viendrait salir « git status ».
+_rapports/
+reglages_rapports.json
+_crash_natif.log
+_crash_report.json
+dist/
+installer_out/
+.build_cache/
+# paquets produits par build_unix.py
+*-linux-*.tar.gz
+*-app-*.zip
+*-maj-*.zip
+*-linux.AppImage
+*.dmg
+
+# --- Vendémiaire ---------------------------------------------------------------
+# données de l'utilisateur : JAMAIS dans le dépôt (bases, images, sauvegardes)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+images/
+sauvegardes/
+vendemiaire.verrou
+emplacement.json
+# cahier des charges d'origine (contient des données personnelles) : la copie
+# neutre est docs/cahier_des_charges.md ; notes locales de l'environnement
+/CAHIER_DES_CHARGES.md
+/NOTES_LOCALES.md
+# l'aperçu du logo de l'atelier : les dérivés officiels sont dans docs/
+/branding/logo_512.png
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# temporaires LaTeX (on ne garde que .tex et .pdf)
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz

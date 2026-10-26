@@ -1,0 +1,15 @@
+Polices embarquées / Embedded fonts
+===================================
+
+Fournies avec le programme pour que l'interface garde le même aspect sur tous
+les ordinateurs, quels que soient le thème, les polices ou la langue du
+système. / Shipped with the program so that the interface looks the same on
+every computer, whatever the system's theme, fonts or language.
+
+Source Sans 3 (Regular, Semibold, Bold) — texte de l'interface / interface text
+  © 2023 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+
+Cormorant Garamond (SemiBold) — titres / headings
+  Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant).
+
+SIL Open Font License, version 1.1 : https://openfontlicense.org

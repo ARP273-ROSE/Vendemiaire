@@ -1,0 +1,96 @@
+{
+  "nom_technique": "vendemiaire",
+  "nom_fichier": "Vendemiaire",
+  "nom_affiche": "Vendemiaire",
+  "depot_distribution": "ARP273-ROSE/Vendemiaire",
+  "point_entree": "run.py",
+  "fichier_version": "VERSION",
+  "icone": "docs\\logo.ico",
+  "appid": "{{362C6C35-5131-52A2-9221-56E0EAFCDAF5}",
+  "modules": [
+    "run.py",
+    "reporting.py",
+    "updater.py",
+    "interface_kit.py",
+    "kit_aide.py"
+  ],
+  "paquets": [
+    "vendemiaire"
+  ],
+  "assets": [
+    "VERSION",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "requirements": "requirements.txt",
+  "pip": [],
+  "binaires": [],
+  "fichiers_proteges": [
+    "_rapports",
+    "reglages_rapports.json",
+    "_crash_natif.log",
+    "vendemiaire-erreur.log",
+    "cave.db",
+    "images",
+    "sauvegardes",
+    "emplacement.json",
+    "vendemiaire.verrou"
+  ],
+  "icone_png": "docs/logo_256.png",
+  "icone_grande": "docs/logo_512.png",
+  "nom_affiche_fr": "Vendémiaire",
+  "nom_affiche_en": "Vendémiaire",
+  "description_fr": "Gestion de cave à vin : bouteilles, plan des casiers, livre de cave",
+  "description_en": "Wine cellar manager: bottles, rack plan, cellar book",
+  "categories_linux": "Office;Database;",
+  "icone_icns": "docs/logo.icns",
+  "verification_import": [
+    "vendemiaire",
+    "vendemiaire.base",
+    "vendemiaire.modele",
+    "vendemiaire.echanges",
+    "vendemiaire.ui.fenetre",
+    "vendemiaire.style",
+    "vendemiaire.logo",
+    "PyQt6.QtSvg",
+    "interface_kit",
+    "kit_aide"
+  ],
+  "journal_technique": "JOURNAL.md",
+  "tests_ci": [
+    "tests/test_confidentialite.py",
+    "tests/test_kit.py",
+    "tests/test_modele.py",
+    "tests/test_migrations.py",
+    "tests/test_echanges.py",
+    "tests/test_i18n_textes.py",
+    "tests/test_interface.py"
+  ],
+  "copies": [
+    {
+      "de": "docs",
+      "motifs": [
+        "logo.svg",
+        "logo.ico",
+        "logo_16.png",
+        "logo_24.png",
+        "logo_32.png",
+        "logo_48.png",
+        "logo_64.png",
+        "logo_128.png",
+        "logo_256.png",
+        "logo_512.png"
+      ]
+    },
+    {
+      "de": "branding",
+      "motifs": [
+        "logo.svg"
+      ]
+    }
+  ],
+  "rapports": {
+    "poste": "machine"
+  }
+}

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Vendémiaire — logo (26/10/2026). Médaillon bordeaux, liseré or, verre de vin rempli,
+       grappe et feuille de vigne. Une seule source : toutes les tailles d'icône en dérivent. -->
+  <defs>
+    <radialGradient id="fond" cx="40%" cy="32%" r="78%">
+      <stop offset="0" stop-color="#8E2A3D"/>
+      <stop offset="0.55" stop-color="#5E1427"/>
+      <stop offset="1" stop-color="#360913"/>
+    </radialGradient>
+    <linearGradient id="or" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3D58A"/>
+      <stop offset="0.5" stop-color="#C99A3B"/>
+      <stop offset="1" stop-color="#8A6420"/>
+    </linearGradient>
+    <linearGradient id="vin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C2304A"/>
+      <stop offset="1" stop-color="#6B0F24"/>
+    </linearGradient>
+    <linearGradient id="verre" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.30"/>
+    </linearGradient>
+    <linearGradient id="feuille" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9DBE5A"/>
+      <stop offset="1" stop-color="#4E7A2A"/>
+    </linearGradient>
+    <radialGradient id="baie" cx="35%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#9C6FC4"/>
+      <stop offset="0.6" stop-color="#4B2A78"/>
+      <stop offset="1" stop-color="#2A1446"/>
+    </radialGradient>
+  </defs>
+
+  <!-- médaillon -->
+  <circle cx="256" cy="256" r="244" fill="url(#or)"/>
+  <circle cx="256" cy="256" r="230" fill="url(#fond)"/>
+  <circle cx="256" cy="256" r="214" fill="none" stroke="url(#or)" stroke-width="3" opacity="0.7"/>
+
+  <!-- feuille de vigne (derrière le verre, en haut à droite) -->
+  <g transform="translate(318,150) rotate(18)">
+    <path d="M0,-70 C18,-52 30,-58 38,-40 C54,-44 66,-28 56,-12 C74,-4 70,18 52,22
+             C58,40 40,52 26,42 C20,60 2,66 0,82 C-2,66 -20,60 -26,42 C-40,52 -58,40 -52,22
+             C-70,18 -74,-4 -56,-12 C-66,-28 -54,-44 -38,-40 C-30,-58 -18,-52 0,-70 Z"
+          fill="url(#feuille)" stroke="#2F4F18" stroke-width="2"/>
+    <path d="M0,80 L0,-60 M0,10 L40,-30 M0,10 L-40,-30 M0,40 L34,24 M0,40 L-34,24"
+          stroke="#2F4F18" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <!-- verre : pied, jambe, coupe -->
+  <g>
+    <ellipse cx="236" cy="420" rx="70" ry="13" fill="#000" opacity="0.25"/>
+    <path d="M168,412 Q236,396 304,412 Q236,428 168,412 Z" fill="url(#verre)" stroke="#F6EAD0" stroke-width="3"/>
+    <path d="M230,330 L230,406 Q236,412 242,406 L242,330 Z" fill="url(#verre)" stroke="#F6EAD0" stroke-width="3"/>
+    <!-- coupe -->
+    <path d="M150,132 L322,132 C330,230 300,320 236,330 C172,320 142,230 150,132 Z"
+          fill="url(#verre)" stroke="#F6EAD0" stroke-width="4"/>
+    <!-- vin -->
+    <path d="M156,212 C190,202 282,222 316,210 C312,270 284,316 236,322 C188,316 160,270 156,212 Z"
+          fill="url(#vin)"/>
+    <path d="M156,212 C190,202 282,222 316,210" fill="none" stroke="#E86A80" stroke-width="3" opacity="0.8"/>
+    <!-- reflet -->
+    <path d="M170,150 C166,200 172,250 192,290" fill="none" stroke="#FFFFFF" stroke-width="7"
+          stroke-linecap="round" opacity="0.45"/>
+  </g>
+
+  <!-- grappe (devant, en bas à droite) -->
+  <g transform="translate(330,300)">
+    <path d="M8,-40 C14,-58 30,-66 44,-70" stroke="#5B3A1A" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="-18" cy="-22" r="17" fill="url(#baie)"/>
+    <circle cx="14" cy="-24" r="17" fill="url(#baie)"/>
+    <circle cx="44" cy="-18" r="16" fill="url(#baie)"/>
+    <circle cx="-4" cy="6" r="17" fill="url(#baie)"/>
+    <circle cx="28" cy="6" r="17" fill="url(#baie)"/>
+    <circle cx="12" cy="34" r="16" fill="url(#baie)"/>
+    <circle cx="40" cy="30" r="14" fill="url(#baie)"/>
+    <circle cx="24" cy="58" r="13" fill="url(#baie)"/>
+  </g>
+
+  <!-- étoile de garde (le « bon moment ») -->
+  <path d="M120,96 l6,14 15,1 -11,10 4,15 -14,-8 -14,8 4,-15 -11,-10 15,-1 z" fill="url(#or)"/>
+</svg>

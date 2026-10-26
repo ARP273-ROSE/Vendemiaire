@@ -1,0 +1,3 @@
+iWine,Type,Color,Category,Size,Currency,Value,Price,Quantity,Pending,Vintage,Wine,Locale,Producer,Varietal,MasterVarietal,Designation,Vineyard,Country,Region,SubRegion,Appellation,BeginConsume,EndConsume,WA,WS,JR,CT
+6001,Red,Red,Dry,750ml,EUR,30,22,3,2,2019,Tenuta Inventata Rosso,"Italy, Tuscany",Tenuta Inventata,Sangiovese,Sangiovese,Rosso,Unknown,Italy,Tuscany,Unknown,Toscana IGT,2023,2030,92,,16.5,90.5
+6002,White,White,Sweet,375ml,EUR,,35,1,0,2015,Domaine Supposé Doux,"France, Loire Valley",Domaine Supposé,Chenin Blanc,Chenin Blanc,Unknown,Unknown,France,Loire Valley,Anjou,Coteaux du Layon,,,,,,
