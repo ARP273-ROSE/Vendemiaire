@@ -25,6 +25,25 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 - **Grande cave** (`python outils/grosse_cave.py 20000`) : ouverture 1,9 s, onglets et recherche ≤ 0,6 s
   (livre de cave de 20 000 lignes : 0,6 s), « tout rafraîchir » après une saisie 0,35 s.
 
+## Publication 1.0.0 (27/10/2026) — brouillon, non publié
+
+- Run « Publier une version » `40407421920` (`--ref main -f version=1.0.0 -f brouillon=true`) : tous les jobs
+  verts (essais, Windows, macOS arm64 et x86_64, Linux x86_64 et arm64, publication en brouillon) ; `tests.yml`
+  vert sur `main`.
+- Fichiers du brouillon (vérifiés par l'API, `SHA256SUMS` contrôlé) : `Vendemiaire-Setup-1.0.0.exe` 92 Mo ;
+  `Vendemiaire-1.0.0-macos-arm64.dmg` 156 Mo ; `…-macos-x86_64.dmg` 158 Mo ; `…-linux-x86_64.tar.gz` 139 Mo ;
+  `…-linux-arm64.tar.gz` 135 Mo ; archive de MAJ `vendemiaire-app-1.0.0.zip` 11 Mo ; copies à nom stable.
+  Dans chaque paquet : Tesseract 63–71 Mo et Tectonic + cache 78–110 Mo (dépliés) ; essai réel vert sur les
+  cinq paquets (QR écrit/relu, OCR, compilation hors ligne), manuels régénérés par le Tectonic embarqué.
+- **MAJ réelle sous Linux** : paquet 0.4.0 (reconstruit depuis `c6aeaf9`, essai sans publication) installé par
+  `installer.sh` dans un HOME jetable ; son updater, avec son Python, contre les fichiers du brouillon
+  (`outils/essai_maj.py`) : mise à jour 1.0.0 trouvée, `vendemiaire-app-1.0.0.zip` choisie, taille et
+  SHA256SUMS vérifiés, `app/` remplacé ; relancée : `--version` 1.0.0, `--check` « interface OK ». Comme
+  prévu, `outils/` n'arrive pas par la MAJ (Tesseract/Tectonic du système) ; réinstallation du paquet complet
+  1.0.0 par-dessus : `outils/` posé, essai « QR ok, Tesseract ok, Tectonic hors ligne ok ».
+- Le paquet 0.4.0 de Windows ne passait pas `--check` (base d'essai tenue par l'antivirus, règles refusées
+  à cause des fins de ligne) : jamais publié, corrigé en 1.0.0.
+
 ## Les phases
 
 | Phase | Contenu | État |
@@ -199,15 +218,24 @@ python run.py --demo                                                    # essaye
 python outils/registres_appellations.py                                 # rafraîchir les registres embarqués (réseau)
 python outils/synchroniser_regles.py --verifier                         # règles identiques au dossier « Le vin » ?
 python outils/synchroniser_regles.py                                    # recopier après une correction DANS le dossier
-xvfb-run -a python outils/exemples.py                                   # docs/exemples/ (PDF sur la démonstration)
+xvfb-run -a python outils/exemples.py                                   # docs/exemples/ (PDF) + docs/prechauffage/ (sources du cache Tectonic)
+python outils/manuel.py                                                 # docs/manuel-{fr,en}.pdf (Tectonic, sinon XeLaTeX) + contrôles
+xvfb-run -a python outils/grosse_cave.py 20000                          # temps de l'interface sur une grande cave
 python outils/cartes_simplifiees.py <ne_10m_admin_0_countries.shp> <dossier Le vin>   # petites cartes (pyshp)
 ```
 
 - Reposer le kit après une évolution du gabarit : `python <kit>/poser_le_kit.py . --multiplateforme
   --confidentialite` (garde `kit.json` ; `tests/test_kit.py` vérifie l'identité octet par octet).
-- Publier (décision de l'utilisateur) : bump `VERSION` + section `## X.Y.Z` de `JOURNAL.md`, tag `vX.Y.Z`
-  → `release.yml` du kit (Windows, macOS, Linux). Essai sans rien publier :
-  `gh workflow run release.yml -f version=X.Y.Z -f essai=true`.
+- Publier (décision de l'utilisateur) : bump `VERSION` (et `\VersionManuel` des deux manuels) + section
+  `## X.Y.Z` de `JOURNAL.md`, puis **brouillon** : `gh workflow run release.yml --ref main -f version=X.Y.Z
+  -f brouillon=true` ; vérifier les fichiers (et `SHA256SUMS`) ; essai de MAJ réel (ci-dessous) ; publier :
+  `gh release edit vX.Y.Z --draft=false --latest` (le tag est posé sur `main` à ce moment). Essai sans rien
+  publier : `-f essai=true` (et `-f ref=<commit>` pour reconstruire une ancienne version).
+- **Essai de MAJ réel (Linux)** : paquet de l'ancienne version (artefact d'un essai `-f ref=<commit>`)
+  installé par son `installer.sh` dans un HOME jetable ; `gh api repos/ARP273-ROSE/Vendemiaire/releases`
+  (le brouillon) → `release.json` ; `gh release download vX.Y.Z` → fichiers ; puis, avec le Python INSTALLÉ :
+  `python3 outils/essai_maj.py <installé> release.json <fichiers> <ancienne version>` ; relancer l'appli
+  installée (`--version`, `--check`).
 
 ## Pièges payés (phase 1)
 
@@ -291,50 +319,67 @@ python outils/cartes_simplifiees.py <ne_10m_admin_0_countries.shp> <dossier Le v
 - `zxing-cpp` lit une `memoryview` 2D sans numpy ; une QImage en niveaux de gris a des lignes alignées sur
   4 octets : retirer le bourrage.
 
-## Reste à faire (prochaine reprise : phase 5)
+## Pièges payés (phase 5)
 
-1. **Manuel PDF LaTeX FR + EN** (format maison, captures réelles de `docs/captures/`, exemples de
-   `docs/exemples/`), ouvert par le menu Aide (`docs/manuel-{fr,en}.pdf`).
-2. **Kit : embarquer les binaires sur les 3 systèmes** — Tesseract (+ fra/eng), **Tectonic** avec un cache
-   de paquets pré-rempli (pour compiler hors ligne ; voir [docs/documents.md](docs/documents.md)) ;
-   vérifier que `segno` et `zxing-cpp` (dans `requirements.txt`) s'installent dans le Python embarqué
-   (roues Windows/macOS arm64+x86_64/Linux arm64+x86_64). Le kit ne sait aujourd'hui embarquer des binaires
-   que sous Windows, depuis un zip : évolution du gabarit `_kit_windows`.
-3. **Polissage** : écran des photos du livre de
-   cave, liste d'achats imprimable (seuils de réassort, envies), alertes de prix sur les envies (valeurs
-   saisies), vue 3D (si décidée), petites cartes : chevauchements d'étiquettes résiduels.
-4. **Valider sur de vrais fichiers** : LWIN, CellarTracker, **export Vivino** (en-têtes), webcam réelle
-   (scanner), impression d'une planche d'étiquettes sur le papier choisi (marges).
-5. **Première publication** : VERSION, JOURNAL, README FR/EN, tag → `release.yml` (Windows, macOS, Linux),
-   MAJ auto testée en réel (ancienne version installée → MAJ), Release vérifiée par l'API.
+- 🔴 **Tesseract du paquet : OCR vide.** Le dernier argument `tsv` est un *fichier de configuration*
+  cherché dans `tessdata/configs/` ; le tessdata du paquet n'a que `fra` et `eng` → sortie texte au lieu de
+  TSV, aucun mot lu, sans erreur. Remède : `-c tessedit_create_tsv=1` (marche partout).
+- 🔴 **Windows : règles refusées au démarrage** (« modifié depuis la copie du dossier ») : Git convertit
+  les fins de ligne à l'extraction, l'empreinte SHA-256 change. `.gitattributes` : `vendemiaire/regles/
+  donnees/** -text`. Invisible sous Linux et macOS, et en CI tant qu'on ne construisait pas Windows.
+- Windows : `run.py --check` échouait en effaçant sa base d'essai (fichier tenu un instant par
+  l'antivirus) → `TemporaryDirectory(ignore_cleanup_errors=True)` ; aucune connexion ne fuit (vérifié).
+- Préfixe conda de Tesseract : 110 Mo sous Linux. On ne garde que la **fermeture des dépendances** des
+  exécutables (lue en Python pur dans les ELF, Mach-O, PE) et `strip --strip-unneeded` sous Linux
+  (libstdc++ : 24 → 2,8 Mo) → 71 Mo, dont ICU 33 Mo (libxml2, tiré par libarchive : indispensable).
+- L'archive de MAJ ne peut contenir **aucun lien symbolique** (l'updater les refuse, à raison) et les
+  bibliothèques conda en ont : les outils vivent dans `outils/`, à côté de `app/`, livrés par le paquet
+  complet seulement ; l'application se replie sur le système quand ils manquent.
+- Une Release en **brouillon** est invisible pour `releases/latest` : la MAJ s'essaie avec l'updater
+  INSTALLÉ contre les fichiers du brouillon (`outils/essai_maj.py`).
+- Captures du plan et du livre : `setCurrentIndex(i)` sur une liste de noms décalée depuis l'ajout du mur
+  (phase 2) — la capture « plan » montrait le mur, « livre » le plan. Onglets choisis par widget.
+- Grande cave : `etat_bouteilles` (style de chaque vin, fenêtre, phase) était recalculé 5 fois au démarrage
+  (≈ 1 s chacune à 20 000 bouteilles) → cache tant que `Base.marque()` (écritures, `total_changes`,
+  `PRAGMA data_version`) ne change pas ; `normaliser` et les motifs des styles mémorisés ; fenêtres
+  calculées réécrites seulement si elles changent ; onglets cachés rafraîchis à leur ouverture.
+
+## Reste à faire, pistes
+
+1. **Vue 3D de la cave** : non faite (« si faisable » au cahier) ; le plan 2D, à la souris et au clavier,
+   couvre l'usage. À décider.
+2. **Valider sur de vrais fichiers** (l'utilisateur) : LWIN (formulaire de Liv-ex), **export Vivino**
+   (en-têtes supposés), export **CellarTracker**, webcam réelle (scanner), impression d'une planche
+   d'étiquettes sur le papier choisi (marges).
+3. **Premières installations réelles** : l'installeur Windows et les `.dmg` n'ont été exécutés que par la
+   CI (essais du paquet) ; la MAJ réelle a été jouée sous Linux. À regarder au premier usage : avertissements
+   SmartScreen / Gatekeeper (paquets non signés), OCR et carte des vins hors ligne.
+4. Poids : ICU (33 Mo) dans Tesseract — un libxml2 sans ICU allégerait de moitié l'outil.
+5. Le kit sait maintenant embarquer des outils sur les trois systèmes (`outils`) : à proposer aux autres
+   applications qui dépendent d'un programme externe.
 
 ## Décisions pour l'utilisateur
 
-- **LWIN** : remplir une fois le formulaire de Liv-ex (courriel), importer le fichier ; s'il donne un
-  lien direct stable, le coller dans Références › Bases de référence et cocher la mise à jour
-  mensuelle.
-- **OCR** : Tesseract n'est pas embarqué dans les paquets (le kit ne sait embarquer des binaires que
-  sous Windows, et à partir d'une archive zip) ; à installer à part (≈ 10–30 Mo selon les langues).
-  L'embarquer = travail du kit (phase 5). OpenCV : facultatif, non embarqué (≈ 60 Mo).
+- **Publier la 1.0.0 ?** Le brouillon v1.0.0 est complet (voir « Publication 1.0.0 ») ; le publier :
+  `gh release edit v1.0.0 -R ARP273-ROSE/Vendemiaire --draft=false --latest`. Tant qu'il est en
+  brouillon, aucune installation ne le voit.
+- **Rapports d'incident : `poste`** = nom de la machine (`kit.json` « rapports »), comme les applications
+  familiales. Vendémiaire étant publique, un tiers qui l'installe enverrait (avec son accord) le nom de son
+  ordinateur : passer à `"poste": "installation"` (identifiant aléatoire) si l'application doit servir à
+  d'autres. Le manuel décrit le comportement actuel.
+- **LWIN** : remplir une fois le formulaire de Liv-ex (courriel), importer le fichier ; s'il donne un lien
+  direct stable, le coller dans Références › Bases de référence et cocher la mise à jour mensuelle.
+- **Vivino, CellarTracker** : demander un export de ses données et essayer l'import ; la correspondance
+  Vivino part d'en-têtes supposés.
+- **Vue 3D** : à faire ou à abandonner (le plan 2D suffit-il ?).
 - **Recherches en ligne** : désactivées tant que l'utilisateur ne les autorise pas.
-
-- **Publier ?** Dépôt public depuis le 26/10 (CI verte). Publier = tag `v0.4.0` (VERSION déjà à 0.4.0 ; ou essai
-  `gh workflow run release.yml -f version=0.4.0 -f essai=true`).
-- **Moteur PDF** : LaTeX si présent (Tectonic, XeLaTeX, LuaLaTeX, pdfLaTeX), sinon repli Qt (même contenu,
-  typographie simple). Proposition : **embarquer Tectonic** en phase 5 (avec son cache) ; d'ici là, installer
-  MiKTeX (Windows) ou TeX Live/MacTeX donne la belle carte.
-- **Vivino** : faire une demande d'export de ses données à Vivino et essayer l'import (Fichier › Importer un
-  export Vivino) : la correspondance proposée part d'en-têtes supposés.
 - **Prix sur la carte** : saisis par vin dans la carte (prix de la bouteille, prix au verre) ; la
   démonstration en propose à 2,5 × le prix d'achat, uniquement pour l'exemple.
-- **Emplacement de la base** : profil local (défaut) ou lecteur réseau partagé (menu Fichier › Dossier
-  des données…) pour que le dossier « Le vin » la lise.
-- **Règles du dossier à revoir peut-être (dans `scripts/regles.py`, pas dans l'appli)** : porto ruby / LBV
-  classé « porto vintage » (« porto » dans ses appellations) et muscat de Rivesaltes classé « muté
-  oxydatif » (« rivesaltes ») ; magnum « plus lent » non chiffré (fenêtre inchangée) ; la note d'un
-  critique sur le vin lui-même ne modifie pas la fenêtre (aucune règle). Corrigés le 26/10 : champagne sans
-  année, banyuls rimage / VDN grenat, rattachement des millésimes (source unique dans le dossier).
-- Formats : les noms au-delà du magnum varient selon les régions (bordelais / champenois) ; la liste
-  actuelle est à valider avec le dossier « Le vin ».
-- CellarTracker : valider l'import sur un vrai export (colonnes documentées dans
-  [docs/import_cellartracker.md](docs/import_cellartracker.md)).
+- **Emplacement de la base** : profil local (défaut) ou dossier partagé sur un NAS (Fichier › Dossier des
+  données…), pour que le dossier « Le vin » la lise (lecture seule).
+- **Règles restées sans chiffre** (dans le dossier « Le vin », pas dans l'appli) : magnum « plus lent » non
+  chiffré (fenêtre inchangée) ; la note d'un critique sur le vin lui-même ne modifie pas la fenêtre.
+  Corrigés : champagne sans année, banyuls rimage / VDN grenat, rattachement des millésimes (26/10) ;
+  porto ruby / LBV / tawny / colheita, muscat de Rivesaltes (27/10).
+- Formats : les noms au-delà du magnum varient selon les régions (bordelais / champenois) ; liste à valider
+  avec le dossier « Le vin ».
