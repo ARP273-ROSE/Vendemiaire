@@ -308,6 +308,26 @@
    "fichier": "data/sources/web/ue2019_934_annexeIC_acidite_volatile.txt",
    "nature": "texte officiel"
   },
+  "WIKI_CHAMPAGNE_BSA": {
+   "titre": "Wikipédia FR « Champagne (AOC) » : bruts sans année (BSA), assemblages de plusieurs années, 83-84 % des ventes ; non-millésimés vieillis un an environ, millésimés trois ans et plus",
+   "fichier": "data/sources/wiki/fr_Champagne_AOC_.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_MILLESIME": {
+   "titre": "Wikipédia FR « Millésime » : en Champagne, seules les meilleures années sont millésimées, contrairement aux bruts sans année",
+   "fichier": "data/sources/wiki/fr_Millésime.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_BANYULS": {
+   "titre": "Wikipédia FR « Banyuls (AOC) » : mentions « rimage » (élevage court, non oxydatif, en milieu réducteur) et « traditionnel » (élevage oxydatif)",
+   "fichier": "data/sources/wiki/fr_Banyuls_AOC_.txt",
+   "nature": "encyclopédie"
+  },
+  "WIKI_RIVESALTES": {
+   "titre": "Wikipédia FR « Rivesaltes (VDN) » : « grenat » élevé en milieu réducteur, « tuilé » et « ambré » en milieu oxydatif",
+   "fichier": "data/sources/wiki/fr_Rivesaltes_VDN_.txt",
+   "nature": "encyclopédie"
+  },
   "DOSSIER": {
    "titre": "Convention du dossier « Le vin » faute de source chiffrée : à ajuster par l'utilisateur",
    "fichier": "data/regles/LISEZMOI.md",

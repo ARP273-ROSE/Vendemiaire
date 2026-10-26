@@ -9,7 +9,7 @@ au lieu d'inventer une estimation.
 
 Phase 2 : `donnees/notes.json` (conversion des notes des critiques, table
 publiée par Decanter) — fournisseur `notes.FournisseurNotes`.
-Phase 3 : tout le jeu du dossier (`donnees/*.json`, 194 règles, 62 sources),
+Phase 3 : tout le jeu du dossier (`donnees/*.json`, 194 règles, 66 sources),
 copié par `outils/synchroniser_regles.py` et vérifié au chargement
 (`jeu.py` : empreintes, identifiants, sources, styles) ; un module par sujet :
 `styles` (classer un vin), `garde` (fenêtre, alertes, courbe d'apogée),

@@ -3,18 +3,18 @@
  "date_audit": "2026-10-26",
  "fichiers": {
   "LISEZMOI.md": {
-   "sha256": "d21e21cc48cf1e7440b3b02ffe672bc8a260ed7086348a639e139e9452cb0f51",
-   "octets": 7104
+   "sha256": "84e4c076b3e3fb9fb1fffa508383c25f3a4dc362674c43330d74f6351e681ad4",
+   "octets": 9029
   },
   "sources.json": {
-   "sha256": "d3c5afff9ad7bc495258993dad53a1fc7b78ea6f44275e3badcef85f2f26d99a",
-   "octets": 12473,
+   "sha256": "4e23eb6fbee6e8269bf59a7c151cfdfd2b3218287c152e726346626b943236d9",
+   "octets": 13589,
    "version": "1.0",
    "date": "2026-10-26"
   },
   "styles.json": {
-   "sha256": "9602ffea3b7223edec6f623f993ebeb7b679c03a52b9134ca504b539fde18ac5",
-   "octets": 15951,
+   "sha256": "6d2df3ed216fad55fe0816a54eedf73d6f5de1baa1acac0465c7cb265c705d3c",
+   "octets": 16478,
    "version": "1.0",
    "date": "2026-10-26"
   },
@@ -35,6 +35,12 @@
    "octets": 342891,
    "version": null,
    "date": null
+  },
+  "rattachement_millesimes.json": {
+   "sha256": "5ca278df8d5c02e27d70a5c152f4005549a3fbbc9e7982736bd928e96aa9a5a9",
+   "octets": 5895,
+   "version": "1.0",
+   "date": "2026-10-26"
   },
   "conservation.json": {
    "sha256": "39b7cbf3f06d213c18b1e8db6f8a9019188c4e6c1d8871a14559870e28d3980a",

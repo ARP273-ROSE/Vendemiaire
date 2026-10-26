@@ -47,7 +47,7 @@ PETRUS = dict(couleur="rouge", type="tranquille", appellation="Pomerol", region=
 def test_copie_conforme_au_manifeste():
     m = json.loads((DONNEES / "MANIFESTE.json").read_text(encoding="utf-8"))
     assert m["date_audit"] == "2026-10-26"
-    assert len(m["fichiers"]) == 14
+    assert len(m["fichiers"]) == 15
     for nom, info in m["fichiers"].items():
         assert hashlib.sha256((DONNEES / nom).read_bytes()).hexdigest() == info["sha256"], nom
 
@@ -59,10 +59,10 @@ def test_copie_identique_au_dossier():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
-def test_jeu_valide_194_regles_62_sources():
+def test_jeu_valide_194_regles_66_sources():
     j = jeu()
     assert j.nombre_regles() == 194
-    assert len(j.sources) == 62
+    assert len(j.sources) == 66
     assert len(j.styles) == 28
     assert j.date_audit == "2026-10-26"
 
@@ -443,3 +443,31 @@ def test_tous_les_accords_identiques_au_tableau_du_dossier():
         if plats:
             ligne = f"\\textbf{{{st['nom_fr']}}} & {' ; '.join(p.nom('fr') for p in plats)} \\\\"
             assert ligne in tex, ligne
+
+
+# ---------------------------------------------------------------------------- corrections du 26/10/2026 (dossier)
+def test_champagne_sans_millesime_non_millesime():
+    brut = dict(couleur="blanc", type="effervescent", appellation="Champagne", cuvee="Brut Réserve")
+    assert classer(brut).id == "eff_sans_annee"
+    assert classer(dict(brut, millesime=2015)).id == "eff_millesime"
+    # même une « cuvée de prestige » sans millésime : sans année (critère « avec » du dossier)
+    assert classer(dict(brut, cuvee="Cuvée de prestige")).id == "eff_sans_annee"
+
+
+def test_vdn_rimage_et_grenat_pas_oxydatifs():
+    assert classer(dict(couleur="rouge", type="mute", appellation="Banyuls", cuvee="Rimage",
+                        millesime=2021)).id == "mute_fruite"
+    assert classer(dict(couleur="rouge", type="mute", appellation="Maury", cuvee="Grenat",
+                        millesime=2020)).id == "mute_fruite"
+    assert classer(dict(couleur="rouge", type="mute", appellation="Banyuls",
+                        cuvee="Traditionnel hors d'âge")).id == "mute_oxydatif"
+
+
+def test_rattachement_lu_dans_le_dossier():
+    from vendemiaire.regles import millesimes
+    j = jeu()
+    assert len(j.rattachement) == 27
+    assert {r["region"] for r in j.rattachement} == {r["id"] for r in j.millesimes["regions"]}
+    assert not hasattr(millesimes, "RATTACHEMENT")          # une seule source : le dossier
+    assert millesimes.region_du_vin(PETRUS) == "bx_droite"
+    assert millesimes.region_du_vin(LEOVILLE) == "bx_gauche"

@@ -1,0 +1,425 @@
+{
+ "version": "1.0",
+ "date": "2026-10-26",
+ "schema": "data/regles/LISEZMOI.md",
+ "explication_fr": "Rattachement d'un vin à une région de millesimes.json : prendre les entrées dans l'ordre ; la première dont la couleur et le type contiennent ceux du vin et dont au moins un des « mots » apparaît, en mot entier, dans l'appellation, la région, la sous-région, le pays ou la cuvée du vin (minuscules, sans accents, traits d'union et apostrophes = espaces) donne la région. Aucune entrée : pas d'ajustement millésime. Convention géographique du dossier (source DOSSIER), l'explication affichée nomme toujours la région retenue.",
+ "sources": [
+  "DOSSIER"
+ ],
+ "rattachements": [
+  {
+   "region": "sauternes",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "doux"
+   ],
+   "mots": [
+    "sauternes",
+    "barsac"
+   ]
+  },
+  {
+   "region": "loire_doux",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "doux"
+   ],
+   "mots": [
+    "loire",
+    "layon",
+    "vouvray",
+    "bonnezeaux",
+    "quarts de chaume",
+    "montlouis",
+    "anjou",
+    "saumur"
+   ]
+  },
+  {
+   "region": "porto",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "mute"
+   ],
+   "mots": [
+    "porto",
+    "port",
+    "douro"
+   ]
+  },
+  {
+   "region": "champagne",
+   "couleurs": [
+    "blanc",
+    "rose"
+   ],
+   "types": [
+    "effervescent"
+   ],
+   "mots": [
+    "champagne"
+   ]
+  },
+  {
+   "region": "bx_droite",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "pomerol",
+    "saint emilion",
+    "fronsac",
+    "lalande",
+    "castillon"
+   ]
+  },
+  {
+   "region": "bx_gauche",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "medoc",
+    "pauillac",
+    "margaux",
+    "saint julien",
+    "saint estephe",
+    "listrac",
+    "moulis",
+    "graves",
+    "pessac"
+   ]
+  },
+  {
+   "region": "bx_blanc",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "pessac",
+    "graves",
+    "entre deux mers",
+    "bordeaux"
+   ]
+  },
+  {
+   "region": "chablis",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "chablis"
+   ]
+  },
+  {
+   "region": "bourgogne_rouge",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "bourgogne",
+    "burgundy",
+    "cote de nuits",
+    "cote de beaune"
+   ]
+  },
+  {
+   "region": "bourgogne_blanc",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "bourgogne",
+    "burgundy",
+    "meursault",
+    "montrachet",
+    "corton charlemagne",
+    "cote de beaune"
+   ]
+  },
+  {
+   "region": "rhone_nord",
+   "couleurs": [
+    "rouge",
+    "blanc"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "cote rotie",
+    "hermitage",
+    "cornas",
+    "saint joseph",
+    "crozes",
+    "condrieu",
+    "rhone nord",
+    "rhone septentrional"
+   ]
+  },
+  {
+   "region": "rhone_sud",
+   "couleurs": [
+    "rouge",
+    "blanc",
+    "rose"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "chateauneuf",
+    "gigondas",
+    "vacqueyras",
+    "rasteau",
+    "cotes du rhone",
+    "lirac",
+    "rhone sud",
+    "rhone meridional"
+   ]
+  },
+  {
+   "region": "loire",
+   "couleurs": [
+    "blanc",
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "loire",
+    "muscadet",
+    "sancerre",
+    "pouilly fume",
+    "chinon",
+    "bourgueil",
+    "saumur",
+    "savennieres",
+    "vouvray",
+    "anjou",
+    "touraine"
+   ]
+  },
+  {
+   "region": "alsace",
+   "couleurs": [
+    "blanc",
+    "rouge"
+   ],
+   "types": [
+    "tranquille",
+    "doux"
+   ],
+   "mots": [
+    "alsace"
+   ]
+  },
+  {
+   "region": "piemont",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "barolo",
+    "barbaresco",
+    "piemont",
+    "piedmont",
+    "langhe"
+   ]
+  },
+  {
+   "region": "toscane",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "brunello",
+    "montalcino",
+    "chianti",
+    "toscane",
+    "tuscany",
+    "vino nobile"
+   ]
+  },
+  {
+   "region": "rioja",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "rioja"
+   ]
+  },
+  {
+   "region": "ribera",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "ribera del duero"
+   ]
+  },
+  {
+   "region": "allemagne",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "tranquille",
+    "doux"
+   ],
+   "mots": [
+    "allemagne",
+    "germany",
+    "deutschland",
+    "mosel",
+    "rheingau",
+    "pfalz",
+    "nahe",
+    "rheinhessen"
+   ]
+  },
+  {
+   "region": "napa",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "napa"
+   ]
+  },
+  {
+   "region": "oregon",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "oregon",
+    "willamette"
+   ]
+  },
+  {
+   "region": "barossa",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "barossa",
+    "mclaren"
+   ]
+  },
+  {
+   "region": "marlborough",
+   "couleurs": [
+    "blanc"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "marlborough"
+   ]
+  },
+  {
+   "region": "otago",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "otago"
+   ]
+  },
+  {
+   "region": "mendoza",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "mendoza"
+   ]
+  },
+  {
+   "region": "chili",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "chili",
+    "chile",
+    "maipo",
+    "colchagua"
+   ]
+  },
+  {
+   "region": "afrique_sud",
+   "couleurs": [
+    "rouge"
+   ],
+   "types": [
+    "tranquille"
+   ],
+   "mots": [
+    "afrique du sud",
+    "south africa",
+    "stellenbosch",
+    "paarl",
+    "swartland"
+   ]
+  }
+ ]
+}

@@ -36,6 +36,7 @@ le dire et laisser l'utilisateur la changer.
 | `service.json` | `temperature` (min/max par style), `ajustements_temperature` (servir 1-2 °C sous la cible, +1 °C pour un vieux vin, plafond 18 °C), `sortie_de_cave` (minutes pour atteindre chaque température, loi de Newton calibrée), `carafe` (action `carafer` / `decanter` / `facultatif` / `non` / `aerer_si_odeur` / `ouvrir_a_l_avance`, durées), `verre` | `service(vin)` |
 | `garde.json` | par style, une ou plusieurs fenêtres selon le `niveau` (`courant`, `garde`, `primeur`, `nouveau_monde`, `tous`) ; `ajustements` (millésime, température de cave, format) ; `regression` (calcul) | `fenetre_degustation(vin, bouteille)` |
 | `millesimes.json` | notes des millésimes par région et par source (Wine Enthusiast 2018, The Wine Society 2026, Wine Spectator 2026, Berry Bros. & Rudd 2026), écart normalisé et désaccords | (ajustement millésime de la garde) |
+| `rattachement_millesimes.json` | quelles appellations entrent dans chacune des 27 régions de `millesimes.json` (couleurs, types, mots entiers cherchés dans l'appellation, la région, la sous-région, le pays, la cuvée) — voir « Rattacher un vin à une région de millésimes » | (ajustement millésime de la garde) |
 | `conservation.json` | température, variations, hygrométrie, lumière, vibrations, position, réfrigérateur, bouchon fatigué | `conservation(vin, bouteille)` |
 | `bouteille_ouverte.json` | jours de garde après ouverture par style et mode (`bouchon`, `vide/gaz`, `coravin`) | `bouteille_ouverte(vin, conservation)` |
 | `niveaux.json` | échelle bordelaise (codes `IN BN VTS TS HS MS LS BLS` identiques à `referentiels.niveau`) et bourguignonne en cm, avec l'âge à partir duquel le niveau est normal | `sens_niveau(code, age)` |
@@ -53,6 +54,23 @@ Prendre les styles par `priorite` croissante ; un style convient si :
    expression de ces listes est trouvée (insensible à la casse et aux accents) dans l'appellation, la cuvée,
    la région ou les cépages du vin.
 Les styles de priorité ≥ 90 n'ont que couleur et type : ce sont les styles par défaut.
+3. critères facultatifs (ajout du 26/10/2026) : `millesime` = `"avec"` (le vin doit porter un millésime) ou `"sans"`
+   (il ne doit pas en porter) ; `exclure` = expressions qui, trouvées comme en 2., **écartent** le style.
+   `sources_criteres` (au niveau du style) donne les sources de ces critères.
+   Ainsi un champagne **sans millésime** n'est pas « millésimé ou de prestige » mais « effervescent sans année »
+   (`eff_millesime` exige un millésime : bruts sans année = assemblages de plusieurs années, WIKI_CHAMPAGNE_BSA,
+   WIKI_MILLESIME), et un banyuls **rimage** ou un VDN **grenat** (élevage réducteur, WIKI_BANYULS, WIKI_RIVESALTES)
+   n'est pas « muté oxydatif » mais « muté jeune et fruité ».
+
+## Rattacher un vin à une région de millésimes (`rattachement_millesimes.json`)
+
+`millesimes.json` nomme ses régions (« Bordeaux rive gauche (Médoc, Graves) »…) sans dire quelles appellations
+y entrent. Prendre les entrées de `rattachements` dans l'ordre (le plus précis d'abord) ; la première dont
+`couleurs` contient la couleur du vin, `types` son type, et dont au moins un des `mots` apparaît **en mot entier**
+dans l'appellation, la région, la sous-région, le pays ou la cuvée (normalisés : minuscules, sans accents, traits
+d'union et apostrophes = espaces) donne la région. Aucune entrée : pas d'ajustement millésime. C'est une
+convention géographique du dossier (source `DOSSIER`) ; l'explication affichée nomme toujours la région retenue.
+Les 27 identifiants doivent être ceux de `millesimes.json` (contrôlé par `scripts/regles.py`).
 
 ## Calculer une fenêtre de garde (`garde.json`)
 

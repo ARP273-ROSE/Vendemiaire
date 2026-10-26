@@ -31,7 +31,7 @@ RACINE = Path(__file__).resolve().parent.parent
 CIBLE = RACINE / "vendemiaire" / "regles" / "donnees"
 #: fichiers du jeu de règles (sources.json : registre des sources)
 FICHIERS = ("LISEZMOI.md", "sources.json", "styles.json", "service.json", "garde.json",
-            "millesimes.json", "conservation.json", "bouteille_ouverte.json", "niveaux.json",
+            "millesimes.json", "rattachement_millesimes.json", "conservation.json", "bouteille_ouverte.json", "niveaux.json",
             "notes.json", "defauts.json", "aromes.json", "accords.json", "accords_corpus.json")
 
 

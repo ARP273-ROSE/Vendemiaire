@@ -12,10 +12,10 @@ Choix du tableau, dans cet ordre : Wine Enthusiast (celui sur lequel le
 dossier a mesuré 0,44 an par point sur 100), The Wine Society (1,76 an par
 point sur 10), Wine Spectator (sur 100), Berry Bros. (sur 10).
 
-RATTACHEMENT (donnée de l'application, pas du dossier) : le dossier nomme ses
-régions (« Bordeaux rive gauche (Médoc, Graves) »…) sans dire quelles
-appellations y entrent ; la table `RATTACHEMENT` fait ce lien géographique,
-mot par mot, et l'explication affichée nomme toujours la région retenue.
+RATTACHEMENT (donnée du dossier, `rattachement_millesimes.json`) : le dossier
+nomme ses régions (« Bordeaux rive gauche (Médoc, Graves) »…) et dit, dans ce
+fichier, quelles appellations y entrent, mot par mot ; l'explication affichée
+nomme toujours la région retenue. Une seule source : plus aucune table ici.
 """
 from __future__ import annotations
 
@@ -26,53 +26,6 @@ from .jeu import JeuRegles, jeu, normaliser
 
 #: ordre de préférence des tableaux et échelle de chacun
 ORDRE_SOURCES = ("WE", "WSO", "WSP", "BB")
-
-#: région du dossier -> (couleurs, types, mots cherchés dans appellation, région,
-#: sous-région, pays, cuvée). Ordre = priorité (le plus précis d'abord).
-RATTACHEMENT: list[tuple[str, tuple, tuple, tuple]] = [
-    ("sauternes", ("blanc",), ("doux",), ("sauternes", "barsac")),
-    ("loire_doux", ("blanc",), ("doux",), ("loire", "layon", "vouvray", "bonnezeaux", "quarts de chaume",
-                                          "montlouis", "anjou", "saumur")),
-    ("porto", ("rouge",), ("mute",), ("porto", "port", "douro")),
-    ("champagne", ("blanc", "rose"), ("effervescent",), ("champagne",)),
-    ("bx_droite", ("rouge",), ("tranquille",), ("pomerol", "saint emilion", "fronsac", "lalande",
-                                               "castillon")),
-    ("bx_gauche", ("rouge",), ("tranquille",), ("medoc", "pauillac", "margaux", "saint julien",
-                                               "saint estephe", "listrac", "moulis", "graves", "pessac")),
-    ("bx_blanc", ("blanc",), ("tranquille",), ("pessac", "graves", "entre deux mers", "bordeaux")),
-    ("chablis", ("blanc",), ("tranquille",), ("chablis",)),
-    ("bourgogne_rouge", ("rouge",), ("tranquille",), ("bourgogne", "burgundy", "cote de nuits",
-                                                      "cote de beaune")),
-    ("bourgogne_blanc", ("blanc",), ("tranquille",), ("bourgogne", "burgundy", "meursault", "montrachet",
-                                                      "corton charlemagne", "cote de beaune")),
-    ("rhone_nord", ("rouge", "blanc"), ("tranquille",), ("cote rotie", "hermitage", "cornas", "saint joseph",
-                                                         "crozes", "condrieu", "rhone nord",
-                                                         "rhone septentrional")),
-    ("rhone_sud", ("rouge", "blanc", "rose"), ("tranquille",), ("chateauneuf", "gigondas", "vacqueyras",
-                                                                "rasteau", "cotes du rhone", "lirac",
-                                                                "rhone sud", "rhone meridional")),
-    ("loire", ("blanc", "rouge"), ("tranquille",), ("loire", "muscadet", "sancerre", "pouilly fume",
-                                                    "chinon", "bourgueil", "saumur", "savennieres",
-                                                    "vouvray", "anjou", "touraine")),
-    ("alsace", ("blanc", "rouge"), ("tranquille", "doux"), ("alsace",)),
-    ("piemont", ("rouge",), ("tranquille",), ("barolo", "barbaresco", "piemont", "piedmont", "langhe")),
-    ("toscane", ("rouge",), ("tranquille",), ("brunello", "montalcino", "chianti", "toscane", "tuscany",
-                                             "vino nobile")),
-    ("rioja", ("rouge",), ("tranquille",), ("rioja",)),
-    ("ribera", ("rouge",), ("tranquille",), ("ribera del duero",)),
-    ("allemagne", ("blanc",), ("tranquille", "doux"), ("allemagne", "germany", "deutschland", "mosel",
-                                                       "rheingau", "pfalz", "nahe", "rheinhessen")),
-    ("napa", ("rouge",), ("tranquille",), ("napa",)),
-    ("oregon", ("rouge",), ("tranquille",), ("oregon", "willamette")),
-    ("barossa", ("rouge",), ("tranquille",), ("barossa", "mclaren")),
-    ("marlborough", ("blanc",), ("tranquille",), ("marlborough",)),
-    ("otago", ("rouge",), ("tranquille",), ("otago",)),
-    ("mendoza", ("rouge",), ("tranquille",), ("mendoza",)),
-    ("chili", ("rouge",), ("tranquille",), ("chili", "chile", "maipo", "colchagua")),
-    ("afrique_sud", ("rouge",), ("tranquille",), ("afrique du sud", "south africa", "stellenbosch", "paarl",
-                                                 "swartland")),
-]
-
 
 @dataclass
 class NoteMillesime:
@@ -88,14 +41,15 @@ class NoteMillesime:
     autres: dict           # autres tableaux : {source: note}
 
 
-def region_du_vin(vin: dict) -> str | None:
+def region_du_vin(vin: dict, regles: JeuRegles | None = None) -> str | None:
+    regles = regles or jeu()
     texte = " | ".join(normaliser(vin.get(k)) for k in
                        ("appellation", "region", "sous_region", "pays", "cuvee"))
-    for rid, couleurs, types, mots in RATTACHEMENT:
-        if vin.get("couleur") not in couleurs or (vin.get("type") or "tranquille") not in types:
+    for r in regles.rattachement:
+        if vin.get("couleur") not in r["couleurs"] or (vin.get("type") or "tranquille") not in r["types"]:
             continue
-        if any(re.search(r"\b" + re.escape(m) + r"\b", texte) for m in mots):
-            return rid
+        if any(re.search(r"\b" + re.escape(m) + r"\b", texte) for m in r["mots"]):
+            return r["region"]
     return None
 
 
@@ -106,7 +60,7 @@ def note(vin: dict, regles: JeuRegles | None = None) -> NoteMillesime | None:
     mil = vin.get("millesime")
     if not mil:
         return None
-    rid = region_du_vin(vin)
+    rid = region_du_vin(vin, regles)
     if rid is None:
         return None
     region = next((r for r in regles.millesimes["regions"] if r["id"] == rid), None)

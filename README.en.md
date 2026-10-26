@@ -54,7 +54,7 @@ Windows, macOS and Linux. No data ever leaves the computer.
 
 ## What phase 3 adds
 
-Every rule comes from the "Le vin" study (194 audited rules, 62 sources), copied unchanged with its
+Every rule comes from the "Le vin" study (194 audited rules, 66 sources), copied unchanged with its
 checksum; every result shows its **why**, its **sources** and its **confidence**
 ([details, in French](docs/regles_du_dossier.md)).
 

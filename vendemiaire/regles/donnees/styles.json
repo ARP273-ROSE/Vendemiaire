@@ -2,7 +2,7 @@
  "version": "1.0",
  "date": "2026-10-26",
  "schema": "data/regles/LISEZMOI.md",
- "explication_fr": "Familles de vins : un vin de la cave est classé dans le style de plus petite priorité dont tous les critères renseignés correspondent (les listes vides ne filtrent pas ; appellations, régions, mots et cépages : au moins un doit correspondre si la liste n'est pas vide — sauf pour les styles « par défaut » de priorité ≥ 90, qui n'ont que couleur et type).",
+ "explication_fr": "Familles de vins : un vin de la cave est classé dans le style de plus petite priorité dont tous les critères renseignés correspondent (les listes vides ne filtrent pas ; appellations, régions, mots et cépages : au moins un doit correspondre si la liste n'est pas vide — sauf pour les styles « par défaut » de priorité ≥ 90, qui n'ont que couleur et type). Critères facultatifs : « millesime » (« avec » : le vin doit porter un millésime ; « sans » : il ne doit pas en porter) et « exclure » (aucune de ces expressions ne doit être trouvée) ; « sources_criteres » donne leurs sources.",
  "styles": [
   {
    "id": "eff_millesime",
@@ -30,8 +30,13 @@
      "prestige",
      "cuvee de prestige",
      "grand cru"
-    ]
-   }
+    ],
+    "millesime": "avec"
+   },
+   "sources_criteres": [
+    "WIKI_CHAMPAGNE_BSA",
+    "WIKI_MILLESIME"
+   ]
   },
   {
    "id": "eff_aromatique",
@@ -75,7 +80,10 @@
     "regions": [],
     "cepages": [],
     "mots": []
-   }
+   },
+   "sources_criteres": [
+    "WIKI_CHAMPAGNE_BSA"
+   ]
   },
   {
    "id": "liquoreux",
@@ -245,8 +253,16 @@
      "rancio",
      "hors d'age",
      "tuile"
+    ],
+    "exclure": [
+     "rimage",
+     "grenat"
     ]
-   }
+   },
+   "sources_criteres": [
+    "WIKI_BANYULS",
+    "WIKI_RIVESALTES"
+   ]
   },
   {
    "id": "mute_fruite",

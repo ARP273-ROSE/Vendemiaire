@@ -10,6 +10,10 @@ accents) dans l'appellation, la cuvée, la région ou les cépages du vin. Les
 expressions sont des motifs (l'une d'elles est `\\bpx\\b`) : on les cherche
 comme des expressions régulières dans le texte normalisé.
 
+Critères facultatifs (dossier, 26/10/2026) : `millesime` = « avec » (le vin
+doit porter un millésime) ou « sans » ; `exclure` = expressions qui, trouvées
+comme ci-dessus, écartent le style (banyuls « rimage » : pas oxydatif).
+
 L'utilisateur peut imposer un style (`vin.style`) : il passe alors avant le
 classement automatique, qui reste affiché pour mémoire.
 """
@@ -67,12 +71,22 @@ def convient(style: dict, vin: dict, textes: dict | None = None):
         return False, None
     fr = [f"couleur « {vin.get('couleur')} » et type « {vin.get('type') or 'tranquille'} » prévus par le style"]
     en = [f"colour \"{vin.get('couleur')}\" and type \"{vin.get('type') or 'tranquille'}\" match the style"]
+    exige = c.get("millesime")
+    if exige:
+        a_un = bool(vin.get("millesime"))
+        if a_un != (exige == "avec"):
+            return False, None
+        fr.append("millésime présent, exigé par le style" if a_un else "sans millésime, comme l'exige le style")
+        en.append("vintage present, required by the style" if a_un else "non-vintage, as the style requires")
+    textes = textes or _textes(vin)
+    for motif in c.get("exclure") or []:
+        if _cherche(motif, textes):
+            return False, None
     listes = [m for cle in LISTES for m in c.get(cle) or []]
     if not listes:
         fr.append("style par défaut de cette couleur et de ce type (aucune autre liste)")
         en.append("default style for this colour and type (no other list)")
         return True, (fr, en)
-    textes = textes or _textes(vin)
     for cle in LISTES:
         for motif in c.get(cle) or []:
             champ = _cherche(motif, textes)

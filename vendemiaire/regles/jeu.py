@@ -96,6 +96,7 @@ class JeuRegles:
         self.aromes = lire("aromes.json")
         self.accords = lire("accords.json")
         self.millesimes = lire("millesimes.json")
+        self.rattachement = lire("rattachement_millesimes.json")["rattachements"]
         self.corpus = lire("accords_corpus.json")
         self.problemes = self._valider()
         if self.problemes:
@@ -138,8 +139,18 @@ class JeuRegles:
                 if suite != sorted(suite):
                     p.append(f"garde.json : {sid}/{f.get('niveau')} : fenêtre dans le désordre")
         for st in self.styles:
-            if not st["criteres"]["couleur"] or not st["criteres"]["type"]:
+            c = st["criteres"]
+            if not c["couleur"] or not c["type"]:
                 p.append(f"styles.json : {st['id']} sans couleur ou type")
+            if c.get("millesime") not in (None, "avec", "sans"):
+                p.append(f"styles.json : {st['id']} : critère millesime inconnu {c.get('millesime')!r}")
+            for s in st.get("sources_criteres") or []:
+                if s not in self.sources:
+                    p.append(f"styles.json : {st['id']} : source inconnue {s}")
+        regions = {r["id"] for r in self.millesimes["regions"]}
+        for r in self.rattachement:
+            if r["region"] not in regions:
+                p.append(f"rattachement_millesimes.json : région inconnue {r['region']}")
         return p
 
     # ------------------------------------------------------------------ accès

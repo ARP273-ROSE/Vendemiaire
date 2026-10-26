@@ -60,7 +60,7 @@ Bilingue français / anglais, Windows, macOS et Linux. Aucune donnée ne quitte 
 
 ## Ce qu'ajoute la phase 3
 
-Toutes les règles viennent du dossier « Le vin » (194 règles, 62 sources, auditées), copiées telles
+Toutes les règles viennent du dossier « Le vin » (194 règles, 66 sources, auditées), copiées telles
 quelles avec leur empreinte ; chaque résultat affiche son **pourquoi**, ses **sources** et sa
 **confiance** ([détails](docs/regles_du_dossier.md)).
 
