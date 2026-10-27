@@ -72,9 +72,13 @@ def test_alertes_et_courbe(cave):
 def test_entamer_une_bouteille(cave):
     vid = _vin(cave, MUSCADET, 1)
     bid = cave.bouteilles(vid)[0]["id"]
-    oid = cave.entamer(bid, "bouchon", 40, "2026-10-26", plat="Huîtres")
+    # date du jour (et non une date fixe) : la bouteille entre en cave aujourd'hui, l'ouverture
+    # doit venir après dans le livre de cave — le test cassait dès le lendemain du 26/10/2026
+    from datetime import date, timedelta
+    jour = date.today()
+    oid = cave.entamer(bid, "bouchon", 40, jour.isoformat(), plat="Huîtres")
     o = cave.bouteilles_ouvertes()[0]
-    assert o["id"] == oid and o["a_finir_avant"] == "2026-11-02"      # blanc frais : 2 à 7 jours
+    assert o["id"] == oid and o["a_finir_avant"] == (jour + timedelta(days=7)).isoformat()  # blanc frais : 2 à 7 jours
     assert cave.bouteille(bid)["statut"] == "bue"
     assert cave.mouvements(limite=1)[0]["plat"] == "Huîtres"
     cave.finir_ouverte(oid)
