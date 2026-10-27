@@ -9,7 +9,7 @@ statistiques. Bilingue français / anglais ; Windows, macOS et Linux. Aucune don
 
 *English version: [README.en.md](README.en.md).*
 
-**Version 1.0.0** — manuel complet : [français (PDF)](docs/manuel-fr.pdf) · [anglais (PDF)](docs/manuel-en.pdf) ·
+**Version 1.0.2** — manuel complet : [français (PDF)](docs/manuel-fr.pdf) · [anglais (PDF)](docs/manuel-en.pdf) ·
 journal : [JOURNAL.md](JOURNAL.md).
 
 ![Tableau de bord](docs/captures/fr-tableau-de-bord.png)
@@ -56,7 +56,8 @@ ses sources et sa confiance ([détails](docs/regles_du_dossier.md)).
 
 **Bases mondiales** ([détails](docs/bases_mondiales.md)) : identifiant **LWIN** (copie locale, recherche hors
 ligne), **Wikidata**, **Open Food Facts** (code-barres), registres **INAO** et **eAmbrosia** ; score expliqué,
-rien n'est écrit sans confirmation, une saisie à la main n'est jamais remplacée.
+rien n'est écrit sans confirmation, une saisie à la main n'est jamais remplacée ; **identification de toute
+la cave d'un coup** (décisions sûres cochées d'avance, douteuses signalées, une seule validation).
 
 **Documents** ([détails](docs/documents.md), [exemples](docs/exemples/)) : **carte des vins** « de grand
 restaurant » (trois modèles, A4, A5 ou carte simple, français ou anglais, menu du soir, petites cartes des

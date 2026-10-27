@@ -9,7 +9,7 @@ No data ever leaves the computer.
 
 *Version française : [README.md](README.md).*
 
-**Version 1.0.0** — full manual: [English (PDF)](docs/manuel-en.pdf) · [French (PDF)](docs/manuel-fr.pdf) ·
+**Version 1.0.2** — full manual: [English (PDF)](docs/manuel-en.pdf) · [French (PDF)](docs/manuel-fr.pdf) ·
 changelog: [JOURNAL.md](JOURNAL.md) (in French).
 
 ![Dashboard](docs/captures/en-tableau-de-bord.png)
@@ -52,7 +52,8 @@ and its confidence ([details, in French](docs/regles_du_dossier.md)).
 
 **World databases** ([details](docs/bases_mondiales.md)): **LWIN** identifier (local copy, offline search),
 **Wikidata**, **Open Food Facts** (barcode), **INAO** and **eAmbrosia** registers; explained score, nothing
-written without confirmation, hand-typed data never replaced.
+written without confirmation, hand-typed data never replaced; **whole-cellar identification at once**
+(reliable matches ticked in advance, doubtful ones flagged, a single validation).
 
 **Documents** ([details](docs/documents.md), [examples](docs/exemples/)): "great restaurant" **wine list**
 (three designs, A4, A5 or single sheet, English or French, tonight's menu, small regional maps, one-click

@@ -108,6 +108,7 @@ class FenetrePrincipale(QMainWindow):
 
         f = self.vue_cave.fiche
         self.vue_cave.bouton_nouveau.clicked.connect(self.nouveau_vin)
+        self.vue_cave.bouton_identifier.clicked.connect(self.identifier_toute_la_cave)
         self.vue_cave.modifier_demande.connect(self.modifier_vin)
         f.modifier.connect(self.modifier_vin)
         f.ajouter_bouteilles.connect(self.ajouter_bouteilles)
@@ -181,6 +182,7 @@ class FenetrePrincipale(QMainWindow):
         self._action(m, "menu.identifier_vin", lambda: self._vin_courant(self.identifier_vin))
         self._action(m, "menu.identifier_photo", self.identifier_par_photo)
         self._action(m, "menu.code_barres", self.identifier_par_code)
+        self._action(m, "menu.identifier_cave", self.identifier_toute_la_cave)
         m.addSeparator()
         self._action(m, "menu.bases_reference", self.bases_reference)
         self._action(m, "menu.regles", self.voir_regles)
@@ -362,6 +364,16 @@ class FenetrePrincipale(QMainWindow):
         if d.exec() == QDialog.DialogCode.Accepted:
             pochette.vider_cache()
             self.tout_rafraichir(vin_id)
+
+    def identifier_toute_la_cave(self) -> None:
+        """Références › Identifier toute la cave… : calcul en fond, récapitulatif,
+        rien n'est écrit sans « Valider la sélection »."""
+        from .identifier_lot import DialogueIdentifierLot
+        d = DialogueIdentifierLot(self.cave, parent=self)
+        d.exec()
+        if d.modifie:
+            pochette.vider_cache()
+            self.tout_rafraichir()
 
     def identifier_par_photo(self) -> None:
         """Une bouteille inconnue : sa photo → texte lu (OCR) → candidats → vin créé."""

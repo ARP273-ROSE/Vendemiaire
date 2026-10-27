@@ -1,5 +1,29 @@
 # Vendémiaire — journal
 
+## 1.0.2 — 2026-10-28 — identifier toute la cave d'un coup
+
+- **Références › Identifier toute la cave…** (et bouton dans l'onglet Cave) : les candidats de chaque vin
+  sans identifiant LWIN (au choix, aussi ceux déjà identifiés) sont calculés en tâche de fond, avec barre de
+  progression et annulation, sans rien écrire : copie locale de LWIN avec les registres d'appellations, et
+  Wikidata pour les domaines sans candidat si les recherches en ligne sont permises. Un **récapitulatif
+  unique** montre une ligne par vin (meilleur candidat, score, raison en bref, deuxième candidat s'il est
+  proche) : décisions **sûres cochées d'avance**, douteuses signalées et non cochées, vins sans candidat à
+  part ; double-clic = écran d'identification habituel. **Valider la sélection** confirme chaque vin coché
+  dans sa propre transaction, sans jamais remplacer une saisie à la main, puis affiche le journal de ce qui
+  a été rempli et d'où.
+- **Appariement LWIN au format réel du fichier** (mesuré sur une vraie cave) : le climat ou lieu-dit d'un vin
+  de Bourgogne est lu dans la colonne `SITE` (il était pris pour l'appellation, et tous les climats d'un
+  domaine se valaient) ; « Blanc » ou « Rouge » à la place d'une cuvée ne comptent plus comme cuvée ; un
+  domaine écrit dans l'autre ordre (« Domaine de la Source (Paul Verdier) » / « Domaine Paul Verdier
+  (Source) ») et un mot à une lettre près (« Clos Marnié » / « Le Clos Marnier ») sont reconnus ; le nom exact
+  passe devant le nom augmenté d'un éleveur.
+- **Moins de faux positifs** : un autre domaine ou un autre climat divise le score par deux, et un candidat
+  n'est plus présélectionné quand le domaine ou la cuvée ne concordent pas nettement, ni quand la cuvée
+  cherchée est absente de la base (le village générique d'un domaine n'est pas son premier cru).
+- Confirmation d'un identifiant : champs remplis, journal et identifiant dans **une seule transaction**.
+- Manuel FR et EN : nouvelle section et captures ; essais du lot (sûres et douteuses, non-écrasement,
+  annulation, écran sous Xvfb).
+
 ## 1.0.1 — 2026-10-28 — import LWIN validé sur le vrai fichier de Liv-ex
 
 - **Import LWIN** testé sur le vrai fichier téléchargé chez Liv-ex (212 208 vins, environ 25 s) : les cases

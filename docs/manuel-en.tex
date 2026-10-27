@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[british]{babel}
-\newcommand{\VersionManuel}{1.0.1}
+\newcommand{\VersionManuel}{1.0.2}
 \input{manuel-preambule.tex}
 \hypersetup{pdftitle={Vendémiaire — user manual},pdfauthor={ARP273-ROSE},pdfsubject={Wine cellar manager}}
 
@@ -212,6 +212,40 @@ logged in the record's \emph{journal} (References tab), with its source.
 \capture{en-identifier.png}{Identifying a wine: candidates, explained score, proposed fields.}
 \capture{en-fiche-references.png}{The wine record, References tab: identifiers kept, and a journal of what
 was filled in and from where.}
+
+\subsection{Identifying the whole cellar at once}
+No need to go record by record: \menu{References › Identify the whole cellar...} (or the \emph{Identify the
+whole cellar...} button of the Cellar tab) looks for candidates for \textbf{every wine without an LWIN
+identifier} --- tick \emph{Also wines already identified} to review everything. The search runs in the
+background, with a progress bar and a \emph{Cancel} button; it only \textbf{reads}: the local LWIN copy,
+the appellation registers for the official spelling, and Wikidata for producers left without a candidate,
+only if you have allowed online look-ups (at most one request per second).
+
+The summary shows one row per wine: the best candidate, its score, the reason in short and, when it is
+close, the second candidate.
+\begin{itemize}
+  \item \textbf{Reliable} (green background, \textbf{ticked in advance}): score above the threshold, clearly
+        ahead of the next one, producer and cuvée in agreement --- the same rules as for a single wine.
+  \item \textbf{Doubtful} (amber background, not ticked): two candidates are equally good, or the producer,
+        the cuvée or the vineyard do not clearly agree. Example: a cuvée ``Les Fournelles'' missing from
+        LWIN is \emph{never} matched to the producer's generic village wine.
+  \item \textbf{No candidate}: listed separately.
+\end{itemize}
+A \textbf{double-click} opens the usual identification window to decide by hand. Nothing is written before
+\emph{Apply the selection}; each ticked wine is then confirmed in its own transaction, by the usual rule
+(empty fields not typed by hand only), and a final \textbf{log} says, wine by wine, which identifier was kept
+and which fields were filled in.
+
+\capture{en-identifier-cave.png}{Identifying the whole cellar: reliable matches ticked in advance, doubtful
+ones flagged, nothing is written before you apply.}
+
+\begin{astuce}[What the matching knows about the LWIN file]
+LWIN stores the vineyard (climat, lieu-dit) of a Burgundy wine in a separate column (\emph{SITE}) and writes
+\emph{Blanc} or \emph{Rouge} instead of a cuvée name: Vendémiaire compares your cuvée with that vineyard,
+does not take a colour for a cuvée, recognises a producer written the other way round (``Domaine de la
+Source (Paul Verdier)'' and ``Domaine Paul Verdier (Source)'') and a word one letter apart (``Clos Marnié''
+and ``Le Clos Marnier'') --- but never the right cuvée of another producer.
+\end{astuce}
 
 \begin{astuce}[Online look-ups]
 Offline by default. Consent is asked at the first online look-up and can be changed in \menu{References ›

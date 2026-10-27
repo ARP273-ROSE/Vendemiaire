@@ -55,6 +55,14 @@ def phase2(app, w, cave, langue, attendre):
         capture(r, "retouche-ocr")
     r.close()
     photo.unlink()
+    # identification de toute la cave (1.0.2) : récapitulatif avant validation
+    from vendemiaire.ui import travail as _travail
+    from vendemiaire.ui.identifier_lot import DialogueIdentifierLot
+    lot = DialogueIdentifierLot(cave, parent=w)
+    _travail.attendre(lot._travail)
+    lot.resize(1320, 760)
+    capture(lot, "identifier-cave")
+    lot.done(0)
     # identification : candidats, score expliqué, champs proposés
     d = DialogueIdentifier(cave, vin, parent=w)
     d.chercher_lwin()

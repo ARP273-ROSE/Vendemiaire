@@ -583,6 +583,10 @@ T: dict[str, dict[str, str]] = {
                                    "en": "vintage {m} within the production period ({debut}–{fin})"},
     "appariement.r_millesime_non": {"fr": "millésime {m} hors de la période produite ({debut}–{fin})",
                                     "en": "vintage {m} outside the production period ({debut}–{fin})"},
+    "appariement.r_autre_producteur": {"fr": "autre domaine : ce n'est pas ce vin (score divisé par deux)",
+                                       "en": "different producer: not this wine (score halved)"},
+    "appariement.r_autre_cuvee": {"fr": "autre cuvée ou autre climat : ce n'est pas ce vin (score divisé par deux)",
+                                  "en": "different cuvée or vineyard: not this wine (score halved)"},
     "appariement.r_pas_un_vin": {"fr": "ce n'est pas un vin (spiritueux, bière…)", "en": "not a wine (spirit, beer...)"},
     "appariement.r_nom_wikidata": {"fr": "nom : {pct} % de ressemblance avec « {nom} »",
                                    "en": "name: {pct}% similar to \"{nom}\""},
@@ -592,6 +596,84 @@ T: dict[str, dict[str, str]] = {
     "appariement.r_degre": {"fr": "degré indiqué : {degre} % vol", "en": "stated strength: {degre}% vol"},
     "appariement.r_photo_off": {"fr": "photo du produit disponible (CC BY-SA)",
                                 "en": "product photo available (CC BY-SA)"},
+
+    # ------------------------------------------------------------ identification en lot (1.0.2)
+    "menu.identifier_cave": {"fr": "Identifier toute la cave…", "en": "Identify the whole cellar..."},
+    "cave.identifier_tout": {"fr": "Identifier toute la cave…", "en": "Identify the whole cellar..."},
+    "lot.titre": {"fr": "Identifier toute la cave", "en": "Identify the whole cellar"},
+    "lot.intro": {"fr": "Vendémiaire cherche chaque vin dans la copie locale de LWIN (avec les registres "
+                        "d'appellations), sans rien écrire. Les correspondances sûres sont cochées d'avance, "
+                        "les douteuses sont signalées et laissées à votre choix ; un double-clic ouvre "
+                        "l'écran d'identification habituel. Rien n'est enregistré avant « Valider la "
+                        "sélection », et une saisie à la main n'est jamais remplacée.",
+                  "en": "Vendémiaire looks up each wine in the local LWIN copy (with the appellation "
+                        "registers), without writing anything. Reliable matches are ticked in advance, "
+                        "doubtful ones are flagged and left to you; a double-click opens the usual "
+                        "identification window. Nothing is saved before \"Apply the selection\", and a "
+                        "manual entry is never replaced."},
+    "lot.option_tous": {"fr": "Aussi les vins déjà identifiés", "en": "Also wines already identified"},
+    "lot.option_wikidata": {"fr": "Chercher les domaines sans candidat dans Wikidata (en ligne)",
+                            "en": "Look up producers without a candidate in Wikidata (online)"},
+    "lot.wikidata_aide": {"fr": "Une recherche par domaine, une requête par seconde au plus.",
+                          "en": "One search per producer, at most one request per second."},
+    "lot.wikidata_refuse": {"fr": "Recherches en ligne non autorisées (Références › Bases de référence).",
+                            "en": "Online searches not allowed (References › Reference databases)."},
+    "lot.chercher": {"fr": "Chercher les candidats", "en": "Find candidates"},
+    "lot.en_cours": {"fr": "Recherche des candidats pour {n} vins… (rien n'est écrit)",
+                     "en": "Finding candidates for {n} wines... (nothing is written)"},
+    "lot.annulation": {"fr": "Annulation…", "en": "Cancelling..."},
+    "lot.annule": {"fr": "Recherche annulée : rien n'a été écrit.", "en": "Search cancelled: nothing was written."},
+    "lot.erreur": {"fr": "La recherche a échoué : {erreur}", "en": "The search failed: {erreur}"},
+    "lot.lwin_absent": {"fr": "La copie locale de LWIN est vide : importez-la d'abord (Références › Bases de "
+                              "référence).",
+                        "en": "The local LWIN copy is empty: import it first (References › Reference "
+                              "databases)."},
+    "lot.c_vin": {"fr": "Vin", "en": "Wine"},
+    "lot.c_candidat": {"fr": "Meilleur candidat", "en": "Best candidate"},
+    "lot.c_score": {"fr": "Score", "en": "Score"},
+    "lot.c_raison": {"fr": "Pourquoi (en bref)", "en": "Why (in short)"},
+    "lot.c_second": {"fr": "Deuxième candidat proche", "en": "Close second candidate"},
+    "lot.c_etat": {"fr": "Décision", "en": "Decision"},
+    "lot.etat_sure": {"fr": "sûre : cochée d'avance", "en": "reliable: ticked in advance"},
+    "lot.etat_douteuse": {"fr": "douteuse", "en": "doubtful"},
+    "lot.etat_aucun": {"fr": "aucun candidat", "en": "no candidate"},
+    "lot.etat_deja": {"fr": "déjà identifié (LWIN {lwin}), même candidat",
+                      "en": "already identified (LWIN {lwin}), same candidate"},
+    "lot.etat_autre_lwin": {"fr": "déjà identifié (LWIN {lwin}) : autre candidat, à vérifier",
+                            "en": "already identified (LWIN {lwin}): different candidate, to check"},
+    "lot.etat_main": {"fr": "identifié dans l'écran habituel", "en": "identified in the usual window"},
+    "lot.etat_fait": {"fr": "enregistré", "en": "saved"},
+    "lot.motif_ambigu": {"fr": "deux candidats se valent", "en": "two candidates are equally good"},
+    "lot.motif_faible": {"fr": "pas assez sûr", "en": "not reliable enough"},
+    "lot.motif_sur": {"fr": "sûre", "en": "reliable"},
+    "lot.motif_aucun": {"fr": "aucun candidat", "en": "no candidate"},
+    "lot.court_domaine": {"fr": "domaine {pct} %", "en": "producer {pct}%"},
+    "lot.court_cuvee": {"fr": "cuvée {pct} %", "en": "cuvée {pct}%"},
+    "lot.court_appellation": {"fr": "appellation {pct} %", "en": "appellation {pct}%"},
+    "lot.court_nom": {"fr": "nom {pct} %", "en": "name {pct}%"},
+    "lot.court_grand_vin": {"fr": "vin principal", "en": "main wine"},
+    "lot.source_wikidata": {"fr": "Wikidata (domaine) — {nom}", "en": "Wikidata (producer) — {nom}"},
+    "lot.sans_candidat": {"fr": "Sans candidat ({n}) — double-clic : écran d'identification",
+                          "en": "Without a candidate ({n}) — double-click: identification window"},
+    "lot.resume": {"fr": "{total} vins examinés : {sures} sûrs (cochés), {douteuses} douteux, {deja} déjà "
+                         "identifiés, {aucun} sans candidat.",
+                   "en": "{total} wines examined: {sures} reliable (ticked), {douteuses} doubtful, {deja} "
+                         "already identified, {aucun} without a candidate."},
+    "lot.cocher_sures": {"fr": "Cocher les sûres seulement", "en": "Tick reliable ones only"},
+    "lot.tout_decocher": {"fr": "Tout décocher", "en": "Untick all"},
+    "lot.valider": {"fr": "Valider la sélection ({n})", "en": "Apply the selection ({n})"},
+    "lot.application": {"fr": "Enregistrement de {n} identifications…", "en": "Saving {n} identifications..."},
+    "lot.fini": {"fr": "Terminé : {vins} vins identifiés, {champs} champs remplis, {echecs} échecs. Le "
+                       "journal ci-dessous dit ce qui a été rempli et d'où (aussi dans la fiche de chaque "
+                       "vin › Références).",
+                 "en": "Done: {vins} wines identified, {champs} fields filled, {echecs} failures. The log "
+                       "below says what was filled and where from (also in each wine's sheet › References)."},
+    "lot.journal": {"fr": "Journal de la validation", "en": "Log of what was applied"},
+    "lot.journal_ligne": {"fr": "{vin} ← {source} ({score}) : {champs}",
+                          "en": "{vin} ← {source} ({score}): {champs}"},
+    "lot.journal_echec": {"fr": "{vin} : NON enregistré ({erreur})", "en": "{vin}: NOT saved ({erreur})"},
+    "lot.rien": {"fr": "identifiant gardé, aucun champ vide à remplir",
+                 "en": "identifier kept, no empty field to fill"},
 
     # ------------------------------------------------------------ bases de référence
     "ref.titre": {"fr": "Bases de référence et licences", "en": "Reference databases and licences"},

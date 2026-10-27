@@ -49,6 +49,32 @@ retenir et cocher la mise à jour tous les 30 jours (seulement si les recherches
 5. L'appellation n'est proposée que si la sous-région ou le site LWIN **est** une appellation des
    registres officiels.
 
+## Identifier toute la cave (1.0.2)
+
+Menu **Références › Identifier toute la cave…** (ou bouton de l'onglet Cave) : `mondial/lot.py`.
+
+1. **Préparer** (`lot.preparer`) — lectures seulement, dans un fil de fond (progression, annulation) : pour
+   chaque vin sans LWIN (option : tous), candidats LWIN avec l'appellation officielle des registres ;
+   Wikidata (le domaine) seulement pour les vins sans aucun candidat LWIN, si l'accord réseau est donné,
+   une recherche par domaine au débit du client.
+2. **Récapitulatif** : une ligne par vin ; « sûre » = `decider()` présélectionne (cochée d'avance),
+   « douteuse » = ambiguë ou pas assez nette (non cochée), « sans candidat » à part ; double-clic = écran
+   d'identification habituel.
+3. **Valider** (`lot.appliquer`) — une transaction courte par vin (`appariement.confirmer` : champs vides
+   et non manuels, journal, identifiant), 20 ms entre deux vins pour laisser le verrou aux autres fils ;
+   journal final vin par vin.
+
+### Ce que le vrai fichier LWIN a appris (1.0.2)
+
+- Bourgogne : le climat ou le lieu-dit est dans `SITE` (et `PARCEL`), `WINE` est souvent vide ou vaut
+  « Blanc » / « Rouge ». La cuvée comparée est `WINE`, sinon `SITE` + `PARCEL` — sauf si `SITE` n'est que
+  l'appellation (« Chablis 1er Cru », « Hautes Cotes de Nuits »).
+- Producteurs écrits « Domaine X (Y) » quand la cave écrit « Domaine Y (X) » : comparaison par ensembles
+  de mots ; un mot à une ou deux lettres près (5 lettres au moins) compte pour 0,9.
+- Garde-fous : un domaine ou une cuvée qui ne ressemble pas (< 0,5) divise le score par deux ; la
+  présélection exige un domaine et une cuvée nettement concordants (≥ 0,8), et refuse le vin générique
+  quand une cuvée est cherchée.
+
 ## Réseau
 
 Hors ligne par défaut : l'accord est demandé à la première recherche en ligne (modifiable dans

@@ -158,12 +158,16 @@ class Cave(CaveRegles):
         return vin_id
 
     def completer_vin(self, vin_id: int, donnees: dict, source: str,
-                      detail: str = "") -> list[str]:
+                      detail: str = "", identifiant: dict | None = None) -> list[str]:
         """Remplit les champs VIDES d'un vin depuis une source externe.
 
         Jamais un champ déjà rempli, jamais un champ d'origine manuelle (même
         vidé par l'utilisateur : il a choisi qu'il soit vide). Renvoie la liste
-        des champs remplis, consignés dans journal_enrichissement."""
+        des champs remplis, consignés dans journal_enrichissement.
+
+        `identifiant` ({source, valeur, score, explication}) : l'identifiant
+        confirmé est gardé DANS LA MÊME transaction (identification en lot :
+        une transaction courte par vin, tout ou rien)."""
         actuel = self.base.un("SELECT * FROM vin WHERE id=?", (vin_id,))
         if actuel is None:
             raise KeyError(vin_id)
@@ -179,11 +183,14 @@ class Cave(CaveRegles):
         cepages = donnees.get("cepages") if (not nb_cep and "cepages" not in manuels) else None
         producteur = (donnees.get("producteur") if actuel["producteur_id"] is None
                       and "producteur" not in manuels else None)
-        if not (a_remplir or cepages or not _vide(producteur)):
+        if not (a_remplir or cepages or not _vide(producteur)) and identifiant is None:
             return []
         t = maintenant()
         remplis = list(a_remplir)
         with self.base.ecriture() as c:
+            if identifiant is not None:
+                self._identifiant(c, vin_id, identifiant["source"], identifiant["valeur"],
+                                  identifiant.get("score"), identifiant.get("explication"), True, t)
             if a_remplir:
                 # COALESCE(NULLIF(col,'')…) : même si une autre écriture a
                 # rempli le champ entre la lecture et l'écriture, on ne l'écrase pas
@@ -776,11 +783,14 @@ class Cave(CaveRegles):
                             explication: str | None, confirme: bool = True) -> None:
         """Un vin n'a qu'un identifiant par source : le nouveau remplace l'ancien."""
         with self.base.ecriture() as c:
-            c.execute("DELETE FROM identifiant_externe WHERE vin_id=? AND source=?", (vin_id, source))
-            c.execute("INSERT INTO identifiant_externe(vin_id, source, valeur, confirme, score, "
-                      "explication, date) VALUES(?,?,?,?,?,?,?)",
-                      (vin_id, source, str(valeur), 1 if confirme else 0, score, explication,
-                       maintenant()))
+            self._identifiant(c, vin_id, source, valeur, score, explication, confirme, maintenant())
+
+    @staticmethod
+    def _identifiant(c, vin_id, source, valeur, score, explication, confirme, date) -> None:
+        c.execute("DELETE FROM identifiant_externe WHERE vin_id=? AND source=?", (vin_id, source))
+        c.execute("INSERT INTO identifiant_externe(vin_id, source, valeur, confirme, score, "
+                  "explication, date) VALUES(?,?,?,?,?,?,?)",
+                  (vin_id, source, str(valeur), 1 if confirme else 0, score, explication, date))
 
     def identifiants(self, vin_id: int):
         return self.base.lire("SELECT * FROM identifiant_externe WHERE vin_id=? ORDER BY source",
@@ -796,8 +806,13 @@ class Cave(CaveRegles):
     def producteur(self, pid: int):
         return self.base.un("SELECT * FROM producteur WHERE id=?", (pid,))
 
-    def completer_producteur(self, pid: int, donnees: dict, source: str, detail: str = "") -> list[str]:
-        """Même règle que completer_vin : champs vides et non manuels seulement."""
+    def completer_producteur(self, pid: int, donnees: dict, source: str, detail: str = "",
+                             fiche: dict | None = None, identifiant: dict | None = None) -> list[str]:
+        """Même règle que completer_vin : champs vides et non manuels seulement.
+
+        `fiche` (arguments de `enregistrer_fiche`) et `identifiant` ({vin_id,
+        source, valeur, score, explication}) sont écrits dans la MÊME
+        transaction (identification en lot)."""
         actuel = self.producteur(pid)
         if actuel is None:
             raise KeyError(pid)
@@ -807,10 +822,17 @@ class Cave(CaveRegles):
         a_remplir = {k: v for k, v in donnees.items()
                      if k in ("pays", "region", "adresse", "site_web") and not _vide(v)
                      and k not in manuels and _vide(actuel[k])}
-        if not a_remplir:
+        if not a_remplir and fiche is None and identifiant is None:
             return []
         t = maintenant()
         with self.base.ecriture() as c:
+            if fiche is not None:
+                self._fiche(c, producteur_id=pid, **fiche)
+            if identifiant is not None:
+                self._identifiant(c, identifiant["vin_id"], identifiant["source"], identifiant["valeur"],
+                                  identifiant.get("score"), identifiant.get("explication"), True, t)
+            if not a_remplir:
+                return []
             sets = ", ".join(f"{k}=COALESCE(NULLIF({k}, ''), ?)" for k in a_remplir)
             c.execute(f"UPDATE producteur SET {sets}, modifie_le=? WHERE id=?",
                       list(a_remplir.values()) + [t, pid])
@@ -827,16 +849,22 @@ class Cave(CaveRegles):
                           url: str | None = None) -> int:
         """Fiche d'une base mondiale (confirmée) rattachée à un producteur ou un vin.
         Une seule fiche par (source, objet, rattachement) : la nouvelle remplace l'ancienne."""
-        import json
         with self.base.ecriture() as c:
-            c.execute("DELETE FROM fiche_externe WHERE source=? AND objet=? AND "
-                      "COALESCE(producteur_id,0)=? AND COALESCE(vin_id,0)=?",
-                      (source, objet, producteur_id or 0, vin_id or 0))
-            return c.execute(
-                "INSERT INTO fiche_externe(source, identifiant, objet, producteur_id, vin_id, nom, "
-                "donnees, licence, url, date) VALUES(?,?,?,?,?,?,?,?,?,?)",
-                (source, identifiant, objet, producteur_id, vin_id, nom,
-                 json.dumps(donnees, ensure_ascii=False), licence, url, maintenant())).lastrowid
+            return self._fiche(c, source, identifiant, objet, donnees, nom, producteur_id, vin_id,
+                               licence, url)
+
+    @staticmethod
+    def _fiche(c, source, identifiant, objet, donnees, nom=None, producteur_id=None, vin_id=None,
+               licence=None, url=None) -> int:
+        import json
+        c.execute("DELETE FROM fiche_externe WHERE source=? AND objet=? AND "
+                  "COALESCE(producteur_id,0)=? AND COALESCE(vin_id,0)=?",
+                  (source, objet, producteur_id or 0, vin_id or 0))
+        return c.execute(
+            "INSERT INTO fiche_externe(source, identifiant, objet, producteur_id, vin_id, nom, "
+            "donnees, licence, url, date) VALUES(?,?,?,?,?,?,?,?,?,?)",
+            (source, identifiant, objet, producteur_id, vin_id, nom,
+             json.dumps(donnees, ensure_ascii=False), licence, url, maintenant())).lastrowid
 
     def fiches(self, vin_id: int) -> list[dict]:
         """Fiches du vin et de son producteur (JSON décodé)."""

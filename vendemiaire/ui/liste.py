@@ -121,6 +121,8 @@ class VueCave(QWidget):
         self.compte.setObjectName("legende")
         self.bouton_nouveau = QPushButton(tr("action.nouveau_vin"))
         self.bouton_nouveau.setObjectName("principal")
+        self.bouton_identifier = QPushButton(tr("cave.identifier_tout"))
+        self.bouton_identifier.setToolTip(tr("lot.intro"))
         filtres.addWidget(self.recherche, 3)
         filtres.addWidget(QLabel(tr("cave.filtre_couleur")))
         filtres.addWidget(self.couleur, 1)
@@ -129,6 +131,7 @@ class VueCave(QWidget):
         filtres.addWidget(QLabel(tr("cave.filtre_statut")))
         filtres.addWidget(self.statut, 1)
         filtres.addWidget(self.compte)
+        filtres.addWidget(self.bouton_identifier)
         filtres.addWidget(self.bouton_nouveau)
         racine.addLayout(filtres)
 

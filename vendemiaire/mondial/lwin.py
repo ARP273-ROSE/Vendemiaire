@@ -278,8 +278,10 @@ def donnees_pour_vin(ligne: dict, appellation_officielle=None) -> dict:
         "couleur": ligne.get("couleur"),
         "type": ligne.get("type") if ligne.get("type") != "autre" else None,
     }
-    if ligne.get("vin") and normaliser(ligne["vin"]) != normaliser(d["producteur"]):
-        d["cuvee"] = ligne["vin"]
+    from .appariement import cuvee_lwin
+    cuvee = cuvee_lwin(ligne)                   # WINE, sinon le climat (SITE) ; jamais « Blanc » seul
+    if cuvee and normaliser(cuvee) != normaliser(d["producteur"]):
+        d["cuvee"] = cuvee
     if appellation_officielle is not None:
         for candidat in (ligne.get("site"), ligne.get("sous_region")):
             off = appellation_officielle(candidat) if candidat else None

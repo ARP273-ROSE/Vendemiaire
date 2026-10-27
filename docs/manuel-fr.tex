@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[french]{babel}
-\newcommand{\VersionManuel}{1.0.1}
+\newcommand{\VersionManuel}{1.0.2}
 \input{manuel-preambule.tex}
 \hypersetup{pdftitle={Vendémiaire — manuel d'utilisation},pdfauthor={ARP273-ROSE},pdfsubject={Logiciel de gestion de cave à vin}}
 
@@ -219,6 +219,42 @@ source.
 \capture{fr-identifier.png}{Identifier un vin : candidats, score expliqué, champs proposés.}
 \capture{fr-fiche-references.png}{La fiche du vin, onglet Références : identifiants retenus et journal
 de ce qui a été rempli, et d'où.}
+
+\subsection{Identifier toute la cave d'un coup}
+Inutile de passer fiche par fiche : \menu{Références › Identifier toute la cave…} (ou le bouton
+\emph{Identifier toute la cave…} de l'onglet Cave) cherche les candidats de \textbf{chaque vin sans
+identifiant LWIN} --- case \emph{Aussi les vins déjà identifiés} pour tout revoir. Le calcul tourne en
+tâche de fond, avec une barre de progression et un bouton \emph{Annuler} ; il ne fait que \textbf{lire} :
+copie locale de LWIN, registres d'appellations pour l'orthographe officielle, et Wikidata pour les
+domaines restés sans candidat, seulement si vous avez permis les recherches en ligne (une requête par
+seconde au plus).
+
+Le récapitulatif montre une ligne par vin : le meilleur candidat, son score, la raison en bref et, s'il
+en est proche, le deuxième candidat.
+\begin{itemize}
+  \item \textbf{Sûre} (fond vert, \textbf{cochée d'avance}) : score au-dessus du seuil, nettement devant
+        le suivant, domaine et cuvée concordants --- les mêmes règles que l'identification d'un seul vin.
+  \item \textbf{Douteuse} (fond ambre, non cochée) : deux candidats se valent, ou le domaine, la cuvée ou
+        le climat ne concordent pas nettement. Exemple : une cuvée \og Les Fournelles \fg{} absente de
+        LWIN n'est \emph{jamais} rattachée au village générique du domaine.
+  \item \textbf{Sans candidat} : listés à part.
+\end{itemize}
+Un \textbf{double-clic} ouvre l'écran d'identification habituel pour trancher à la main. Rien n'est écrit
+avant \emph{Valider la sélection} ; chaque vin coché est alors confirmé dans sa propre transaction, par la
+règle habituelle (champs vides et non saisis à la main seulement), et un \textbf{journal} final dit, vin
+par vin, quel identifiant a été retenu et quels champs ont été remplis.
+
+\capture{fr-identifier-cave.png}{Identifier toute la cave : décisions sûres cochées d'avance, douteuses
+signalées, rien n'est écrit avant la validation.}
+
+\begin{astuce}[Ce que l'appariement sait du fichier LWIN]
+LWIN range le climat ou le lieu-dit d'un vin de Bourgogne dans une colonne à part (\emph{SITE}) et
+écrit \emph{Blanc} ou \emph{Rouge} à la place d'un nom de cuvée : Vendémiaire compare votre cuvée à ce
+climat, ne prend pas une couleur pour une cuvée, reconnaît un domaine écrit dans l'autre ordre
+(\og Domaine de la Source (Paul Verdier) \fg{} et \og Domaine Paul Verdier (Source) \fg{}) et un mot à une
+lettre près (\og Clos Marnié \fg{} et \og Le Clos Marnier \fg{}) --- mais jamais la bonne cuvée d'un autre
+domaine.
+\end{astuce}
 
 \begin{astuce}[Recherches en ligne]
 Hors ligne par défaut. L'accord est demandé à la première recherche en ligne et se change dans

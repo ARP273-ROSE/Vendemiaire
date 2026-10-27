@@ -3,6 +3,21 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
+## 1.0.2 (28/10/2026) — identifier toute la cave d'un coup — PRÊTE, NON PUBLIÉE
+
+- Demande : « l'identification auto c'est pas possible, il faut faire fiche par fiche ? » → **Références ›
+  Identifier toute la cave…** (+ bouton de l'onglet Cave) : `mondial/lot.py` (préparer = lectures en fond,
+  appliquer = une transaction par vin), `ui/identifier_lot.py` (récapitulatif, cases, double-clic = écran
+  habituel, journal final). Détails : [docs/bases_mondiales.md](docs/bases_mondiales.md).
+- **Appariement revu sur le vrai fichier LWIN** (212 208 vins) et une vraie cave (10 vins de Bourgogne) :
+  avant, 2 sûrs sur 10 (tous les climats d'un domaine se valaient : le climat est dans `SITE`, pas dans
+  `WINE`) ; après, 7 sûrs, 3 douteux, 0 faux positif (un climat absent de LWIN n'est plus rattaché au
+  village générique). Garde-fous : contradictions domaine/cuvée × 0,5, présélection seulement si domaine et
+  cuvée ≥ 0,8 (`appariement.certain`). Essais : `tests/test_identification_lot.py` (producteurs inventés).
+- Mesures (vraie cave, vrai LWIN) : calcul 0,5 s, pire blocage de l'interface 22 ms pendant le calcul,
+  79 ms pendant la validation.
+- **Reste à décider par l'utilisateur** : publier la 1.0.2 (tag + Release). Rien n'est publié.
+
 ## État courant (27/10/2026 — fin de phase 5, version 1.0.0 en BROUILLON)
 
 - **Version `1.0.0`** : les cinq phases sont faites. La Release **v1.0.0 est construite et déposée en
