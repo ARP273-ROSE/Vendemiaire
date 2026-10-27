@@ -162,6 +162,9 @@ def lignes_fichier(chemin: str | Path) -> Iterator[dict]:
                 entetes = [COLONNES.get(k) for k in cles]
             continue
         d = {k: (v.strip() if isinstance(v, str) else v) for k, v in zip(entetes, brute) if k}
+        # Le vrai fichier de Liv-ex (vu le 28/10/2026, 212 208 lignes) écrit « NA » pour une case
+        # vide : sans ce nettoyage, « NA » entrait dans les noms (« NA Schieferkopf ») et la recherche.
+        d = {k: (None if isinstance(v, str) and v.upper() in ("NA", "N/A") else v) for k, v in d.items()}
         ligne = convertir(d)
         if ligne:
             yield ligne
@@ -175,6 +178,18 @@ def _entier(v) -> int | None:
     except (TypeError, ValueError):
         return None
     return n if 1000 <= n <= 2200 else None
+
+
+def _date_excel(v) -> str | None:
+    """Le fichier de Liv-ex donne ses dates en numéro de série Excel (45849.46… = 11/07/2025)."""
+    if v in (None, ""):
+        return None
+    try:
+        n = float(str(v).strip())
+    except ValueError:
+        return str(v)
+    import datetime as _dt
+    return (_dt.date(1899, 12, 30) + _dt.timedelta(days=int(n))).isoformat()
 
 
 def couleur_vers_code(couleur: str | None) -> str | None:
@@ -228,7 +243,7 @@ def convertir(d: dict) -> dict | None:
         "config_millesime": d.get("config_millesime") or None,
         "premier_millesime": _entier(d.get("premier_millesime")),
         "dernier_millesime": _entier(d.get("dernier_millesime")),
-        "maj": d.get("maj") or d.get("ajout") or None,
+        "maj": _date_excel(d.get("maj") or d.get("ajout")),
     }
     ligne["producteur_norm"] = normaliser(producteur)
     ligne["vin_norm"] = normaliser(vin)

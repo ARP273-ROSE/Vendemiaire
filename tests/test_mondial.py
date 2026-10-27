@@ -413,3 +413,21 @@ def test_aucune_adresse_d_aspirateur():
         if "vivino.com" in texte or "wine-searcher.com" in texte:
             assert p.name == "identifier.py" and "QDesktopServices.openUrl" in texte, p
     assert "vivino" not in json.dumps(reseau.INTERVALLES)
+
+
+def test_lwin_vrai_format_na_et_dates_excel(tmp_path):
+    """Format réel du fichier de Liv-ex (vu le 28/10/2026) : « NA » = case vide, dates en série Excel."""
+    from vendemiaire.mondial import lwin
+    f = tmp_path / "lwin.csv"
+    f.write_text(
+        "LWIN,STATUS,DISPLAY_NAME,PRODUCER_TITLE,PRODUCER_NAME,WINE,COUNTRY,REGION,SUB_REGION,SITE,"
+        "PARCEL,COLOUR,TYPE,SUB_TYPE,DESIGNATION,CLASSIFICATION,VINTAGE_CONFIG,FIRST_VINTAGE,"
+        "FINAL_VINTAGE,DATE_ADDED,DATE_UPDATED,REFERENCE\n"
+        "1000001,Live,\"Exemple, Riesling\",NA,Exemple,Riesling,France,Alsace,NA,NA,NA,White,Wine,"
+        "Still,AOP,NA,sequential,NA,NA,40702,45849.46644675926,\n", encoding="utf-8")
+    (ligne,) = list(lwin.lignes_fichier(f))
+    assert ligne["producteur_norm"] == "exemple"
+    assert ligne["sous_region"] is None and ligne["classement"] is None
+    assert "na" not in ligne["texte"].split()
+    assert ligne["couleur"] == "blanc"
+    assert ligne["maj"] == "2025-07-11"

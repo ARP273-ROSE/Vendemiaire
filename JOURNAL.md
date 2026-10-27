@@ -1,5 +1,13 @@
 # Vendémiaire — journal
 
+## 1.0.1 — 2026-10-28 — import LWIN validé sur le vrai fichier de Liv-ex
+
+- **Import LWIN** testé sur le vrai fichier téléchargé chez Liv-ex (212 208 vins, environ 25 s) : les cases
+  vides y sont écrites « NA » ; elles entraient jusqu'ici dans les noms et la recherche (« NA Schieferkopf »).
+  Elles sont maintenant lues comme vides. Les dates de mise à jour, données en numéro de série Excel,
+  sont converties en vraies dates.
+- Essai ajouté sur le format réel du fichier.
+
 ## 1.0.0 — 2026-10-27 — phase 5 : première version publiable
 
 - **Outils embarqués sur les trois systèmes** (kit commun, clé `outils` de `kit.json`) : **Tesseract**
