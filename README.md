@@ -9,7 +9,7 @@ statistiques. Bilingue français / anglais ; Windows, macOS et Linux. Aucune don
 
 *English version: [README.en.md](README.en.md).*
 
-**Version 1.0.4** — manuel complet : [français (PDF)](docs/manuel-fr.pdf) · [anglais (PDF)](docs/manuel-en.pdf) ·
+**Version 1.0.5** — manuel complet : [français (PDF)](docs/manuel-fr.pdf) · [anglais (PDF)](docs/manuel-en.pdf) ·
 journal : [JOURNAL.md](JOURNAL.md).
 
 ![Tableau de bord](docs/captures/fr-tableau-de-bord.png)

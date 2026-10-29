@@ -3,6 +3,15 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
+## 1.0.5 (29/10/2026) — certificats Windows + bouton du lot — PUBLIÉE
+
+- 1.0.4 inopérante sur un vrai PC : la MAJ in-app ne remplace que `app/` → `certifi` jamais installé.
+  Diagnostic (session du PC) : magasin CurrentUser\CA = ISRG Root X2 contresigné X1 expiré
+  (SHA-1 151682F5…), Root = X1 seul. Correctif : `racines_tls.pem` dans app/ (kit.json « racines_tls »),
+  essai `test_racines_de_secours_embarquees_dans_app`. 🔴 Toute nouvelle dépendance pip n'atteint PAS les
+  installations existantes par la MAJ automatique.
+- `identifier_lot` : `clicked` → `chercher(checked)` → TypeError, appli fermée. Essai sur le vrai bouton.
+
 ## 1.0.4 (29/10/2026) — recherches en ligne sous Windows — PUBLIÉE
 
 - « certificate has expired » sur data.gouv.fr depuis Windows (chaîne servie valide, vérifiée) :

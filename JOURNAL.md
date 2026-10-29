@@ -1,5 +1,17 @@
 # Vendémiaire — journal
 
+## 1.0.5 — 2026-10-29 — certificats sous Windows (pour de bon) et identification en lot
+
+- **« Identifier toute la cave › Chercher les candidats » fermait l'application** (« object of type 'bool'
+  has no len() ») : le bouton passait son état coché à la place de la liste des vins. Corrigé, avec un
+  essai sur le vrai bouton.
+- **Recherches en ligne sous Windows** : le magasin de certificats de Windows peut garder une ancienne
+  version d'« ISRG Root X2 » (contresignée par ISRG Root X1, expirée le 15/09/2025) ; toute connexion vers
+  un site Let's Encrypt récent (data.gouv.fr…) échouait alors avec « certificate has expired ». Le repli de
+  la 1.0.4 s'appuyait sur `certifi`, que la mise à jour automatique n'installe pas (elle ne remplace que le
+  dossier `app/`). Les racines de secours (liste de Mozilla) sont désormais livrées dans `app/`
+  (`racines_tls.pem`). Panne reproduite avec le magasin d'un vrai PC, puis corrigée.
+
 ## 1.0.4 — 2026-10-29 — recherches en ligne sous Windows
 
 - **« Mettre à jour en ligne » (registres INAO / eAmbrosia) et les autres recherches en ligne** passent par la
