@@ -21,7 +21,8 @@
     "VERSION",
     "README.md",
     "README.en.md",
-    "LICENSE"
+    "LICENSE",
+    "racines_tls.pem"
   ],
   "requirements": "requirements.txt",
   "pip": [],
@@ -236,5 +237,6 @@
         ]
       }
     }
-  ]
+  ],
+  "racines_tls": "racines_tls.pem"
 }

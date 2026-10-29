@@ -447,3 +447,28 @@ def test_reseau_passe_par_la_cascade_de_certificats(monkeypatch):
     monkeypatch.setattr(reporting, "ouvrir_url", lambda req, timeout: vues.append(req.full_url) or Rep(b"{}"))
     r = reseau.transport_urllib("https://exemple.invalid/x", {}, 5)
     assert vues == ["https://exemple.invalid/x"] and r.statut == 200
+
+
+def test_racines_de_secours_embarquees_dans_app(monkeypatch):
+    """La mise à jour ne remplace que app/ : le repli TLS ne peut pas compter sur certifi
+    (dépendance du Python embarqué). Les racines voyagent dans app/ (kit.json « racines_tls »)
+    et contiennent ISRG Root X2 auto-signé — sous Windows, le magasin CA garde parfois X2
+    contresigné par X1, expiré le 15/09/2025, et toute chaîne Let's Encrypt « Root YE » échoue."""
+    import builtins
+    import json
+    from pathlib import Path
+    import reporting
+    racine = Path(reporting.__file__).resolve().parent
+    kit = json.loads((racine / "kit.json").read_text(encoding="utf-8"))
+    assert kit["racines_tls"] in kit["assets"]
+    vrai = builtins.__import__
+
+    def sans_certifi(nom, *a, **k):
+        if nom == "certifi":
+            raise ImportError(nom)
+        return vrai(nom, *a, **k)
+    monkeypatch.setattr(builtins, "__import__", sans_certifi)
+    ctx = reporting.contexte_tls_secours()
+    assert ctx is not None
+    noms = {dict(x[0] for x in c["subject"]).get("commonName") for c in ctx.get_ca_certs()}
+    assert {"ISRG Root X1", "ISRG Root X2"} <= noms

@@ -158,7 +158,8 @@ class DialogueIdentifierLot(QDialog):
         boutons.addWidget(self.b_fermer)
         racine.addLayout(boutons)
 
-        self.b_chercher.clicked.connect(self.chercher)
+        # lambda : clicked passe « checked » (un booléen), qui serait pris pour la liste des vins
+        self.b_chercher.clicked.connect(lambda: self.chercher())
         self.b_annuler.clicked.connect(self.annuler)
         self.b_cocher.clicked.connect(lambda: self._cocher(seulement_sures=True))
         self.b_decocher.clicked.connect(lambda: self._cocher(aucune=True))
@@ -178,7 +179,7 @@ class DialogueIdentifierLot(QDialog):
     def chercher(self, vin_ids: list[int] | None = None) -> None:
         if self._travail is not None and not self._travail.termine:
             return
-        if vin_ids is None:
+        if not isinstance(vin_ids, list):
             vin_ids = lot.vins_a_identifier(self.cave, self.o_tous.isChecked())
         self._arret.clear()
         self.barre.setRange(0, max(1, len(vin_ids)))

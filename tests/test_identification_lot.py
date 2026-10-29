@@ -273,6 +273,16 @@ def test_ecran_recapitulatif_et_validation(app, dialogue):
     assert not d.choix()                                                 # lignes faites : grisées
 
 
+def test_bouton_chercher_les_candidats(app, dialogue):
+    """Le vrai bouton : `clicked` passe un booléen (« checked ») qui faisait planter `chercher`
+    (« object of type 'bool' has no len() ») et fermait l'application."""
+    d, cave, ids, travail = dialogue
+    d.show()
+    d.b_chercher.click()
+    travail.attendre(d._travail)
+    assert d.table.rowCount() == 3 and d.aucun.count() == 1
+
+
 def test_ecran_annulation(app, dialogue, monkeypatch):
     d, cave, ids, travail = dialogue
 
