@@ -3,6 +3,12 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
+## 1.0.4 (29/10/2026) — recherches en ligne sous Windows — PUBLIÉE
+
+- « certificate has expired » sur data.gouv.fr depuis Windows (chaîne servie valide, vérifiée) :
+  `reseau._ouvrir` passe par `reporting.ouvrir_url` (système puis certifi) ; `certifi` ajouté à
+  requirements.txt. Essai : `test_reseau_passe_par_la_cascade_de_certificats`.
+
 ## 1.0.3 (29/10/2026) — garde-fous de l'import de tableau — PUBLIÉE
 
 - Incident réel : le fichier LWIN passé dans « Importer un tableau » a créé ~73 000 vins et ~118 000

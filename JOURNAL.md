@@ -1,5 +1,13 @@
 # Vendémiaire — journal
 
+## 1.0.4 — 2026-10-29 — recherches en ligne sous Windows
+
+- **« Mettre à jour en ligne » (registres INAO / eAmbrosia) et les autres recherches en ligne** passent par la
+  cascade de certificats du kit : magasin du système, puis les racines de `certifi` si le système refuse
+  une chaîne valide. Sous Windows, data.gouv.fr échouait avec « certificate has expired » alors que son
+  certificat était valide.
+- `certifi` fait désormais partie des dépendances embarquées (sans lui, le repli n'avait aucune racine).
+
 ## 1.0.3 — 2026-10-29 — garde-fous de l'import de tableau
 
 - **Le fichier LWIN de Liv-ex est refusé dans « Fichier › Importer un tableau »** : importé là avec « 1

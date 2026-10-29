@@ -9,7 +9,7 @@ No data ever leaves the computer.
 
 *Version française : [README.md](README.md).*
 
-**Version 1.0.3** — full manual: [English (PDF)](docs/manuel-en.pdf) · [French (PDF)](docs/manuel-fr.pdf) ·
+**Version 1.0.4** — full manual: [English (PDF)](docs/manuel-en.pdf) · [French (PDF)](docs/manuel-fr.pdf) ·
 changelog: [JOURNAL.md](JOURNAL.md) (in French).
 
 ![Dashboard](docs/captures/en-tableau-de-bord.png)
