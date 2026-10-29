@@ -178,6 +178,10 @@ def test_lecture_des_formats_officiels():
         {"protectedNames": ["Feta"], "productType": "FOOD"},
         {"protectedNames": ["Ancien"], "productType": "WINE", "removedFlag": True}])
     assert [(e["nom"], e["signe"], e["pays"]) for e in eamb] == [("Rioja", "PDO", "ES")]
+    # l'API écrit « Wine » depuis fin octobre 2026 : sans casse ignorée, plus aucun vin
+    eamb = appellations.depuis_eambrosia([{"protectedNames": ["Arbois"], "giType": "PDO", "countries": ["FR"],
+                                           "productType": "Wine", "status": "registered"}])
+    assert [e["nom"] for e in eamb] == ["Arbois"]
 
 
 # ---------------------------------------------------------------- appariement

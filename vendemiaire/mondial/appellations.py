@@ -91,7 +91,8 @@ def depuis_eambrosia(donnees: list[dict]) -> list[dict]:
     """Réponse JSON de l'API eAmbrosia (vins) -> une ligne par nom protégé."""
     sortie = []
     for gi in donnees:
-        if gi.get("removedFlag") or (gi.get("productType") or "WINE") != "WINE":
+        # « WINE » à l'extraction du 26/10/2026, « Wine » trois jours plus tard : casse ignorée
+        if gi.get("removedFlag") or (gi.get("productType") or "WINE").strip().upper() != "WINE":
             continue
         for nom in gi.get("protectedNames") or []:
             nom = (nom or "").strip()
@@ -160,8 +161,9 @@ def mettre_a_jour_en_ligne(refs, client) -> dict[str, int]:
         texte = brut.decode("cp1252")
     inao = depuis_inao(texte)
     eambrosia = depuis_eambrosia(client.json(URL_EAMBROSIA))
-    if not inao or not eambrosia:
-        raise ValueError("registre vide : copie locale gardée")
+    vides = [nom for nom, l in (("INAO", inao), ("eAmbrosia", eambrosia)) if not l]
+    if vides:
+        raise ValueError(f"registre vide ({', '.join(vides)}) : copie locale gardée")
     jour = date.today().isoformat()
     faits = {"inao": refs.remplacer_appellations("inao", inao, source=url),
              "eambrosia": refs.remplacer_appellations("eambrosia", eambrosia,
