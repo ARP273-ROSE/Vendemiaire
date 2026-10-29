@@ -1,5 +1,16 @@
 # Vendémiaire — journal
 
+## 1.0.3 — 2026-10-29 — garde-fous de l'import de tableau
+
+- **Le fichier LWIN de Liv-ex est refusé dans « Fichier › Importer un tableau »** : importé là avec « 1
+  bouteille par ligne », chacun de ses vins devenait une bouteille en cave (plus de 100 000). Il est reconnu
+  à ses en-têtes (`LWIN` avec `DISPLAY_NAME` ou `PRODUCER_NAME`) et l'appli propose d'ouvrir **Références ›
+  Bases de référence**, où il se charge comme base de référence.
+- **Confirmation au-delà de 300 bouteilles** : tout import de tableau qui en ajouterait davantage l'annonce
+  et demande confirmation (réponse par défaut : non). La sauvegarde « avant-import » reste faite.
+- Pour revenir en arrière après un import non voulu : **Fichier › Restaurer une sauvegarde…** et choisir la
+  sauvegarde `avant-import` de la date voulue.
+
 ## 1.0.2 — 2026-10-28 — identifier toute la cave d'un coup
 
 - **Références › Identifier toute la cave…** (et bouton dans l'onglet Cave) : les candidats de chaque vin

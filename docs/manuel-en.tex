@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[british]{babel}
-\newcommand{\VersionManuel}{1.0.2}
+\newcommand{\VersionManuel}{1.0.3}
 \input{manuel-preambule.tex}
 \hypersetup{pdftitle={Vendémiaire — user manual},pdfauthor={ARP273-ROSE},pdfsubject={Wine cellar manager}}
 
@@ -502,7 +502,9 @@ drinking-window curve (``how many to drink a year''), and the drinking-window cu
     bottle) or ``List'' exports (one row per wine) as CSV or tab-separated text. The word \texttt{Unknown}
     counts as an empty field, vintage \texttt{1001} as non-vintage.
   \item[Excel, CSV] \menu{File › Import a spreadsheet (Excel, CSV)...}: the column mapping is suggested from the
-    headers, editable, with a preview.
+    headers, editable, with a preview. This menu is for \emph{your} bottles: the Liv-ex LWIN file is refused
+    there (it is loaded in \menu{References › Reference databases}), and an import that would add more than
+    300 bottles asks for confirmation.
   \item[Vivino] \menu{File › Import a Vivino export...}: the mapping starts from plausible headers; check it
     before importing.
   \item[Vendémiaire] CSV (one row per bottle) round trip, and \menu{File › Export everything to JSON...}: every

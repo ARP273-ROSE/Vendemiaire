@@ -3,7 +3,14 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
-## 1.0.2 (28/10/2026) — identifier toute la cave d'un coup — PRÊTE, NON PUBLIÉE
+## 1.0.3 (29/10/2026) — garde-fous de l'import de tableau — PUBLIÉE
+
+- Incident réel : le fichier LWIN passé dans « Importer un tableau » a créé ~73 000 vins et ~118 000
+  bouteilles dans une vraie cave. Réparé en restaurant la sauvegarde `avant-import` (identique à la cave
+  d'avant). Correctif : `imports_tableur.est_fichier_lwin` (refus + renvoi vers Bases de référence),
+  `estimer_bouteilles` + confirmation au-delà de `SEUIL_CONFIRMATION` (300). Essais dans `tests/test_phase4.py`.
+
+## 1.0.2 (28/10/2026) — identifier toute la cave d'un coup — PUBLIÉE
 
 - Demande : « l'identification auto c'est pas possible, il faut faire fiche par fiche ? » → **Références ›
   Identifier toute la cave…** (+ bouton de l'onglet Cave) : `mondial/lot.py` (préparer = lectures en fond,
@@ -16,7 +23,7 @@ Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
   cuvée ≥ 0,8 (`appariement.certain`). Essais : `tests/test_identification_lot.py` (producteurs inventés).
 - Mesures (vraie cave, vrai LWIN) : calcul 0,5 s, pire blocage de l'interface 22 ms pendant le calcul,
   79 ms pendant la validation.
-- **Reste à décider par l'utilisateur** : publier la 1.0.2 (tag + Release). Rien n'est publié.
+- Publiée le 28/10/2026.
 
 ## État courant (27/10/2026 — fin de phase 5, version 1.0.0 en BROUILLON)
 

@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[french]{babel}
-\newcommand{\VersionManuel}{1.0.2}
+\newcommand{\VersionManuel}{1.0.3}
 \input{manuel-preambule.tex}
 \hypersetup{pdftitle={Vendémiaire — manuel d'utilisation},pdfauthor={ARP273-ROSE},pdfsubject={Logiciel de gestion de cave à vin}}
 
@@ -514,7 +514,9 @@ consommation comparé à la courbe d'apogée (« combien en boire par an »), et
     (une ligne par bouteille) ou « List » (une ligne par vin) en CSV ou texte tabulé. Le mot \texttt{Unknown}
     vaut un champ vide, le millésime \texttt{1001} « non millésimé ».
   \item[Excel, CSV] \menu{Fichier › Importer un tableau (Excel, CSV)…} : la correspondance des colonnes est
-    proposée d'après les en-têtes, modifiable, avec un aperçu.
+    proposée d'après les en-têtes, modifiable, avec un aperçu. Ce menu sert à \emph{vos} bouteilles : le
+    fichier LWIN de Liv-ex y est refusé (il se charge dans \menu{Références › Bases de référence}), et un
+    import qui ajouterait plus de 300 bouteilles demande confirmation.
   \item[Vivino] \menu{Fichier › Importer un export Vivino…} : la correspondance part d'en-têtes plausibles ;
     relisez-la avant d'importer.
   \item[Vendémiaire] CSV (une ligne par bouteille) en aller-retour, et \menu{Fichier › Exporter tout en
