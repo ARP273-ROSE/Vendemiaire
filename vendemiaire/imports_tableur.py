@@ -57,6 +57,8 @@ SYNONYMES = {
     "ean": ("ean", "code barre", "code barres", "barcode", "gtin"),
 }
 PROFILS = ("generique", "vivino")
+#: au-delà de ce nombre de bouteilles, l'import demande confirmation
+SEUIL_CONFIRMATION = 300
 
 
 def lire_tableau(chemin: str | Path) -> tuple[list[str], list[list[str]]]:
@@ -76,6 +78,28 @@ def lire_tableau(chemin: str | Path) -> tuple[list[str], list[list[str]]]:
     entetes = brutes[0]
     n = len(entetes)
     return entetes, [r + [""] * (n - len(r)) for r in brutes[1:]]
+
+
+def est_fichier_lwin(entetes: list[str]) -> bool:
+    """Le fichier de référence de Liv-ex (colonnes « LWIN », « DISPLAY_NAME », « PRODUCER_NAME »…) :
+    il se charge dans Références › Bases de référence, jamais comme une cave — importé ici avec
+    « 1 bouteille par ligne », ses 200 000 vins devenaient autant de bouteilles en cave."""
+    cles = {re.sub(r"[\s\-]+", "_", (e or "").strip().upper()) for e in entetes}
+    return bool(cles & {"LWIN", "LWIN7", "LWIN_7"}) and bool(cles & {"DISPLAY_NAME", "PRODUCER_NAME"})
+
+
+def estimer_bouteilles(lignes: list[list[str]], correspondance: dict[str, int], quantite_defaut: int = 0) -> int:
+    """Bouteilles que `importer` ajouterait (même règle : quantité de la ligne, sinon la valeur par défaut)."""
+    iq = correspondance.get("quantite")
+    noms = [correspondance.get(c) for c in ("producteur", "cuvee", "appellation")]
+    total = 0
+    for l in lignes:
+        if not any(i is not None and i < len(l) and l[i].strip() for i in noms):
+            continue
+        q = _entier(l[iq].strip()) if iq is not None and iq < len(l) else None
+        q = quantite_defaut if q is None else q
+        total += min(q, 500) if q and q > 0 else 0
+    return total
 
 
 def deviner(entetes: list[str], profil: str = "generique") -> dict[str, int]:

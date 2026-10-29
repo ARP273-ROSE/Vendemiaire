@@ -560,7 +560,18 @@ class FenetrePrincipale(QMainWindow):
         except (OSError, ValueError) as ex:
             QMessageBox.warning(self, tr(cle), tr("imp.illisible", erreur=str(ex)))
             return
+        from .. import imports_tableur
+        if imports_tableur.est_fichier_lwin(d.entetes):
+            if QMessageBox.question(self, tr(cle), tr("imp.fichier_lwin")) == QMessageBox.StandardButton.Yes:
+                self.bases_reference()
+            return
         if d.exec() == QDialog.DialogCode.Accepted:
+            n = imports_tableur.estimer_bouteilles(d.lignes, d.correspondance(), d.quantite.value())
+            if n > imports_tableur.SEUIL_CONFIRMATION and QMessageBox.question(
+                    self, tr(cle), tr("imp.confirmer_gros", n=n, lignes=len(d.lignes)),
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No) != QMessageBox.StandardButton.Yes:
+                return
             self._avant_import()
             self._rapport(d.importer())
 

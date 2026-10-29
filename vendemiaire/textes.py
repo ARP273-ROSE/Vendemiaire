@@ -1312,6 +1312,18 @@ T.update({
     "imp.apercu": {"fr": "Premières lignes du fichier", "en": "First rows of the file"},
     "imp.importer": {"fr": "Importer", "en": "Import"},
     "imp.illisible": {"fr": "Fichier illisible : {erreur}", "en": "Unreadable file: {erreur}"},
+    "imp.fichier_lwin": {
+        "fr": "Ce fichier est la base de référence LWIN de Liv-ex, pas une liste de vos bouteilles : "
+              "l'importer ici ajouterait chacun de ses vins à votre cave.\n\n"
+              "Il se charge dans Références › Bases de référence. Y aller maintenant ?",
+        "en": "This file is the Liv-ex LWIN reference database, not a list of your bottles: "
+              "importing it here would add each of its wines to your cellar.\n\n"
+              "It is loaded in References › Reference databases. Go there now?"},
+    "imp.confirmer_gros": {
+        "fr": "Cet import va ajouter {n} bouteilles à votre cave ({lignes} lignes lues).\n\n"
+              "Est-ce bien une liste de vos bouteilles ? (Une sauvegarde est faite avant l'import.)",
+        "en": "This import will add {n} bottles to your cellar ({lignes} rows read).\n\n"
+              "Is this really a list of your bottles? (A backup is made before the import.)"},
     "imp.ch_producteur": {"fr": "Producteur", "en": "Producer"},
     "imp.ch_cuvee": {"fr": "Cuvée", "en": "Cuvée"},
     "imp.ch_appellation": {"fr": "Appellation", "en": "Appellation"},

@@ -391,6 +391,31 @@ def test_import_dialogue(app, fenetre, tmp_path):
     assert r.bouteilles == 2
 
 
+def test_import_refuse_le_fichier_lwin(app, fenetre, tmp_path, monkeypatch):
+    """Le fichier de Liv-ex passé dans « Importer un tableau » : rien n'entre dans la cave."""
+    from PyQt6.QtWidgets import QFileDialog, QMessageBox
+    from vendemiaire import imports_tableur
+    f = tmp_path / "LWINdatabase.csv"
+    f.write_text("LWIN,STATUS,DISPLAY_NAME,PRODUCER_NAME,WINE,COUNTRY\n"
+                 "1000001,Live,Domaine Test Rouge,Domaine Test,Rouge,France\n", encoding="utf-8")
+    assert imports_tableur.est_fichier_lwin(imports_tableur.lire_tableau(f)[0])
+    assert not imports_tableur.est_fichier_lwin(["Producteur", "LWIN", "Quantité"])
+    monkeypatch.setattr(QFileDialog, "getOpenFileName", lambda *a, **k: (str(f), ""))
+    vues = []
+    monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: vues.append(a[2]) or QMessageBox.StandardButton.No)
+    avant = fenetre.cave.base.valeur("SELECT COUNT(*) FROM bouteille")
+    fenetre.importer_tableur()
+    assert vues and "LWIN" in vues[0]
+    assert fenetre.cave.base.valeur("SELECT COUNT(*) FROM bouteille") == avant
+
+
+def test_estimer_bouteilles():
+    from vendemiaire import imports_tableur
+    lignes = [["A", "3"], ["B", ""], ["", "9"]]                  # la 3e ligne sans nom est ignorée
+    assert imports_tableur.estimer_bouteilles(lignes, {"producteur": 0, "quantite": 1}, 1) == 4
+    assert imports_tableur.estimer_bouteilles(lignes * 200, {"producteur": 0}, 1) == 400
+
+
 def test_anglais_sans_francais_phase4(app, fenetre):
     from PyQt6 import QtWidgets
     from vendemiaire.ui.carte_vins import DialogueCarteVins
