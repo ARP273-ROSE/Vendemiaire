@@ -3,6 +3,11 @@
 Point d'entrée pour reprendre le travail. Cahier des charges (copie neutre) :
 [docs/cahier_des_charges.md](docs/cahier_des_charges.md). Journal des versions : [JOURNAL.md](JOURNAL.md).
 
+## 1.0.6 (29/10/2026) — registres en ligne — PUBLIÉE
+
+- eAmbrosia : `productType` « Wine » au lieu de « WINE » → `depuis_eambrosia` vide → « registre vide ».
+  Casse ignorée, message qui nomme le registre ; essai dans `test_mondial.py`. Copie embarquée inchangée.
+
 ## 1.0.5 (29/10/2026) — certificats Windows + bouton du lot — PUBLIÉE
 
 - 1.0.4 inopérante sur un vrai PC : la MAJ in-app ne remplace que `app/` → `certifi` jamais installé.

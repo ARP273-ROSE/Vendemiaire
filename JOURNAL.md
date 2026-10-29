@@ -1,5 +1,12 @@
 # Vendémiaire — journal
 
+## 1.0.6 — 2026-10-29 — mise à jour en ligne des registres d'appellations
+
+- **« Registres officiels des appellations › Mettre à jour en ligne »** échouait sur « registre vide » :
+  l'API eAmbrosia de la Commission européenne écrit désormais le type de produit « Wine » (et non plus
+  « WINE »), et tous les vins étaient écartés. La casse est ignorée ; vérifié sur l'API réelle (1 858
+  noms, comme la copie livrée). Le message d'erreur nomme désormais le registre vide (INAO ou eAmbrosia).
+
 ## 1.0.5 — 2026-10-29 — certificats sous Windows (pour de bon) et identification en lot
 
 - **« Identifier toute la cave › Chercher les candidats » fermait l'application** (« object of type 'bool'
