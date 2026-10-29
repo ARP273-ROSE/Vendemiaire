@@ -431,3 +431,19 @@ def test_lwin_vrai_format_na_et_dates_excel(tmp_path):
     assert "na" not in ligne["texte"].split()
     assert ligne["couleur"] == "blanc"
     assert ligne["maj"] == "2025-07-11"
+
+
+def test_reseau_passe_par_la_cascade_de_certificats(monkeypatch):
+    """Les bases mondiales passent par reporting.ouvrir_url (repli sur certifi si le magasin du
+    système refuse un certificat) : sans cela, « certificate has expired » sous Windows."""
+    import io
+    import reporting
+    from vendemiaire import reseau
+    vues = []
+
+    class Rep(io.BytesIO):
+        status, headers = 200, {}
+
+    monkeypatch.setattr(reporting, "ouvrir_url", lambda req, timeout: vues.append(req.full_url) or Rep(b"{}"))
+    r = reseau.transport_urllib("https://exemple.invalid/x", {}, 5)
+    assert vues == ["https://exemple.invalid/x"] and r.statut == 200

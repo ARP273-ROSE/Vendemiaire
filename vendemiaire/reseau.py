@@ -80,10 +80,21 @@ class Reponse:
 Transport = Callable[[str, dict, float], Reponse]
 
 
+def _ouvrir(req: urllib.request.Request, delai: float):
+    """Cascade de certificats du kit (`reporting.ouvrir_url` : magasin du système, puis certifi) :
+    sous Windows, le magasin du système peut faire échouer une chaîne valide (« certificate has
+    expired » sur data.gouv.fr, chaîne Let's Encrypt récente). Jamais sans vérification."""
+    try:
+        from reporting import ouvrir_url
+    except ImportError:
+        return urllib.request.urlopen(req, timeout=delai)
+    return ouvrir_url(req, timeout=delai)
+
+
 def transport_urllib(url: str, entetes: dict, delai: float) -> Reponse:
     req = urllib.request.Request(url, headers=entetes)
     try:
-        with urllib.request.urlopen(req, timeout=delai) as r:
+        with _ouvrir(req, delai) as r:
             corps = r.read(TAILLE_MAX + 1)
             if len(corps) > TAILLE_MAX:
                 raise ErreurReseau(f"réponse trop grande : {url}")
