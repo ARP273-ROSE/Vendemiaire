@@ -1,5 +1,11 @@
 # Vendémiaire — journal
 
+## 1.0.7 — 2026-11-18
+
+- **Mises à jour signées** : chaque version publie un manifeste (numéro de version et empreinte SHA-256 de chaque archive) signé par une clé Ed25519 qui n'est pas sur GitHub. L'application n'installe plus une mise à jour que si son archive figure dans un manifeste signé par cette clé : un accès GitHub volé ne peut plus pousser de code sur les postes installés. Vérification en Python pur (`signature_maj.py`).
+- Mise à jour : l'adresse atteinte après les redirections est vérifiée elle aussi.
+- Kit commun reposé à son niveau courant.
+
 ## 1.0.6 — 2026-10-29 — mise à jour en ligne des registres d'appellations
 
 - **« Registres officiels des appellations › Mettre à jour en ligne »** échouait sur « registre vide » :

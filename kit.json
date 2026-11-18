@@ -11,6 +11,7 @@
     "run.py",
     "reporting.py",
     "updater.py",
+    "signature_maj.py",
     "interface_kit.py",
     "kit_aide.py"
   ],
@@ -104,7 +105,8 @@
     "tests/test_regles.py",
     "tests/test_phase3.py",
     "tests/test_phase4.py",
-    "tests/test_phase5.py"
+    "tests/test_phase5.py",
+    "tests/test_signature_maj.py"
   ],
   "copies": [
     {
@@ -238,5 +240,6 @@
       }
     }
   ],
-  "racines_tls": "racines_tls.pem"
+  "racines_tls": "racines_tls.pem",
+  "cle_publique_maj": "kHjUuLfq9BPw5+cmaBXwqFGMR4J9Jq5r0wBQLybZN0s="
 }
